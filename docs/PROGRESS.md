@@ -33,3 +33,10 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 ## Phase 1A — Audit dependency Drift
 - [2026-11-13] [PHASE-1A] [DONE] Audit dependency tree: sqlite3_flutter_libs 0.6.0+eol sudah tidak berisi kode; Drift 2.32.0+ tidak membutuhkannya; sqlite3 3.x membundel SQLite via hooks
 - [2026-11-13] [PHASE-1A] [FIX] RISK-01 dieliminasi: hapus sqlite3_flutter_libs dan sqlcipher_flutter_libs dari pubspec; pakai drift 2.35.4 + sqlite3 3.5.2 + drift_flutter 0.3.1
+
+## Phase 1A — Database POC Drift
+- [2026-11-13] [PHASE-1A] [DONE] Schema POC: students, subjects (schemaVersion=1)
+- [2026-11-13] [PHASE-1A] [DONE] build_runner generate app_database.g.dart
+- [2026-11-13] [PHASE-1A] [DONE] Test: sqlite3 version, insert/query student, insert/query subject, schema version (12/12 lulus)
+- [2026-11-13] [PHASE-1A] [FIX] Tambah sqlite3 sebagai dev dependency (dipakai test)
+- [2026-11-13] [PHASE-1A] [DONE] sqlite3 3.5.2 -> 3.9.1 (resolusi dev dep langsung)

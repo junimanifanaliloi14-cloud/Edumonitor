@@ -64,3 +64,9 @@ Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debu
 - Drift 2.32.0+ tidak membutuhkan sqlite3_flutter_libs. sqlite3 3.x membundel SQLite via hooks.
 - Tindakan: sqlite3_flutter_libs dan sqlcipher_flutter_libs DIHAPUS dari pubspec.yaml. drift_flutter masih mendeklarasikannya tapi tidak berbahaya.
 - RISK-01 (sqlite3_flutter_libs EOL) DITUTUP. Tidak ada risiko keamanan karena paket EOL tidak berisi kode.
+
+## Database POC (2026-11-13)
+- lib/infrastructure/database/app_database.dart: schema POC students+subjects, schemaVersion=1
+- app_database.g.dart di-generate via build_runner. Jangan diedit manual.
+- sqlite3 3.9.1 dev dependency (dipakai test untuk verifikasi versi native lib)
+- Schema ini POC. Schema penuh (kurikulum, knowledge, soal, asesmen, progres, sinkronisasi) masuk Phase 2+.
