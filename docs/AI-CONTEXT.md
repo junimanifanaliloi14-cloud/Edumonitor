@@ -38,3 +38,20 @@ Bootstrap proyek Flutter, skeleton arsitektur, database POC, CI baseline.
 
 ## Status Phase 1A
 Bootstrap selesai. APK debug terbangun. Berikutnya: skeleton arsitektur (core, engines, contract) lalu database POC Drift.
+
+## DEC tambahan (melengkapi daftar di atas)
+- DEC-002: Local teacher profile, single-user MVP.
+- DEC-003: Setiap device mandiri; PC coordinator opsional.
+- DEC-005: Sinkronisasi Wi-Fi/LAN ditunda.
+- DEC-006: Format dokumen MVP: PDF digital, DOCX, TXT.
+- DEC-008: Tipe knowledge MVP: concept, fact, relation, sequence, passage.
+- DEC-009: Bentuk soal MVP: pilihan ganda + jawaban singkat.
+- DEC-010: Mastery konfigurabel, bukan hard-coded.
+- DEC-011: Bahasa UI default Indonesia.
+- DEC-012: Data siswa tidak pernah masuk share package.
+- DEC-013: Backup/restore lokal wajib; restore diverifikasi.
+- DEC-017: Event-based sync (untuk fase sync).
+- DEC-018: Generator deterministik dengan seed + provenance.
+
+## Catatan Phase 1A
+Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debug.apk. Next: skeleton arsitektur (core, engines, contract) + database POC Drift + CI baseline.
