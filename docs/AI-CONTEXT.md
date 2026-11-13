@@ -76,3 +76,8 @@ Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debu
 - Exit audit: docs/phases/phase-1a-foundation.md
 - Phase 1B checklist: docs/phases/phase-1b-local-checklist.md (eksekusi di PC Windows lokal + tablet Android)
 - Jangan mulai Phase 2 sebelum Phase 1B lulus dan dilaporkan.
+
+## Update Decision Log (ED-05)
+- DEC-019: content_json pakai schema terstruktur (sealed class).
+- DEC-020: Enkripsi DB ditunda (pakai OS encryption + PIN).
+- DEC-021: knowledge_items.content pakai JSON terstruktur.
