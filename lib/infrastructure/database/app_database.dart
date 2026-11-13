@@ -14,7 +14,8 @@ class Students extends Table {
   TextColumn get displayName => text().withLength(min: 1, max: 200)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
-  TextColumn get createdByDeviceId => text().withDefault(const Constant('local'))();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
 
@@ -28,7 +29,8 @@ class Subjects extends Table {
   TextColumn get name => text().withLength(min: 1, max: 200)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
-  TextColumn get createdByDeviceId => text().withDefault(const Constant('local'))();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
 

@@ -40,3 +40,6 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-13] [PHASE-1A] [DONE] Test: sqlite3 version, insert/query student, insert/query subject, schema version (12/12 lulus)
 - [2026-11-13] [PHASE-1A] [FIX] Tambah sqlite3 sebagai dev dependency (dipakai test)
 - [2026-11-13] [PHASE-1A] [DONE] sqlite3 3.5.2 -> 3.9.1 (resolusi dev dep langsung)
+
+## Phase 1A — CI Baseline
+- [2026-11-13] [PHASE-1A] [DONE] .github/workflows/ci.yml: analyze, format check, test, build APK debug, upload artifact

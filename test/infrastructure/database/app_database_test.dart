@@ -29,12 +29,9 @@ void main() {
   });
 
   test('insert and query a student', () async {
-    await db.into(db.students).insert(
-          StudentsCompanion.insert(
-            id: 'stu-1',
-            displayName: 'Aisyah',
-          ),
-        );
+    await db
+        .into(db.students)
+        .insert(StudentsCompanion.insert(id: 'stu-1', displayName: 'Aisyah'));
 
     final rows = await db.select(db.students).get();
     expect(rows.length, 1);
@@ -45,12 +42,9 @@ void main() {
   });
 
   test('insert and query a subject', () async {
-    await db.into(db.subjects).insert(
-          SubjectsCompanion.insert(
-            id: 'sub-1',
-            name: 'Matematika',
-          ),
-        );
+    await db
+        .into(db.subjects)
+        .insert(SubjectsCompanion.insert(id: 'sub-1', name: 'Matematika'));
 
     final rows = await db.select(db.subjects).get();
     expect(rows.length, 1);
