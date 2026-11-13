@@ -22,11 +22,14 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-13] [PHASE-1A] [DONE] pubspec description dirapikan
 
 ## Phase 1A — Skeleton arsitektur
-- [2026-11-13] [PHASE-1A] [DONE] Dependency Phase 1A ditambahkan (uuid, drift, drift_flutter, sqlite3_flutter_libs, path_provider, path, crypto; dev: drift_dev, build_runner, mocktail)
+- [2026-11-13] [PHASE-1A] [DONE] Dependency Phase 1A ditambahkan (uuid, drift, drift_flutter, path_provider, path, crypto; dev: drift_dev, build_runner, mocktail)
 - [2026-11-13] [PHASE-1A] [DONE] core/result, core/errors, core/ids
 - [2026-11-13] [PHASE-1A] [DONE] engines/contract (SubjectEngine, Capability, Compatibility, EngineHealth, GenerationRequest/Result, ValidationReport, QuestionContent+TextBlock)
 - [2026-11-13] [PHASE-1A] [DONE] Stub engines: generic, math, physics, biology, chemistry
 - [2026-11-13] [PHASE-1A] [DONE] Registry lima engine + contract test
 - [2026-11-13] [PHASE-1A] [DONE] lib/main.dart diganti placeholder, widget_test default dihapus
 - [2026-11-13] [PHASE-1A] [DONE] flutter analyze bersih, flutter test 8/8 lulus
-- [2026-11-13] [PHASE-1A] [RISK] sqlite3_flutter_libs 0.6.0+eol (End of Life); perlu audit di Phase 2
+
+## Phase 1A — Audit dependency Drift
+- [2026-11-13] [PHASE-1A] [DONE] Audit dependency tree: sqlite3_flutter_libs 0.6.0+eol sudah tidak berisi kode; Drift 2.32.0+ tidak membutuhkannya; sqlite3 3.x membundel SQLite via hooks
+- [2026-11-13] [PHASE-1A] [FIX] RISK-01 dieliminasi: hapus sqlite3_flutter_libs dan sqlcipher_flutter_libs dari pubspec; pakai drift 2.35.4 + sqlite3 3.5.2 + drift_flutter 0.3.1

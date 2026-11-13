@@ -58,3 +58,9 @@ Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debu
 
 ## Risiko terbuka
 - RISK-01 (2026-11-13): sqlite3_flutter_libs 0.6.0+eol dan sqlcipher_flutter_libs 0.7.0+eol adalah paket End of Life. Drift 2.35.4 masih resolve ke paket ini. POC Phase 1A masih pakai, tapi sebelum Phase 2 perlu audit: (a) apakah sqlite3_native_assets sudah viable, (b) apakah build Android API 35+ dan Windows aman, (c) apakah perlu alternatif paket. Jangan upgrade major drift tanpa audit ini.
+
+## Hasil audit dependency Drift (2026-11-13)
+- sqlite3_flutter_libs 0.6.0+eol TIDAK berisi kode (removed all code). Hanya deklarasi kosong.
+- Drift 2.32.0+ tidak membutuhkan sqlite3_flutter_libs. sqlite3 3.x membundel SQLite via hooks.
+- Tindakan: sqlite3_flutter_libs dan sqlcipher_flutter_libs DIHAPUS dari pubspec.yaml. drift_flutter masih mendeklarasikannya tapi tidak berbahaya.
+- RISK-01 (sqlite3_flutter_libs EOL) DITUTUP. Tidak ada risiko keamanan karena paket EOL tidak berisi kode.
