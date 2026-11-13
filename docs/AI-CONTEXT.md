@@ -55,3 +55,6 @@ Bootstrap selesai. APK debug terbangun. Berikutnya: skeleton arsitektur (core, e
 
 ## Catatan Phase 1A
 Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debug.apk. Next: skeleton arsitektur (core, engines, contract) + database POC Drift + CI baseline.
+
+## Risiko terbuka
+- RISK-01 (2026-11-13): sqlite3_flutter_libs 0.6.0+eol dan sqlcipher_flutter_libs 0.7.0+eol adalah paket End of Life. Drift 2.35.4 masih resolve ke paket ini. POC Phase 1A masih pakai, tapi sebelum Phase 2 perlu audit: (a) apakah sqlite3_native_assets sudah viable, (b) apakah build Android API 35+ dan Windows aman, (c) apakah perlu alternatif paket. Jangan upgrade major drift tanpa audit ini.
