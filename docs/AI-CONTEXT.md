@@ -70,3 +70,9 @@ Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debu
 - app_database.g.dart di-generate via build_runner. Jangan diedit manual.
 - sqlite3 3.9.1 dev dependency (dipakai test untuk verifikasi versi native lib)
 - Schema ini POC. Schema penuh (kurikulum, knowledge, soal, asesmen, progres, sinkronisasi) masuk Phase 2+.
+
+## Phase 1A selesai (2026-11-13)
+- CI hijau pada commit 1f546d2.
+- Exit audit: docs/phases/phase-1a-foundation.md
+- Phase 1B checklist: docs/phases/phase-1b-local-checklist.md (eksekusi di PC Windows lokal + tablet Android)
+- Jangan mulai Phase 2 sebelum Phase 1B lulus dan dilaporkan.

@@ -43,3 +43,9 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 
 ## Phase 1A — CI Baseline
 - [2026-11-13] [PHASE-1A] [DONE] .github/workflows/ci.yml: analyze, format check, test, build APK debug, upload artifact
+
+## Phase 1A — Exit Audit
+- [2026-11-13] [PHASE-1A] [DONE] CI workflow hijau (Analyze & Test, Build Android APK) pada commit 1f546d2
+- [2026-11-13] [PHASE-1A] [DONE] Laporan exit audit: docs/phases/phase-1a-foundation.md
+- [2026-11-13] [PHASE-1A] [DONE] Checklist Phase 1B lokal: docs/phases/phase-1b-local-checklist.md
+- [2026-11-13] [PHASE-1A] [DONE] Phase 1A SELESAI dari sisi Codespaces. Phase 1B menunggu eksekusi lokal.
