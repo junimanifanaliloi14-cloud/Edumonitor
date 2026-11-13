@@ -49,3 +49,6 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-13] [PHASE-1A] [DONE] Laporan exit audit: docs/phases/phase-1a-foundation.md
 - [2026-11-13] [PHASE-1A] [DONE] Checklist Phase 1B lokal: docs/phases/phase-1b-local-checklist.md
 - [2026-11-13] [PHASE-1A] [DONE] Phase 1A SELESAI dari sisi Codespaces. Phase 1B menunggu eksekusi lokal.
+
+## Dokumentasi Desain (Menunggu Phase 1B)
+- [2026-11-13] [DOCS] [DONE] ED-05 Database Schema Draft v0.1 ditulis (ERD, tabel, index, migrasi, open decisions)
