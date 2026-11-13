@@ -27,3 +27,14 @@ Bootstrap proyek Flutter, skeleton arsitektur, database POC, CI baseline.
 - Tidak ada langkah tanpa dicatat di PROGRESS.md.
 - Tidak ada dependency baru tanpa verifikasi versi.
 - Tidak ada klaim test berhasil tanpa output nyata.
+
+## Versi terkunci
+- Flutter 3.47.9 (stable)
+- Dart 3.13.7
+- Android SDK 36.0.0, build-tools 36.0.0
+- JDK 17 (via JAVA_HOME override; Java 25 tetap ada tapi tidak dipakai Flutter)
+- Org: com.edumonitor, project: edumonitor
+- Platform: android, windows
+
+## Status Phase 1A
+Bootstrap selesai. APK debug terbangun. Berikutnya: skeleton arsitektur (core, engines, contract) lalu database POC Drift.

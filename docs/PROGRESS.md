@@ -10,3 +10,12 @@ Format: `[YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas`
 
 ## Phase 1A — Foundation (Codespaces)
 - [2026-11-13] [PHASE-1A] [START] Inspeksi lingkungan Codespaces selesai
+
+## Phase 1A — Bootstrap
+- [2026-11-13] [PHASE-1A] [DONE] Flutter 3.47.9, Dart 3.13.7 terpasang
+- [2026-11-13] [PHASE-1A] [DONE] Android SDK 36.0.0, build-tools 36.0.0, JDK 17
+- [2026-11-13] [PHASE-1A] [DONE] flutter doctor: Flutter+Android hijau
+- [2026-11-13] [PHASE-1A] [DONE] flutter create --org com.edumonitor --project-name edumonitor --platforms=android,windows
+- [2026-11-13] [PHASE-1A] [DONE] flutter pub get + flutter analyze bersih
+- [2026-11-13] [PHASE-1A] [DONE] flutter build apk --debug sukses (app-debug.apk, 288s)
+- [2026-11-13] [PHASE-1A] [DONE] pubspec description dirapikan
