@@ -19,3 +19,12 @@ Format: `[YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas`
 - [2026-11-13] [PHASE-1A] [DONE] flutter pub get + flutter analyze bersih
 - [2026-11-13] [PHASE-1A] [DONE] flutter build apk --debug sukses (app-debug.apk, 288s)
 - [2026-11-13] [PHASE-1A] [DONE] pubspec description dirapikan
+
+## Phase 1A — Skeleton arsitektur
+- [2026-11-13] [PHASE-1A] [DONE] Dependency Phase 1A ditambahkan (uuid, drift, drift_flutter, sqlite3_flutter_libs, path_provider, path, crypto; dev: drift_dev, build_runner, mocktail)
+- [2026-11-13] [PHASE-1A] [DONE] core/result, core/errors, core/ids
+- [2026-11-13] [PHASE-1A] [DONE] Dependency Phase 1A ditambahkan (uuid, drift, drift_flutter, sqlite3_flutter_libs, path_provider, path, crypto; dev: drift_dev, build_runner, mocktail)
+- [2026-11-13] [PHASE-1A] [DONE] core/result, core/errors, core/ids
+- [2026-11-13] [PHASE-1A] [DONE] engines/contract (SubjectEngine, Capability, Compatibility, EngineHealth, GenerationRequest/Result, ValidationReport, QuestionContent+TextBlock)
+- [2026-11-13] [PHASE-1A] [DONE] Registry lima engine + contract test
+- [2026-11-13] [PHASE-1A] [DONE] lib/main.dart diganti placeholder, widget_test default dihapus
