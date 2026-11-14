@@ -52,3 +52,9 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 
 ## Dokumentasi Desain (Menunggu Phase 1B)
 - [2026-11-13] [DOCS] [DONE] ED-05 Database Schema Draft v0.1 ditulis (ERD, tabel, index, migrasi, open decisions)
+
+## Phase 1B — Local & CI Verification
+- [2026-11-14] [PHASE-1B] [DONE] Windows build sukses & aplikasi berjalan lokal.
+- [2026-11-14] [PHASE-1B] [DONE] Android tablet terdeteksi via USB.
+- [2026-11-14] [PHASE-1B] [DONE] Android APK build sukses di GitHub Actions (CI Hijau).
+- [2026-11-14] [PHASE-1B] [DONE] AGP diupdate ke 8.11.1 & Gradle 9.3.1 untuk memenuhi syarat minimum Flutter.
