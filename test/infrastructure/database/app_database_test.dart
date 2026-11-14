@@ -41,8 +41,8 @@ void main() {
     expect(rows.first.deletedAt, isNull);
   });
 
-  test('schema version is 4', () {
-    expect(db.schemaVersion, 4);
+  test('schema version is 5', () {
+    expect(db.schemaVersion, 5);
   });
 
   test('insert and query curriculum hierarchy', () async {
@@ -156,7 +156,6 @@ void main() {
   });
 
   test('insert and query questions and assessments hierarchy', () async {
-    // 1. Buat Topik Dummy (Required untuk soal)
     await db
         .into(db.subjects)
         .insert(SubjectsCompanion.insert(id: 's1', name: 'Math'));
@@ -171,7 +170,6 @@ void main() {
           TopicsCompanion.insert(id: 't1', chapterId: 'c1', name: 'Linear'),
         );
 
-    // 2. Buat Soal (Questions)
     await db
         .into(db.questions)
         .insert(
@@ -183,8 +181,6 @@ void main() {
             answerJson: '{"ans":4}',
           ),
         );
-
-    // 3. Buat Snapshot Soal (Immutable)
     await db
         .into(db.questionSnapshots)
         .insert(
@@ -196,20 +192,14 @@ void main() {
             provenanceJson: '{"seed":42}',
           ),
         );
-
-    // 4. Buat Asesmen (Assessments)
     await db
         .into(db.assessments)
         .insert(AssessmentsCompanion.insert(id: 'a1', title: 'Ulangan Harian'));
-
-    // 5. Buat Snapshot Asesmen (Immutable)
     await db
         .into(db.assessmentSnapshots)
         .insert(
           AssessmentSnapshotsCompanion.insert(id: 'as1', assessmentId: 'a1'),
         );
-
-    // 6. Hubungkan keduanya di AssessmentItems
     await db
         .into(db.assessmentItems)
         .insert(
@@ -224,5 +214,126 @@ void main() {
     final items = await db.select(db.assessmentItems).get();
     expect(items.length, 1);
     expect(items.first.weight, 1.0);
+  });
+
+  test('insert and query student progress and sync', () async {
+    // 1. Setup Data Dummy
+    await db
+        .into(db.students)
+        .insert(StudentsCompanion.insert(id: 'stu-1', displayName: 'Budi'));
+    await db
+        .into(db.subjects)
+        .insert(SubjectsCompanion.insert(id: 's1', name: 'Math'));
+    await db
+        .into(db.chapters)
+        .insert(
+          ChaptersCompanion.insert(id: 'c1', subjectId: 's1', name: 'Aljabar'),
+        );
+    await db
+        .into(db.topics)
+        .insert(
+          TopicsCompanion.insert(id: 't1', chapterId: 'c1', name: 'Linear'),
+        );
+    await db
+        .into(db.competencies)
+        .insert(
+          CompetenciesCompanion.insert(
+            id: 'comp1',
+            topicId: 't1',
+            description: 'Desc',
+          ),
+        );
+
+    await db
+        .into(db.questions)
+        .insert(
+          QuestionsCompanion.insert(
+            id: 'q1',
+            topicId: 't1',
+            generatorId: 'gen',
+            contentJson: '{}',
+            answerJson: '{}',
+          ),
+        );
+    await db
+        .into(db.questionSnapshots)
+        .insert(
+          QuestionSnapshotsCompanion.insert(
+            id: 'qs1',
+            questionId: 'q1',
+            contentJson: '{}',
+            answerJson: '{}',
+            provenanceJson: '{}',
+          ),
+        );
+    await db
+        .into(db.assessments)
+        .insert(AssessmentsCompanion.insert(id: 'a1', title: 'Test'));
+    await db
+        .into(db.assessmentSnapshots)
+        .insert(
+          AssessmentSnapshotsCompanion.insert(id: 'as1', assessmentId: 'a1'),
+        );
+
+    // 2. Insert Attempt & Answer
+    await db
+        .into(db.studentAttempts)
+        .insert(
+          StudentAttemptsCompanion.insert(
+            id: 'att1',
+            studentId: 'stu-1',
+            assessmentSnapshotId: 'as1',
+          ),
+        );
+    await db
+        .into(db.studentAnswers)
+        .insert(
+          StudentAnswersCompanion.insert(
+            id: 'ans1',
+            attemptId: 'att1',
+            questionSnapshotId: 'qs1',
+            answerJson: '{"ans":4}',
+            isCorrect: Value(true),
+            score: Value(1.0),
+          ),
+        );
+
+    // 3. Insert Mastery
+    await db
+        .into(db.masteryRecords)
+        .insert(
+          MasteryRecordsCompanion.insert(
+            id: 'm1',
+            studentId: 'stu-1',
+            competencyId: 'comp1',
+            masteryLevel: 'cukup',
+          ),
+        );
+
+    // 4. Insert Sync Event
+    await db
+        .into(db.syncEvents)
+        .insert(
+          SyncEventsCompanion.insert(
+            id: 'evt1',
+            entityType: 'student_attempt',
+            entityId: 'att1',
+            operation: 'create',
+            baseRevision: 0,
+            newRevision: 1,
+            payloadJson: '{}',
+            deviceId: 'device-A',
+            idempotencyKey: 'key-123',
+          ),
+        );
+
+    final attempts = await db.select(db.studentAttempts).get();
+    expect(attempts.length, 1);
+
+    final answers = await db.select(db.studentAnswers).get();
+    expect(answers.first.isCorrect, isTrue);
+
+    final syncEvents = await db.select(db.syncEvents).get();
+    expect(syncEvents.first.idempotencyKey, 'key-123');
   });
 }

@@ -185,9 +185,7 @@ class Questions extends Table {
   TextColumn get id => text()();
   TextColumn get topicId => text().references(Topics, #id)();
   TextColumn get generatorId => text()();
-  TextColumn get status => text().withDefault(
-    const Constant('draft'),
-  )(); // draft, approved, rejected
+  TextColumn get status => text().withDefault(const Constant('draft'))();
   TextColumn get contentJson => text()();
   TextColumn get answerJson => text()();
   RealColumn get difficultyEstimate => real().nullable()();
@@ -202,7 +200,6 @@ class Questions extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-// Snapshot bersifat immutable (tidak ada updatedAt/revision)
 class QuestionSnapshots extends Table {
   TextColumn get id => text()();
   TextColumn get questionId => text().references(Questions, #id)();
@@ -230,7 +227,6 @@ class Assessments extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-// Snapshot bersifat immutable
 class AssessmentSnapshots extends Table {
   TextColumn get id => text()();
   TextColumn get assessmentId => text().references(Assessments, #id)();
@@ -240,7 +236,6 @@ class AssessmentSnapshots extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-// Menghubungkan AssessmentSnapshot dengan QuestionSnapshot
 class AssessmentItems extends Table {
   TextColumn get id => text()();
   TextColumn get assessmentSnapshotId =>
@@ -250,6 +245,117 @@ class AssessmentItems extends Table {
   IntColumn get sequence => integer()();
   RealColumn get weight => real().withDefault(const Constant(1.0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// ==========================================
+// 4. STUDENT PROGRESS
+// ==========================================
+
+class StudentAttempts extends Table {
+  TextColumn get id => text()();
+  TextColumn get studentId => text().references(Students, #id)();
+  TextColumn get assessmentSnapshotId =>
+      text().references(AssessmentSnapshots, #id)();
+  DateTimeColumn get startedAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get completedAt => dateTime().nullable()();
+  TextColumn get actorType =>
+      text().withDefault(const Constant('teacher-recorded'))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class StudentAnswers extends Table {
+  TextColumn get id => text()();
+  TextColumn get attemptId => text().references(StudentAttempts, #id)();
+  TextColumn get questionSnapshotId =>
+      text().references(QuestionSnapshots, #id)();
+  TextColumn get answerJson => text()();
+  BoolColumn get isCorrect => boolean().nullable()();
+  RealColumn get score => real().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class MasteryRecords extends Table {
+  TextColumn get id => text()();
+  TextColumn get studentId => text().references(Students, #id)();
+  TextColumn get competencyId => text().references(Competencies, #id)();
+  TextColumn get masteryLevel => text()(); // cth: "belum", "cukup", "mahir"
+  DateTimeColumn get lastUpdated =>
+      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// ==========================================
+// 5. SYNC & SECURITY
+// ==========================================
+
+class SyncEvents extends Table {
+  TextColumn get id => text()();
+  TextColumn get entityType => text()();
+  TextColumn get entityId => text()();
+  TextColumn get operation => text()();
+  IntColumn get baseRevision => integer()();
+  IntColumn get newRevision => integer()();
+  TextColumn get payloadJson => text()();
+  TextColumn get deviceId => text()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get idempotencyKey => text().unique()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class ConflictRecords extends Table {
+  TextColumn get id => text()();
+  TextColumn get entityType => text()();
+  TextColumn get entityId => text()();
+  IntColumn get localRevision => integer()();
+  IntColumn get remoteRevision => integer()();
+  TextColumn get resolution =>
+      text().nullable()(); // pending, local_wins, remote_wins, manual
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class AuditLogs extends Table {
+  TextColumn get id => text()();
+  TextColumn get action => text()();
+  TextColumn get actor => text()();
+  DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get detailsJson => text()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -276,13 +382,19 @@ class AssessmentItems extends Table {
     Assessments,
     AssessmentSnapshots,
     AssessmentItems,
+    StudentAttempts,
+    StudentAnswers,
+    MasteryRecords,
+    SyncEvents,
+    ConflictRecords,
+    AuditLogs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -308,6 +420,14 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(assessments);
         await m.createTable(assessmentSnapshots);
         await m.createTable(assessmentItems);
+      }
+      if (from < 5) {
+        await m.createTable(studentAttempts);
+        await m.createTable(studentAnswers);
+        await m.createTable(masteryRecords);
+        await m.createTable(syncEvents);
+        await m.createTable(conflictRecords);
+        await m.createTable(auditLogs);
       }
     },
   );
