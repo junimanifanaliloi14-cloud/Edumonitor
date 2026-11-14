@@ -23,4 +23,28 @@ class StudentRepositoryImpl implements StudentRepository {
         .into(_db.students)
         .insert(StudentsCompanion.insert(id: _uuid.v4(), displayName: name));
   }
+
+  @override
+  Future<void> updateStudent(String id, String newName) async {
+    await (_db.update(_db.students)..where((t) => t.id.equals(id))).write(
+      StudentsCompanion(
+        displayName: Value(newName),
+        updatedAt: Value(DateTime.now()),
+        revision: Value(
+          2,
+        ), // Nanti di fase sinkronisasi ini akan bertambah otomatis
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteStudent(String id) async {
+    // Soft delete: set deletedAt dan tambah revision
+    await (_db.update(_db.students)..where((t) => t.id.equals(id))).write(
+      StudentsCompanion(
+        deletedAt: Value(DateTime.now()),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
 }
