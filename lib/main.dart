@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'features/students/presentation/student_list_screen.dart';
+import 'features/home/presentation/home_screen.dart';
 import 'features/students/presentation/student_providers.dart';
 import 'infrastructure/database/app_database.dart';
 
@@ -28,7 +28,7 @@ class EduMonitorApp extends StatelessWidget {
       title: 'EduMonitor',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.teal),
-      home: const StudentListScreen(),
+      home: const HomeScreen(),
     );
   }
 }
