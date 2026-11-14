@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' show Value; // PERBAIKAN: Hanya ambil Value
 import 'package:drift/native.dart';
 import 'package:edumonitor/infrastructure/database/app_database.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,28 +58,21 @@ void main() {
     expect(rows.first.name, 'Matematika');
   });
 
-  test('schema version is 2', () {
-    expect(db.schemaVersion, 2);
+  test('schema version is 3', () {
+    expect(db.schemaVersion, 3);
   });
 
   test('insert and query curriculum hierarchy', () async {
-    // 1. Insert Subject
     await db.into(db.subjects).insert(
           SubjectsCompanion.insert(id: 's1', name: 'Matematika'),
         );
-
-    // 2. Insert Chapter (relasi ke Subject)
     await db.into(db.chapters).insert(
           ChaptersCompanion.insert(id: 'c1', subjectId: 's1', name: 'Aljabar'),
         );
-
-    // 3. Insert Topic (relasi ke Chapter)
     await db.into(db.topics).insert(
           TopicsCompanion.insert(
               id: 't1', chapterId: 'c1', name: 'Persamaan Linear'),
         );
-
-    // 4. Insert Competency (relasi ke Topic)
     await db.into(db.competencies).insert(
           CompetenciesCompanion.insert(
             id: 'comp1',
@@ -88,7 +82,6 @@ void main() {
           ),
         );
 
-    // Verifikasi data tersimpan
     final competencies = await db.select(db.competencies).get();
     expect(competencies.length, 1);
     expect(competencies.first.description, contains('linear'));
@@ -96,5 +89,46 @@ void main() {
     final chapters = await db.select(db.chapters).get();
     expect(chapters.length, 1);
     expect(chapters.first.name, 'Aljabar');
+  });
+
+  test('insert and query document and knowledge hierarchy', () async {
+    // 1. Insert Document
+    await db.into(db.sourceDocuments).insert(SourceDocumentsCompanion.insert(
+      id: 'doc1', title: 'Buku Fisika', filePath: '/path/to/pdf', fileHash: 'abc123', fileType: 'pdf'
+    ));
+
+    // 2. Insert Version
+    await db.into(db.documentVersions).insert(DocumentVersionsCompanion.insert(
+      id: 'ver1', documentId: 'doc1', versionNumber: 1
+    ));
+
+    // 3. Insert Chunk
+    await db.into(db.documentChunks).insert(DocumentChunksCompanion.insert(
+      id: 'chunk1', versionId: 'ver1', sequence: 1, textContent: 'Gaya adalah tarikan atau dorongan.', locator: 'page:1'
+    ));
+
+    // 4. Insert Knowledge (butuh TopicId, kita buat dummy topic dulu)
+    await db.into(db.subjects).insert(SubjectsCompanion.insert(id: 's-phy', name: 'Fisika'));
+    await db.into(db.chapters).insert(ChaptersCompanion.insert(id: 'c-phy', subjectId: 's-phy', name: 'Mekanika'));
+    await db.into(db.topics).insert(TopicsCompanion.insert(id: 't-phy', chapterId: 'c-phy', name: 'Gaya'));
+
+    await db.into(db.knowledgeItems).insert(KnowledgeItemsCompanion.insert(
+      id: 'k1', 
+      topicId: 't-phy', 
+      type: 'concept', 
+      content: '{"definition":"Gaya"}', 
+      sourceChunkId: Value('chunk1') // Dibungkus dengan Value()
+    ));
+
+    // 5. Insert Knowledge Source
+    await db.into(db.knowledgeSources).insert(KnowledgeSourcesCompanion.insert(
+      id: 'ks1', knowledgeId: 'k1', chunkId: 'chunk1', quote: 'Gaya adalah tarikan atau dorongan.'
+    ));
+
+    final knowledge = await db.select(db.knowledgeItems).get();
+    expect(knowledge.length, 1);
+    
+    final source = await db.select(db.knowledgeSources).get();
+    expect(source.first.quote, contains('tarikan'));
   });
 }
