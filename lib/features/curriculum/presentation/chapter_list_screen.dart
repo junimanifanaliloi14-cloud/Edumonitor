@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../infrastructure/database/app_database.dart';
 import 'chapter_providers.dart';
+import 'topic_list_screen.dart'; // Import halaman Topik
 
 class ChapterListScreen extends ConsumerWidget {
   final Subject subject;
@@ -32,6 +33,15 @@ class ChapterListScreen extends ConsumerWidget {
               return ListTile(
                 leading: const Icon(Icons.folder, color: Colors.teal),
                 title: Text(chapter.name),
+                // Navigasi ke halaman Topik saat di-tap
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TopicListScreen(chapter: chapter),
+                    ),
+                  );
+                },
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _confirmDelete(context, ref, chapter),
