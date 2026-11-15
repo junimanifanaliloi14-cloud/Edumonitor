@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../infrastructure/database/app_database.dart';
 import 'subject_providers.dart';
+import 'chapter_list_screen.dart'; // Import halaman Bab
 
 class SubjectListScreen extends ConsumerWidget {
   const SubjectListScreen({super.key});
@@ -30,6 +31,15 @@ class SubjectListScreen extends ConsumerWidget {
                 leading: const Icon(Icons.book, color: Colors.teal),
                 title: Text(subject.name),
                 subtitle: Text('Engine: ${subject.engineId}'),
+                // Navigasi ke halaman Bab saat di-tap
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChapterListScreen(subject: subject),
+                    ),
+                  );
+                },
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _confirmDelete(context, ref, subject),
