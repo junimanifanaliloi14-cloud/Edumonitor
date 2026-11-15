@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/empty_state.dart';
 import '../../progress/presentation/record_result_screen.dart';
 import 'assessment_providers.dart';
 
@@ -13,17 +14,17 @@ class AssessmentListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Asesmen (Ujian)'),
+        title: const Text('Daftar Asesmen'),
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
       ),
       body: assessmentsAsync.when(
         data: (assessments) {
           if (assessments.isEmpty) {
-            return const Center(
-              child: Text(
-                'Belum ada asesmen.\nBuat dari menu Bank Soal di Kurikulum.',
-              ),
+            return const EmptyState(
+              icon: Icons.assignment_outlined,
+              title: 'Belum Ada Asesmen',
+              description: 'Buat asesmen dari menu Bank Soal: masuk ke Kurikulum > Topik > Bank Soal, lalu klik "Jadikan Paket Ujian".',
             );
           }
           return ListView.builder(
@@ -41,7 +42,6 @@ class AssessmentListScreen extends ConsumerWidget {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text('Status: ${a.status}'),
-                // Navigasi ke pencatatan nilai
                 onTap: () {
                   Navigator.push(
                     context,

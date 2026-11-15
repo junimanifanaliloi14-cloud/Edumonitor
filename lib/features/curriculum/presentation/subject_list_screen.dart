@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/app_snackbar.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../infrastructure/database/app_database.dart';
+import 'chapter_list_screen.dart';
 import 'subject_providers.dart';
-import 'chapter_list_screen.dart'; // Import halaman Bab
 
 class SubjectListScreen extends ConsumerWidget {
   const SubjectListScreen({super.key});
@@ -21,7 +23,13 @@ class SubjectListScreen extends ConsumerWidget {
       body: subjectsAsync.when(
         data: (subjects) {
           if (subjects.isEmpty) {
-            return const Center(child: Text('Belum ada mata pelajaran.'));
+            return EmptyState(
+              icon: Icons.menu_book_outlined,
+              title: 'Belum Ada Mata Pelajaran',
+              description: 'Tambahkan mata pelajaran seperti Matematika, Fisika, atau Biologi untuk mulai menyusun kurikulum.',
+              actionLabel: 'Tambah Mata Pelajaran',
+              onAction: () => _showAddDialog(context, ref),
+            );
           }
           return ListView.builder(
             itemCount: subjects.length,
@@ -31,7 +39,6 @@ class SubjectListScreen extends ConsumerWidget {
                 leading: const Icon(Icons.book, color: Colors.teal),
                 title: Text(subject.name),
                 subtitle: Text('Engine: ${subject.engineId}'),
-                // Navigasi ke halaman Bab saat di-tap
                 onTap: () {
                   Navigator.push(
                     context,
@@ -61,11 +68,11 @@ class SubjectListScreen extends ConsumerWidget {
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController();
-    String selectedEngine = 'generic'; // Default
+    String selectedEngine = 'generic';
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
+      builder: (ctx) => StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
             title: const Text('Tambah Mata Pelajaran'),
@@ -100,7 +107,7 @@ class SubjectListScreen extends ConsumerWidget {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(ctx),
                 child: const Text('Batal'),
               ),
               ElevatedButton(
@@ -110,7 +117,13 @@ class SubjectListScreen extends ConsumerWidget {
                     await ref
                         .read(subjectRepositoryProvider)
                         .addSubject(name, selectedEngine);
-                    if (context.mounted) Navigator.pop(context);
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (context.mounted) {
+                      AppSnackbar.success(
+                        context,
+                        'Mata pelajaran $name ditambahkan',
+                      );
+                    }
                   }
                 },
                 child: const Text('Simpan'),
@@ -125,12 +138,12 @@ class SubjectListScreen extends ConsumerWidget {
   void _confirmDelete(BuildContext context, WidgetRef ref, Subject subject) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         title: const Text('Hapus Mata Pelajaran?'),
         content: Text('Yakin ingin menghapus ${subject.name}?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(ctx),
             child: const Text('Batal'),
           ),
           ElevatedButton(
@@ -139,7 +152,10 @@ class SubjectListScreen extends ConsumerWidget {
               await ref
                   .read(subjectRepositoryProvider)
                   .deleteSubject(subject.id);
-              if (context.mounted) Navigator.pop(context);
+              if (ctx.mounted) Navigator.pop(ctx);
+              if (context.mounted) {
+                AppSnackbar.success(context, 'Mata pelajaran dihapus');
+              }
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.white)),
           ),

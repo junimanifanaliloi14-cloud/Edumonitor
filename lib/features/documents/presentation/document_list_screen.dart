@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../core/widgets/app_snackbar.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../infrastructure/database/app_database.dart';
+import 'document_detail_screen.dart';
 import 'document_providers.dart';
-import 'document_detail_screen.dart'; // Import halaman detail
 
 class DocumentListScreen extends ConsumerWidget {
   const DocumentListScreen({super.key});
@@ -23,8 +25,12 @@ class DocumentListScreen extends ConsumerWidget {
       body: docsAsync.when(
         data: (docs) {
           if (docs.isEmpty) {
-            return const Center(
-              child: Text('Belum ada dokumen. Unggah materi pertama Anda!'),
+            return EmptyState(
+              icon: Icons.folder_open_outlined,
+              title: 'Pustaka Materi Kosong',
+              description: 'Unggah file PDF, DOCX, atau TXT sebagai bahan ajar. Sistem akan mengekstrak teks untuk dijadikan soal.',
+              actionLabel: 'Unggah File',
+              onAction: () => _pickFile(context, ref),
             );
           }
           return ListView.builder(
@@ -41,7 +47,6 @@ class DocumentListScreen extends ConsumerWidget {
                 subtitle: Text(
                   '${doc.fileType.toUpperCase()} • ${doc.filePath.split(RegExp(r"[/\\]")).last}',
                 ),
-                // Navigasi ke halaman detail saat di-tap
                 onTap: () {
                   Navigator.push(
                     context,
@@ -82,21 +87,24 @@ class DocumentListScreen extends ConsumerWidget {
         final ext = file.extension ?? 'unknown';
         final tempHash = const Uuid().v4();
 
+        await ref
+            .read(documentRepositoryProvider)
+            .addDocument(
+              title: file.name,
+              filePath: path,
+              fileHash: tempHash,
+              fileType: ext,
+            );
         if (context.mounted) {
-          await ref
-              .read(documentRepositoryProvider)
-              .addDocument(
-                title: file.name,
-                filePath: path,
-                fileHash: tempHash,
-                fileType: ext,
-              );
+          AppSnackbar.success(
+            context,
+            'Dokumen ${file.name} berhasil diunggah',
+          );
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Gagal memilih file: $e')));
+        AppSnackbar.error(context, 'Gagal memilih file: $e');
       }
     }
   }
@@ -104,19 +112,22 @@ class DocumentListScreen extends ConsumerWidget {
   void _confirmDelete(BuildContext context, WidgetRef ref, SourceDocument doc) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         title: const Text('Hapus Dokumen?'),
-        content: Text('Yakin ingin menghapus ${doc.title} dari pustaka?'),
+        content: Text('Yakin ingin menghapus ${doc.title}?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(ctx),
             child: const Text('Batal'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () async {
               await ref.read(documentRepositoryProvider).deleteDocument(doc.id);
-              if (context.mounted) Navigator.pop(context);
+              if (ctx.mounted) Navigator.pop(ctx);
+              if (context.mounted) {
+                AppSnackbar.success(context, 'Dokumen berhasil dihapus');
+              }
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.white)),
           ),
