@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'assessment_providers.dart';
+
+class AssessmentListScreen extends ConsumerWidget {
+  const AssessmentListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final assessmentsAsync = ref.watch(assessmentListProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Daftar Asesmen (Ujian)'),
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
+      ),
+      body: assessmentsAsync.when(
+        data: (assessments) {
+          if (assessments.isEmpty) {
+            return const Center(
+              child: Text(
+                'Belum ada asesmen.\nBuat dari menu Bank Soal di Kurikulum.',
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: assessments.length,
+            itemBuilder: (context, index) {
+              final a = assessments[index];
+              return ListTile(
+                leading: const Icon(
+                  Icons.assignment,
+                  color: Colors.teal,
+                  size: 32,
+                ),
+                title: Text(
+                  a.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text('Status: ${a.status}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () async {
+                    await ref
+                        .read(assessmentRepositoryProvider)
+                        .deleteAssessment(a.id);
+                  },
+                ),
+              );
+            },
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Error: $err')),
+      ),
+    );
+  }
+}

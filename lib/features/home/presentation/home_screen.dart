@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../students/presentation/student_list_screen.dart';
 import '../../curriculum/presentation/subject_list_screen.dart';
 import '../../documents/presentation/document_list_screen.dart';
+import '../../assessments/presentation/assessment_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   static const List<Widget> _screens = [
     StudentListScreen(),
     SubjectListScreen(),
-    DocumentListScreen(), // Tambahan Tab Materi
+    DocumentListScreen(),
+    AssessmentListScreen(), // Tab Baru
   ];
 
   @override
@@ -46,6 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.folder_copy_outlined),
             selectedIcon: Icon(Icons.folder_copy),
             label: 'Materi',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment),
+            label: 'Asesmen',
           ),
         ],
       ),

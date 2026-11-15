@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../infrastructure/database/app_database.dart';
 import '../../questions/presentation/question_generator.dart';
 import '../../questions/presentation/question_providers.dart';
+import '../../assessments/presentation/assessment_providers.dart';
 import 'knowledge_providers.dart';
 
 class KnowledgeListScreen extends ConsumerWidget {
@@ -98,7 +99,6 @@ class _KnowledgeTab extends ConsumerWidget {
                         onPressed: () async {
                           final generator = SimpleQuestionGenerator();
                           final result = generator.generateFromKnowledge(item);
-
                           await ref
                               .read(questionRepositoryProvider)
                               .saveQuestion(
@@ -107,7 +107,6 @@ class _KnowledgeTab extends ConsumerWidget {
                                 answerJson: result['answer']!,
                                 generatorId: 'generic-simple-v1',
                               );
-
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -154,88 +153,155 @@ class _QuestionBankTab extends ConsumerWidget {
             child: Text('Belum ada soal. Generate dari tab Pengetahuan.'),
           );
         }
-        return ListView.builder(
-          padding: const EdgeInsets.all(12),
-          itemCount: questions.length,
-          itemBuilder: (context, index) {
-            final q = questions[index];
-            final contentMap =
-                jsonDecode(q.contentJson) as Map<String, dynamic>;
-            final textBlock =
-                (contentMap['blocks'] as List).first as Map<String, dynamic>;
-            final options = (contentMap['options'] as List).cast<String>();
-            final answerMap = jsonDecode(q.answerJson) as Map<String, dynamic>;
-            final correctIndex = answerMap['correctIndex'] as int;
-
-            return Card(
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Soal #${index + 1}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  final titleController = TextEditingController(
+                    text: 'Ujian ${topic.name}',
+                  );
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Buat Paket Ujian'),
+                      content: TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          labelText: 'Judul Ujian',
                         ),
-                        Chip(
-                          label: Text(q.status.toUpperCase()),
-                          backgroundColor: Colors.orange.shade50,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Batal'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await ref
+                                .read(assessmentRepositoryProvider)
+                                .createAssessmentFromQuestions(
+                                  title: titleController.text.trim(),
+                                  questions: questions,
+                                );
+                            if (ctx.mounted) Navigator.pop(ctx);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Asesmen berhasil dibuat! Cek tab Asesmen di menu utama.',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text('Simpan'),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      textBlock['text'],
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ...options.asMap().entries.map((entry) {
-                      final isCorrect = entry.key == correctIndex;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              isCorrect
-                                  ? Icons.check_circle
-                                  : Icons.radio_button_unchecked,
-                              color: isCorrect ? Colors.green : Colors.grey,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                entry.value,
-                                style: TextStyle(
-                                  color: isCorrect
-                                      ? Colors.green
-                                      : Colors.black87,
-                                  fontWeight: isCorrect
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ],
+                  );
+                },
+                icon: const Icon(Icons.playlist_add_check),
+                label: Text('Jadikan Paket Ujian (${questions.length} Soal)'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 48),
                 ),
               ),
-            );
-          },
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                itemCount: questions.length,
+                itemBuilder: (context, index) {
+                  final q = questions[index];
+                  final contentMap =
+                      jsonDecode(q.contentJson) as Map<String, dynamic>;
+                  final textBlock =
+                      (contentMap['blocks'] as List).first
+                          as Map<String, dynamic>;
+                  final options = (contentMap['options'] as List)
+                      .cast<String>();
+                  final answerMap =
+                      jsonDecode(q.answerJson) as Map<String, dynamic>;
+                  final correctIndex = answerMap['correctIndex'] as int;
+
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Soal #${index + 1}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Chip(
+                                label: Text(q.status.toUpperCase()),
+                                backgroundColor: Colors.orange.shade50,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            textBlock['text'],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          ...options.asMap().entries.map((entry) {
+                            final isCorrect = entry.key == correctIndex;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    isCorrect
+                                        ? Icons.check_circle
+                                        : Icons.radio_button_unchecked,
+                                    color: isCorrect
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      entry.value,
+                                      style: TextStyle(
+                                        color: isCorrect
+                                            ? Colors.green
+                                            : Colors.black87,
+                                        fontWeight: isCorrect
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
