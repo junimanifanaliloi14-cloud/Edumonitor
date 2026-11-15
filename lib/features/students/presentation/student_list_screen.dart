@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../infrastructure/database/app_database.dart';
+import '../../progress/presentation/progress_providers.dart';
 import 'student_providers.dart';
 
 class StudentListScreen extends ConsumerWidget {
@@ -38,6 +39,57 @@ class StudentListScreen extends ConsumerWidget {
                 ),
                 title: Text(student.displayName),
                 subtitle: Text('ID: ${student.id.substring(0, 8)}...'),
+                // Buka riwayat nilai
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text('Riwayat Nilai: ${student.displayName}'),
+                      content: Consumer(
+                        builder: (context, ref, child) {
+                          final attemptsAsync = ref.watch(
+                            studentAttemptsProvider(student.id),
+                          );
+                          return attemptsAsync.when(
+                            data: (attempts) {
+                              if (attempts.isEmpty) {
+                                return const Text('Belum ada nilai.');
+                              }
+                              return SizedBox(
+                                width: 300,
+                                height: 200,
+                                child: ListView.builder(
+                                  itemCount: attempts.length,
+                                  itemBuilder: (ctx, i) {
+                                    final a = attempts[i];
+                                    return ListTile(
+                                      title: Text(
+                                        'Asesmen ID: ${a.assessmentSnapshotId.substring(0, 8)}...',
+                                      ),
+                                      subtitle: Text(
+                                        'Tanggal: ${a.completedAt ?? a.startedAt}',
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            loading: () => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            error: (err, _) => Text('Error: $err'),
+                          );
+                        },
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Tutup'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
                 trailing: PopupMenuButton<String>(
                   onSelected: (value) {
                     if (value == 'edit') {

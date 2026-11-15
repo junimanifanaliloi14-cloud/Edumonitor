@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../progress/presentation/record_result_screen.dart';
 import 'assessment_providers.dart';
 
 class AssessmentListScreen extends ConsumerWidget {
@@ -40,6 +41,15 @@ class AssessmentListScreen extends ConsumerWidget {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text('Status: ${a.status}'),
+                // Navigasi ke pencatatan nilai
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecordResultScreen(assessment: a),
+                    ),
+                  );
+                },
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () async {
