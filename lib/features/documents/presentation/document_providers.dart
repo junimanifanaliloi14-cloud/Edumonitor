@@ -14,3 +14,9 @@ final documentListProvider = StreamProvider<List<SourceDocument>>((ref) {
   final repo = ref.watch(documentRepositoryProvider);
   return repo.watchAllDocuments();
 });
+
+final documentChunksProvider =
+    StreamProvider.family<List<DocumentChunk>, String>((ref, documentId) {
+      final repo = ref.watch(documentRepositoryProvider);
+      return repo.watchChunksByDocument(documentId);
+    });

@@ -9,4 +9,8 @@ abstract interface class DocumentRepository {
     required String fileType,
   });
   Future<void> deleteDocument(String id);
+
+  // Fitur baru: Ekstraksi & Chunking
+  Future<void> processDocument(SourceDocument doc);
+  Stream<List<DocumentChunk>> watchChunksByDocument(String documentId);
 }

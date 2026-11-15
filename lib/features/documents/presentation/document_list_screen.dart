@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../infrastructure/database/app_database.dart';
 import 'document_providers.dart';
+import 'document_detail_screen.dart'; // Import halaman detail
 
 class DocumentListScreen extends ConsumerWidget {
   const DocumentListScreen({super.key});
@@ -40,6 +41,15 @@ class DocumentListScreen extends ConsumerWidget {
                 subtitle: Text(
                   '${doc.fileType.toUpperCase()} • ${doc.filePath.split(RegExp(r"[/\\]")).last}',
                 ),
+                // Navigasi ke halaman detail saat di-tap
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DocumentDetailScreen(document: doc),
+                    ),
+                  );
+                },
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _confirmDelete(context, ref, doc),
@@ -62,17 +72,14 @@ class DocumentListScreen extends ConsumerWidget {
 
   Future<void> _pickFile(BuildContext context, WidgetRef ref) async {
     try {
-      // Menggunakan API baru: FilePicker.pickFile() untuk satu file
       final PlatformFile? file = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: ['pdf', 'docx', 'txt'],
       );
 
       if (file != null && file.path != null) {
-        // Path bisa null di beberapa platform, jadi kita cek dulu
         final path = file.path!;
         final ext = file.extension ?? 'unknown';
-
         final tempHash = const Uuid().v4();
 
         if (context.mounted) {
