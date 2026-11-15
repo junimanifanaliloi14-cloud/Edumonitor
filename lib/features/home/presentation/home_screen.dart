@@ -17,52 +17,92 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static const List<Widget> _screens = [
-    DashboardScreen(), // Tab 1: Dashboard (Baru)
-    StudentListScreen(), // Tab 2
-    SubjectListScreen(), // Tab 3
-    DocumentListScreen(), // Tab 4
-    AssessmentListScreen(), // Tab 5
+    DashboardScreen(),
+    StudentListScreen(),
+    SubjectListScreen(),
+    DocumentListScreen(),
+    AssessmentListScreen(),
+  ];
+
+  static const List<NavigationDestination> _destinations = [
+    NavigationDestination(
+      icon: Icon(Icons.dashboard_outlined),
+      selectedIcon: Icon(Icons.dashboard),
+      label: 'Beranda',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.people_outline),
+      selectedIcon: Icon(Icons.people),
+      label: 'Siswa',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.menu_book_outlined),
+      selectedIcon: Icon(Icons.menu_book),
+      label: 'Kurikulum',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.folder_copy_outlined),
+      selectedIcon: Icon(Icons.folder_copy),
+      label: 'Materi',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.assignment_outlined),
+      selectedIcon: Icon(Icons.assignment),
+      label: 'Asesmen',
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
-            label: 'Beranda',
+    // LayoutBuilder mendeteksi lebar layar
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Jika lebar > 800 (PC/Desktop), gunakan NavigationRail (menu samping)
+        final isDesktop = constraints.maxWidth >= 800;
+
+        if (isDesktop) {
+          return Scaffold(
+            body: Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: (int index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  labelType: NavigationRailLabelType.all,
+                  backgroundColor: Colors.grey.shade100,
+                  destinations: _destinations.map((dest) {
+                    return NavigationRailDestination(
+                      icon: dest.icon,
+                      selectedIcon: dest.selectedIcon,
+                      label: Text(dest.label),
+                    );
+                  }).toList(),
+                ),
+                const VerticalDivider(thickness: 1, width: 1),
+                // Konten utama
+                Expanded(child: _screens[_selectedIndex]),
+              ],
+            ),
+          );
+        }
+
+        // Jika layar kecil (Tablet/HP), gunakan Bottom Navigation Bar
+        return Scaffold(
+          body: _screens[_selectedIndex],
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (int index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            destinations: _destinations,
           ),
-          NavigationDestination(
-            icon: Icon(Icons.people_outline),
-            selectedIcon: Icon(Icons.people),
-            label: 'Siswa',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.menu_book_outlined),
-            selectedIcon: Icon(Icons.menu_book),
-            label: 'Kurikulum',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.folder_copy_outlined),
-            selectedIcon: Icon(Icons.folder_copy),
-            label: 'Materi',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.assignment_outlined),
-            selectedIcon: Icon(Icons.assignment),
-            label: 'Asesmen',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
