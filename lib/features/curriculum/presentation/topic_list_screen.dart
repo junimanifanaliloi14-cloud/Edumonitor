@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../infrastructure/database/app_database.dart';
+import '../../knowledge/presentation/knowledge_list_screen.dart'; // Import
 import 'topic_providers.dart';
 
 class TopicListScreen extends ConsumerWidget {
@@ -30,6 +31,16 @@ class TopicListScreen extends ConsumerWidget {
               return ListTile(
                 leading: const Icon(Icons.topic, color: Colors.teal),
                 title: Text(topic.name),
+                // TAMBAHKAN ONTAP INI:
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => KnowledgeListScreen(topic: topic),
+                    ),
+                  );
+                },
+                // -------------------
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _confirmDelete(context, ref, topic),
