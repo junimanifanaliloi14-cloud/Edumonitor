@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../dashboard/presentation/dashboard_screen.dart';
 import '../../students/presentation/student_list_screen.dart';
 import '../../curriculum/presentation/subject_list_screen.dart';
 import '../../documents/presentation/document_list_screen.dart';
@@ -16,10 +17,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static const List<Widget> _screens = [
-    StudentListScreen(),
-    SubjectListScreen(),
-    DocumentListScreen(),
-    AssessmentListScreen(), // Tab Baru
+    DashboardScreen(), // Tab 1: Dashboard (Baru)
+    StudentListScreen(), // Tab 2
+    SubjectListScreen(), // Tab 3
+    DocumentListScreen(), // Tab 4
+    AssessmentListScreen(), // Tab 5
   ];
 
   @override
@@ -34,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Beranda',
+          ),
           NavigationDestination(
             icon: Icon(Icons.people_outline),
             selectedIcon: Icon(Icons.people),
