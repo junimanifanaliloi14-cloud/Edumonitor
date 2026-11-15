@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../infrastructure/database/app_database.dart';
+import '../../knowledge/presentation/knowledge_providers.dart';
+import '../../curriculum/presentation/topic_providers.dart';
 import 'document_providers.dart';
 
 class DocumentDetailScreen extends ConsumerStatefulWidget {
@@ -33,6 +35,71 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
       }
     } finally {
       if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  void _markAsKnowledge(DocumentChunk chunk) async {
+    // Tampilkan dialog dan tunggu hasilnya (nama topik)
+    final String? topicName = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Jadikan Pengetahuan'),
+        content: Consumer(
+          builder: (context, ref, child) {
+            final topicsAsync = ref.watch(allTopicsProvider);
+            return topicsAsync.when(
+              data: (topics) {
+                if (topics.isEmpty) {
+                  return const Text(
+                    'Belum ada Topik. Buat Topik di menu Kurikulum terlebih dahulu.',
+                  );
+                }
+                return SizedBox(
+                  width: 300,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: topics.length,
+                    itemBuilder: (context, index) {
+                      final topic = topics[index];
+                      return ListTile(
+                        title: Text(topic.name),
+                        onTap: () async {
+                          await ref
+                              .read(knowledgeRepositoryProvider)
+                              .addKnowledgeFromChunk(
+                                topicId: topic.id,
+                                chunkId: chunk.id,
+                                content: chunk.textContent,
+                              );
+                          // Kembalikan nama topik ke pemanggil dialog
+                          if (context.mounted) {
+                            Navigator.pop(context, topic.name);
+                          }
+                        },
+                      );
+                    },
+                  ),
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, s) => Text('Error: $e'),
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+        ],
+      ),
+    );
+
+    // Jika dialog mengembalikan nama topik, tampilkan SnackBar di sini
+    if (topicName != null && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Disimpan ke Topik: $topicName')));
     }
   }
 
@@ -83,12 +150,22 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Paragraf ${chunk.sequence + 1}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Paragraf ${chunk.sequence + 1}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () => _markAsKnowledge(chunk),
+                            icon: const Icon(Icons.add_task, size: 18),
+                            label: const Text('Tandai Pengetahuan'),
+                          ),
+                        ],
                       ),
                       const Divider(),
                       Text(

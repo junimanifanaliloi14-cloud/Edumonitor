@@ -18,6 +18,14 @@ class TopicRepositoryImpl implements TopicRepository {
   }
 
   @override
+  Stream<List<Topic>> watchAllTopics() {
+    return (_db.select(_db.topics)
+          ..where((t) => t.deletedAt.isNull())
+          ..orderBy([(t) => OrderingTerm(expression: t.name)]))
+        .watch();
+  }
+
+  @override
   Future<void> addTopic(String chapterId, String name) async {
     await _db
         .into(_db.topics)

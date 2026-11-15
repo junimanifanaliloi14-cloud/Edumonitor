@@ -17,3 +17,9 @@ final topicListProvider = StreamProvider.family<List<Topic>, String>((
   final repo = ref.watch(topicRepositoryProvider);
   return repo.watchTopicsByChapter(chapterId);
 });
+
+// Provider baru untuk semua topik
+final allTopicsProvider = StreamProvider<List<Topic>>((ref) {
+  final repo = ref.watch(topicRepositoryProvider);
+  return repo.watchAllTopics();
+});
