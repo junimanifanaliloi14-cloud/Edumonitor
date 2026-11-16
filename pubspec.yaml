@@ -45,6 +45,9 @@ dependencies:
   archive: ^4.7.1
   syncfusion_flutter_pdf: ^35.1.46
   xml: ^7.1.0
+  network_info_plus: ^8.2.2
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^7.5.0
 
 dev_dependencies:
   flutter_test:

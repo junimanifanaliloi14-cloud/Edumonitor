@@ -11653,6 +11653,1045 @@ class AuditLogsCompanion extends UpdateCompanion<AuditLog> {
   }
 }
 
+class $DevicesTable extends Devices with TableInfo<$DevicesTable, Device> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DevicesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastSeenAtMeta = const VerificationMeta(
+    'lastSeenAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSeenAt = GeneratedColumn<DateTime>(
+    'last_seen_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isTrustedMeta = const VerificationMeta(
+    'isTrusted',
+  );
+  @override
+  late final GeneratedColumn<bool> isTrusted = GeneratedColumn<bool>(
+    'is_trusted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_trusted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _lastSyncAtMeta = const VerificationMeta(
+    'lastSyncAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAt = GeneratedColumn<DateTime>(
+    'last_sync_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    displayName,
+    lastSeenAt,
+    isTrusted,
+    lastSyncAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'devices';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Device> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayNameMeta);
+    }
+    if (data.containsKey('last_seen_at')) {
+      context.handle(
+        _lastSeenAtMeta,
+        lastSeenAt.isAcceptableOrUnknown(
+          data['last_seen_at']!,
+          _lastSeenAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_trusted')) {
+      context.handle(
+        _isTrustedMeta,
+        isTrusted.isAcceptableOrUnknown(data['is_trusted']!, _isTrustedMeta),
+      );
+    }
+    if (data.containsKey('last_sync_at')) {
+      context.handle(
+        _lastSyncAtMeta,
+        lastSyncAt.isAcceptableOrUnknown(
+          data['last_sync_at']!,
+          _lastSyncAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Device map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Device(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      )!,
+      lastSeenAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_seen_at'],
+      )!,
+      isTrusted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_trusted'],
+      )!,
+      lastSyncAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_at'],
+      ),
+    );
+  }
+
+  @override
+  $DevicesTable createAlias(String alias) {
+    return $DevicesTable(attachedDatabase, alias);
+  }
+}
+
+class Device extends DataClass implements Insertable<Device> {
+  final String id;
+  final String displayName;
+  final DateTime lastSeenAt;
+  final bool isTrusted;
+  final DateTime? lastSyncAt;
+  const Device({
+    required this.id,
+    required this.displayName,
+    required this.lastSeenAt,
+    required this.isTrusted,
+    this.lastSyncAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['display_name'] = Variable<String>(displayName);
+    map['last_seen_at'] = Variable<DateTime>(lastSeenAt);
+    map['is_trusted'] = Variable<bool>(isTrusted);
+    if (!nullToAbsent || lastSyncAt != null) {
+      map['last_sync_at'] = Variable<DateTime>(lastSyncAt);
+    }
+    return map;
+  }
+
+  DevicesCompanion toCompanion(bool nullToAbsent) {
+    return DevicesCompanion(
+      id: Value(id),
+      displayName: Value(displayName),
+      lastSeenAt: Value(lastSeenAt),
+      isTrusted: Value(isTrusted),
+      lastSyncAt: lastSyncAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAt),
+    );
+  }
+
+  factory Device.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Device(
+      id: serializer.fromJson<String>(json['id']),
+      displayName: serializer.fromJson<String>(json['displayName']),
+      lastSeenAt: serializer.fromJson<DateTime>(json['lastSeenAt']),
+      isTrusted: serializer.fromJson<bool>(json['isTrusted']),
+      lastSyncAt: serializer.fromJson<DateTime?>(json['lastSyncAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'displayName': serializer.toJson<String>(displayName),
+      'lastSeenAt': serializer.toJson<DateTime>(lastSeenAt),
+      'isTrusted': serializer.toJson<bool>(isTrusted),
+      'lastSyncAt': serializer.toJson<DateTime?>(lastSyncAt),
+    };
+  }
+
+  Device copyWith({
+    String? id,
+    String? displayName,
+    DateTime? lastSeenAt,
+    bool? isTrusted,
+    Value<DateTime?> lastSyncAt = const Value.absent(),
+  }) => Device(
+    id: id ?? this.id,
+    displayName: displayName ?? this.displayName,
+    lastSeenAt: lastSeenAt ?? this.lastSeenAt,
+    isTrusted: isTrusted ?? this.isTrusted,
+    lastSyncAt: lastSyncAt.present ? lastSyncAt.value : this.lastSyncAt,
+  );
+  Device copyWithCompanion(DevicesCompanion data) {
+    return Device(
+      id: data.id.present ? data.id.value : this.id,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      lastSeenAt: data.lastSeenAt.present
+          ? data.lastSeenAt.value
+          : this.lastSeenAt,
+      isTrusted: data.isTrusted.present ? data.isTrusted.value : this.isTrusted,
+      lastSyncAt: data.lastSyncAt.present
+          ? data.lastSyncAt.value
+          : this.lastSyncAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Device(')
+          ..write('id: $id, ')
+          ..write('displayName: $displayName, ')
+          ..write('lastSeenAt: $lastSeenAt, ')
+          ..write('isTrusted: $isTrusted, ')
+          ..write('lastSyncAt: $lastSyncAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, displayName, lastSeenAt, isTrusted, lastSyncAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Device &&
+          other.id == this.id &&
+          other.displayName == this.displayName &&
+          other.lastSeenAt == this.lastSeenAt &&
+          other.isTrusted == this.isTrusted &&
+          other.lastSyncAt == this.lastSyncAt);
+}
+
+class DevicesCompanion extends UpdateCompanion<Device> {
+  final Value<String> id;
+  final Value<String> displayName;
+  final Value<DateTime> lastSeenAt;
+  final Value<bool> isTrusted;
+  final Value<DateTime?> lastSyncAt;
+  final Value<int> rowid;
+  const DevicesCompanion({
+    this.id = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.lastSeenAt = const Value.absent(),
+    this.isTrusted = const Value.absent(),
+    this.lastSyncAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DevicesCompanion.insert({
+    required String id,
+    required String displayName,
+    this.lastSeenAt = const Value.absent(),
+    this.isTrusted = const Value.absent(),
+    this.lastSyncAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       displayName = Value(displayName);
+  static Insertable<Device> custom({
+    Expression<String>? id,
+    Expression<String>? displayName,
+    Expression<DateTime>? lastSeenAt,
+    Expression<bool>? isTrusted,
+    Expression<DateTime>? lastSyncAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (displayName != null) 'display_name': displayName,
+      if (lastSeenAt != null) 'last_seen_at': lastSeenAt,
+      if (isTrusted != null) 'is_trusted': isTrusted,
+      if (lastSyncAt != null) 'last_sync_at': lastSyncAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DevicesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? displayName,
+    Value<DateTime>? lastSeenAt,
+    Value<bool>? isTrusted,
+    Value<DateTime?>? lastSyncAt,
+    Value<int>? rowid,
+  }) {
+    return DevicesCompanion(
+      id: id ?? this.id,
+      displayName: displayName ?? this.displayName,
+      lastSeenAt: lastSeenAt ?? this.lastSeenAt,
+      isTrusted: isTrusted ?? this.isTrusted,
+      lastSyncAt: lastSyncAt ?? this.lastSyncAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (lastSeenAt.present) {
+      map['last_seen_at'] = Variable<DateTime>(lastSeenAt.value);
+    }
+    if (isTrusted.present) {
+      map['is_trusted'] = Variable<bool>(isTrusted.value);
+    }
+    if (lastSyncAt.present) {
+      map['last_sync_at'] = Variable<DateTime>(lastSyncAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DevicesCompanion(')
+          ..write('id: $id, ')
+          ..write('displayName: $displayName, ')
+          ..write('lastSeenAt: $lastSeenAt, ')
+          ..write('isTrusted: $isTrusted, ')
+          ..write('lastSyncAt: $lastSyncAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncPeersTable extends SyncPeers
+    with TableInfo<$SyncPeersTable, SyncPeer> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncPeersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _peerDeviceIdMeta = const VerificationMeta(
+    'peerDeviceId',
+  );
+  @override
+  late final GeneratedColumn<String> peerDeviceId = GeneratedColumn<String>(
+    'peer_device_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES devices (id)',
+    ),
+  );
+  static const VerificationMeta _pairedAtMeta = const VerificationMeta(
+    'pairedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> pairedAt = GeneratedColumn<DateTime>(
+    'paired_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _lastSyncAtMeta = const VerificationMeta(
+    'lastSyncAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAt = GeneratedColumn<DateTime>(
+    'last_sync_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    peerDeviceId,
+    pairedAt,
+    lastSyncAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_peers';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SyncPeer> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('peer_device_id')) {
+      context.handle(
+        _peerDeviceIdMeta,
+        peerDeviceId.isAcceptableOrUnknown(
+          data['peer_device_id']!,
+          _peerDeviceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_peerDeviceIdMeta);
+    }
+    if (data.containsKey('paired_at')) {
+      context.handle(
+        _pairedAtMeta,
+        pairedAt.isAcceptableOrUnknown(data['paired_at']!, _pairedAtMeta),
+      );
+    }
+    if (data.containsKey('last_sync_at')) {
+      context.handle(
+        _lastSyncAtMeta,
+        lastSyncAt.isAcceptableOrUnknown(
+          data['last_sync_at']!,
+          _lastSyncAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SyncPeer map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncPeer(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      peerDeviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}peer_device_id'],
+      )!,
+      pairedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}paired_at'],
+      )!,
+      lastSyncAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_at'],
+      ),
+    );
+  }
+
+  @override
+  $SyncPeersTable createAlias(String alias) {
+    return $SyncPeersTable(attachedDatabase, alias);
+  }
+}
+
+class SyncPeer extends DataClass implements Insertable<SyncPeer> {
+  final String id;
+  final String peerDeviceId;
+  final DateTime pairedAt;
+  final DateTime? lastSyncAt;
+  const SyncPeer({
+    required this.id,
+    required this.peerDeviceId,
+    required this.pairedAt,
+    this.lastSyncAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['peer_device_id'] = Variable<String>(peerDeviceId);
+    map['paired_at'] = Variable<DateTime>(pairedAt);
+    if (!nullToAbsent || lastSyncAt != null) {
+      map['last_sync_at'] = Variable<DateTime>(lastSyncAt);
+    }
+    return map;
+  }
+
+  SyncPeersCompanion toCompanion(bool nullToAbsent) {
+    return SyncPeersCompanion(
+      id: Value(id),
+      peerDeviceId: Value(peerDeviceId),
+      pairedAt: Value(pairedAt),
+      lastSyncAt: lastSyncAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAt),
+    );
+  }
+
+  factory SyncPeer.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SyncPeer(
+      id: serializer.fromJson<String>(json['id']),
+      peerDeviceId: serializer.fromJson<String>(json['peerDeviceId']),
+      pairedAt: serializer.fromJson<DateTime>(json['pairedAt']),
+      lastSyncAt: serializer.fromJson<DateTime?>(json['lastSyncAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'peerDeviceId': serializer.toJson<String>(peerDeviceId),
+      'pairedAt': serializer.toJson<DateTime>(pairedAt),
+      'lastSyncAt': serializer.toJson<DateTime?>(lastSyncAt),
+    };
+  }
+
+  SyncPeer copyWith({
+    String? id,
+    String? peerDeviceId,
+    DateTime? pairedAt,
+    Value<DateTime?> lastSyncAt = const Value.absent(),
+  }) => SyncPeer(
+    id: id ?? this.id,
+    peerDeviceId: peerDeviceId ?? this.peerDeviceId,
+    pairedAt: pairedAt ?? this.pairedAt,
+    lastSyncAt: lastSyncAt.present ? lastSyncAt.value : this.lastSyncAt,
+  );
+  SyncPeer copyWithCompanion(SyncPeersCompanion data) {
+    return SyncPeer(
+      id: data.id.present ? data.id.value : this.id,
+      peerDeviceId: data.peerDeviceId.present
+          ? data.peerDeviceId.value
+          : this.peerDeviceId,
+      pairedAt: data.pairedAt.present ? data.pairedAt.value : this.pairedAt,
+      lastSyncAt: data.lastSyncAt.present
+          ? data.lastSyncAt.value
+          : this.lastSyncAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncPeer(')
+          ..write('id: $id, ')
+          ..write('peerDeviceId: $peerDeviceId, ')
+          ..write('pairedAt: $pairedAt, ')
+          ..write('lastSyncAt: $lastSyncAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, peerDeviceId, pairedAt, lastSyncAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SyncPeer &&
+          other.id == this.id &&
+          other.peerDeviceId == this.peerDeviceId &&
+          other.pairedAt == this.pairedAt &&
+          other.lastSyncAt == this.lastSyncAt);
+}
+
+class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
+  final Value<String> id;
+  final Value<String> peerDeviceId;
+  final Value<DateTime> pairedAt;
+  final Value<DateTime?> lastSyncAt;
+  final Value<int> rowid;
+  const SyncPeersCompanion({
+    this.id = const Value.absent(),
+    this.peerDeviceId = const Value.absent(),
+    this.pairedAt = const Value.absent(),
+    this.lastSyncAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncPeersCompanion.insert({
+    required String id,
+    required String peerDeviceId,
+    this.pairedAt = const Value.absent(),
+    this.lastSyncAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       peerDeviceId = Value(peerDeviceId);
+  static Insertable<SyncPeer> custom({
+    Expression<String>? id,
+    Expression<String>? peerDeviceId,
+    Expression<DateTime>? pairedAt,
+    Expression<DateTime>? lastSyncAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (peerDeviceId != null) 'peer_device_id': peerDeviceId,
+      if (pairedAt != null) 'paired_at': pairedAt,
+      if (lastSyncAt != null) 'last_sync_at': lastSyncAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncPeersCompanion copyWith({
+    Value<String>? id,
+    Value<String>? peerDeviceId,
+    Value<DateTime>? pairedAt,
+    Value<DateTime?>? lastSyncAt,
+    Value<int>? rowid,
+  }) {
+    return SyncPeersCompanion(
+      id: id ?? this.id,
+      peerDeviceId: peerDeviceId ?? this.peerDeviceId,
+      pairedAt: pairedAt ?? this.pairedAt,
+      lastSyncAt: lastSyncAt ?? this.lastSyncAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (peerDeviceId.present) {
+      map['peer_device_id'] = Variable<String>(peerDeviceId.value);
+    }
+    if (pairedAt.present) {
+      map['paired_at'] = Variable<DateTime>(pairedAt.value);
+    }
+    if (lastSyncAt.present) {
+      map['last_sync_at'] = Variable<DateTime>(lastSyncAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncPeersCompanion(')
+          ..write('id: $id, ')
+          ..write('peerDeviceId: $peerDeviceId, ')
+          ..write('pairedAt: $pairedAt, ')
+          ..write('lastSyncAt: $lastSyncAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncCursorsTable extends SyncCursors
+    with TableInfo<$SyncCursorsTable, SyncCursor> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncCursorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _peerDeviceIdMeta = const VerificationMeta(
+    'peerDeviceId',
+  );
+  @override
+  late final GeneratedColumn<String> peerDeviceId = GeneratedColumn<String>(
+    'peer_device_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES devices (id)',
+    ),
+  );
+  static const VerificationMeta _lastReceivedEventIdMeta =
+      const VerificationMeta('lastReceivedEventId');
+  @override
+  late final GeneratedColumn<String> lastReceivedEventId =
+      GeneratedColumn<String>(
+        'last_received_event_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    peerDeviceId,
+    lastReceivedEventId,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_cursors';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SyncCursor> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('peer_device_id')) {
+      context.handle(
+        _peerDeviceIdMeta,
+        peerDeviceId.isAcceptableOrUnknown(
+          data['peer_device_id']!,
+          _peerDeviceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_peerDeviceIdMeta);
+    }
+    if (data.containsKey('last_received_event_id')) {
+      context.handle(
+        _lastReceivedEventIdMeta,
+        lastReceivedEventId.isAcceptableOrUnknown(
+          data['last_received_event_id']!,
+          _lastReceivedEventIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SyncCursor map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncCursor(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      peerDeviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}peer_device_id'],
+      )!,
+      lastReceivedEventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_received_event_id'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SyncCursorsTable createAlias(String alias) {
+    return $SyncCursorsTable(attachedDatabase, alias);
+  }
+}
+
+class SyncCursor extends DataClass implements Insertable<SyncCursor> {
+  final String id;
+  final String peerDeviceId;
+  final String? lastReceivedEventId;
+  final DateTime updatedAt;
+  const SyncCursor({
+    required this.id,
+    required this.peerDeviceId,
+    this.lastReceivedEventId,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['peer_device_id'] = Variable<String>(peerDeviceId);
+    if (!nullToAbsent || lastReceivedEventId != null) {
+      map['last_received_event_id'] = Variable<String>(lastReceivedEventId);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SyncCursorsCompanion toCompanion(bool nullToAbsent) {
+    return SyncCursorsCompanion(
+      id: Value(id),
+      peerDeviceId: Value(peerDeviceId),
+      lastReceivedEventId: lastReceivedEventId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastReceivedEventId),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SyncCursor.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SyncCursor(
+      id: serializer.fromJson<String>(json['id']),
+      peerDeviceId: serializer.fromJson<String>(json['peerDeviceId']),
+      lastReceivedEventId: serializer.fromJson<String?>(
+        json['lastReceivedEventId'],
+      ),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'peerDeviceId': serializer.toJson<String>(peerDeviceId),
+      'lastReceivedEventId': serializer.toJson<String?>(lastReceivedEventId),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SyncCursor copyWith({
+    String? id,
+    String? peerDeviceId,
+    Value<String?> lastReceivedEventId = const Value.absent(),
+    DateTime? updatedAt,
+  }) => SyncCursor(
+    id: id ?? this.id,
+    peerDeviceId: peerDeviceId ?? this.peerDeviceId,
+    lastReceivedEventId: lastReceivedEventId.present
+        ? lastReceivedEventId.value
+        : this.lastReceivedEventId,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SyncCursor copyWithCompanion(SyncCursorsCompanion data) {
+    return SyncCursor(
+      id: data.id.present ? data.id.value : this.id,
+      peerDeviceId: data.peerDeviceId.present
+          ? data.peerDeviceId.value
+          : this.peerDeviceId,
+      lastReceivedEventId: data.lastReceivedEventId.present
+          ? data.lastReceivedEventId.value
+          : this.lastReceivedEventId,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncCursor(')
+          ..write('id: $id, ')
+          ..write('peerDeviceId: $peerDeviceId, ')
+          ..write('lastReceivedEventId: $lastReceivedEventId, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, peerDeviceId, lastReceivedEventId, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SyncCursor &&
+          other.id == this.id &&
+          other.peerDeviceId == this.peerDeviceId &&
+          other.lastReceivedEventId == this.lastReceivedEventId &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SyncCursorsCompanion extends UpdateCompanion<SyncCursor> {
+  final Value<String> id;
+  final Value<String> peerDeviceId;
+  final Value<String?> lastReceivedEventId;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const SyncCursorsCompanion({
+    this.id = const Value.absent(),
+    this.peerDeviceId = const Value.absent(),
+    this.lastReceivedEventId = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncCursorsCompanion.insert({
+    required String id,
+    required String peerDeviceId,
+    this.lastReceivedEventId = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       peerDeviceId = Value(peerDeviceId);
+  static Insertable<SyncCursor> custom({
+    Expression<String>? id,
+    Expression<String>? peerDeviceId,
+    Expression<String>? lastReceivedEventId,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (peerDeviceId != null) 'peer_device_id': peerDeviceId,
+      if (lastReceivedEventId != null)
+        'last_received_event_id': lastReceivedEventId,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncCursorsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? peerDeviceId,
+    Value<String?>? lastReceivedEventId,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SyncCursorsCompanion(
+      id: id ?? this.id,
+      peerDeviceId: peerDeviceId ?? this.peerDeviceId,
+      lastReceivedEventId: lastReceivedEventId ?? this.lastReceivedEventId,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (peerDeviceId.present) {
+      map['peer_device_id'] = Variable<String>(peerDeviceId.value);
+    }
+    if (lastReceivedEventId.present) {
+      map['last_received_event_id'] = Variable<String>(
+        lastReceivedEventId.value,
+      );
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncCursorsCompanion(')
+          ..write('id: $id, ')
+          ..write('peerDeviceId: $peerDeviceId, ')
+          ..write('lastReceivedEventId: $lastReceivedEventId, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11691,6 +12730,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $AuditLogsTable auditLogs = $AuditLogsTable(this);
+  late final $DevicesTable devices = $DevicesTable(this);
+  late final $SyncPeersTable syncPeers = $SyncPeersTable(this);
+  late final $SyncCursorsTable syncCursors = $SyncCursorsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11717,6 +12759,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncEvents,
     conflictRecords,
     auditLogs,
+    devices,
+    syncPeers,
+    syncCursors,
   ];
 }
 
@@ -21712,6 +22757,998 @@ typedef $$AuditLogsTableProcessedTableManager =
       AuditLog,
       PrefetchHooks Function()
     >;
+typedef $$DevicesTableCreateCompanionBuilder = DevicesCompanion Function({
+  required String id,
+  required String displayName,
+  Value<DateTime> lastSeenAt,
+  Value<bool> isTrusted,
+  Value<DateTime?> lastSyncAt,
+  Value<int> rowid,
+});
+typedef $$DevicesTableUpdateCompanionBuilder = DevicesCompanion Function({
+  Value<String> id,
+  Value<String> displayName,
+  Value<DateTime> lastSeenAt,
+  Value<bool> isTrusted,
+  Value<DateTime?> lastSyncAt,
+  Value<int> rowid,
+});
+
+final class $$DevicesTableReferences
+    extends BaseReferences<_$AppDatabase, $DevicesTable, Device> {
+  $$DevicesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SyncPeersTable, List<SyncPeer>>
+  _syncPeersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.syncPeers,
+    aliasName: 'devices__id__sync_peers__peer_device_id',
+  );
+
+  $$SyncPeersTableProcessedTableManager get syncPeersRefs {
+    final manager = $$SyncPeersTableTableManager(
+      $_db,
+      $_db.syncPeers,
+    ).filter((f) => f.peerDeviceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_syncPeersRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SyncCursorsTable, List<SyncCursor>>
+  _syncCursorsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.syncCursors,
+    aliasName: 'devices__id__sync_cursors__peer_device_id',
+  );
+
+  $$SyncCursorsTableProcessedTableManager get syncCursorsRefs {
+    final manager = $$SyncCursorsTableTableManager(
+      $_db,
+      $_db.syncCursors,
+    ).filter((f) => f.peerDeviceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_syncCursorsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$DevicesTableFilterComposer
+    extends Composer<_$AppDatabase, $DevicesTable> {
+  $$DevicesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSeenAt => $composableBuilder(
+    column: $table.lastSeenAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isTrusted => $composableBuilder(
+    column: $table.isTrusted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> syncPeersRefs(
+    Expression<bool> Function($$SyncPeersTableFilterComposer f) f,
+  ) {
+    final $$SyncPeersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.syncPeers,
+      getReferencedColumn: (t) => t.peerDeviceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SyncPeersTableFilterComposer(
+            $db: $db,
+            $table: $db.syncPeers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> syncCursorsRefs(
+    Expression<bool> Function($$SyncCursorsTableFilterComposer f) f,
+  ) {
+    final $$SyncCursorsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.syncCursors,
+      getReferencedColumn: (t) => t.peerDeviceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SyncCursorsTableFilterComposer(
+            $db: $db,
+            $table: $db.syncCursors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DevicesTableOrderingComposer
+    extends Composer<_$AppDatabase, $DevicesTable> {
+  $$DevicesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSeenAt => $composableBuilder(
+    column: $table.lastSeenAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isTrusted => $composableBuilder(
+    column: $table.isTrusted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DevicesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DevicesTable> {
+  $$DevicesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastSeenAt => $composableBuilder(
+    column: $table.lastSeenAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isTrusted =>
+      $composableBuilder(column: $table.isTrusted, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => column,
+  );
+
+  Expression<T> syncPeersRefs<T extends Object>(
+    Expression<T> Function($$SyncPeersTableAnnotationComposer a) f,
+  ) {
+    final $$SyncPeersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.syncPeers,
+      getReferencedColumn: (t) => t.peerDeviceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SyncPeersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.syncPeers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> syncCursorsRefs<T extends Object>(
+    Expression<T> Function($$SyncCursorsTableAnnotationComposer a) f,
+  ) {
+    final $$SyncCursorsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.syncCursors,
+      getReferencedColumn: (t) => t.peerDeviceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SyncCursorsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.syncCursors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DevicesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DevicesTable,
+          Device,
+          $$DevicesTableFilterComposer,
+          $$DevicesTableOrderingComposer,
+          $$DevicesTableAnnotationComposer,
+          $$DevicesTableCreateCompanionBuilder,
+          $$DevicesTableUpdateCompanionBuilder,
+          (Device, $$DevicesTableReferences),
+          Device,
+          PrefetchHooks Function({bool syncPeersRefs, bool syncCursorsRefs})
+        > {
+  $$DevicesTableTableManager(_$AppDatabase db, $DevicesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DevicesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DevicesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DevicesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                Value<DateTime> lastSeenAt = const Value.absent(),
+                Value<bool> isTrusted = const Value.absent(),
+                Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DevicesCompanion(
+                id: id,
+                displayName: displayName,
+                lastSeenAt: lastSeenAt,
+                isTrusted: isTrusted,
+                lastSyncAt: lastSyncAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String displayName,
+                Value<DateTime> lastSeenAt = const Value.absent(),
+                Value<bool> isTrusted = const Value.absent(),
+                Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DevicesCompanion.insert(
+                id: id,
+                displayName: displayName,
+                lastSeenAt: lastSeenAt,
+                isTrusted: isTrusted,
+                lastSyncAt: lastSyncAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DevicesTable, Device>(table),
+                  $$DevicesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({syncPeersRefs = false, syncCursorsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (syncPeersRefs) db.syncPeers,
+                    if (syncCursorsRefs) db.syncCursors,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (syncPeersRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Device,
+                          $DevicesTable,
+                          SyncPeer,
+                          $SyncPeersTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$DevicesTableReferences
+                              ._syncPeersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$DevicesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).syncPeersRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'peer_device_id',
+                          typedResults: items,
+                        ),
+                      if (syncCursorsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Device,
+                          $DevicesTable,
+                          SyncCursor,
+                          $SyncCursorsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$DevicesTableReferences
+                              ._syncCursorsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$DevicesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).syncCursorsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'peer_device_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$DevicesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DevicesTable,
+      Device,
+      $$DevicesTableFilterComposer,
+      $$DevicesTableOrderingComposer,
+      $$DevicesTableAnnotationComposer,
+      $$DevicesTableCreateCompanionBuilder,
+      $$DevicesTableUpdateCompanionBuilder,
+      (Device, $$DevicesTableReferences),
+      Device,
+      PrefetchHooks Function({bool syncPeersRefs, bool syncCursorsRefs})
+    >;
+typedef $$SyncPeersTableCreateCompanionBuilder = SyncPeersCompanion Function({
+  required String id,
+  required String peerDeviceId,
+  Value<DateTime> pairedAt,
+  Value<DateTime?> lastSyncAt,
+  Value<int> rowid,
+});
+typedef $$SyncPeersTableUpdateCompanionBuilder = SyncPeersCompanion Function({
+  Value<String> id,
+  Value<String> peerDeviceId,
+  Value<DateTime> pairedAt,
+  Value<DateTime?> lastSyncAt,
+  Value<int> rowid,
+});
+
+final class $$SyncPeersTableReferences
+    extends BaseReferences<_$AppDatabase, $SyncPeersTable, SyncPeer> {
+  $$SyncPeersTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $DevicesTable _peerDeviceIdTable(_$AppDatabase db) =>
+      db.devices.createAlias('sync_peers__peer_device_id__devices__id');
+
+  $$DevicesTableProcessedTableManager get peerDeviceId {
+    final $_column = $_itemColumn<String>('peer_device_id')!;
+
+    final manager = $$DevicesTableTableManager(
+      $_db,
+      $_db.devices,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_peerDeviceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SyncPeersTableFilterComposer
+    extends Composer<_$AppDatabase, $SyncPeersTable> {
+  $$SyncPeersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get pairedAt => $composableBuilder(
+    column: $table.pairedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$DevicesTableFilterComposer get peerDeviceId {
+    final $$DevicesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.peerDeviceId,
+      referencedTable: $db.devices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DevicesTableFilterComposer(
+            $db: $db,
+            $table: $db.devices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SyncPeersTableOrderingComposer
+    extends Composer<_$AppDatabase, $SyncPeersTable> {
+  $$SyncPeersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get pairedAt => $composableBuilder(
+    column: $table.pairedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$DevicesTableOrderingComposer get peerDeviceId {
+    final $$DevicesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.peerDeviceId,
+      referencedTable: $db.devices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DevicesTableOrderingComposer(
+            $db: $db,
+            $table: $db.devices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SyncPeersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SyncPeersTable> {
+  $$SyncPeersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get pairedAt =>
+      $composableBuilder(column: $table.pairedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => column,
+  );
+
+  $$DevicesTableAnnotationComposer get peerDeviceId {
+    final $$DevicesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.peerDeviceId,
+      referencedTable: $db.devices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DevicesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.devices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SyncPeersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SyncPeersTable,
+          SyncPeer,
+          $$SyncPeersTableFilterComposer,
+          $$SyncPeersTableOrderingComposer,
+          $$SyncPeersTableAnnotationComposer,
+          $$SyncPeersTableCreateCompanionBuilder,
+          $$SyncPeersTableUpdateCompanionBuilder,
+          (SyncPeer, $$SyncPeersTableReferences),
+          SyncPeer,
+          PrefetchHooks Function({bool peerDeviceId})
+        > {
+  $$SyncPeersTableTableManager(_$AppDatabase db, $SyncPeersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncPeersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncPeersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncPeersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> peerDeviceId = const Value.absent(),
+                Value<DateTime> pairedAt = const Value.absent(),
+                Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncPeersCompanion(
+                id: id,
+                peerDeviceId: peerDeviceId,
+                pairedAt: pairedAt,
+                lastSyncAt: lastSyncAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String peerDeviceId,
+                Value<DateTime> pairedAt = const Value.absent(),
+                Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncPeersCompanion.insert(
+                id: id,
+                peerDeviceId: peerDeviceId,
+                pairedAt: pairedAt,
+                lastSyncAt: lastSyncAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncPeersTable, SyncPeer>(table),
+                  $$SyncPeersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({peerDeviceId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (peerDeviceId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.peerDeviceId,
+                        referencedTable: $$SyncPeersTableReferences
+                            ._peerDeviceIdTable(db),
+                        referencedColumn: $$SyncPeersTableReferences
+                            ._peerDeviceIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SyncPeersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SyncPeersTable,
+      SyncPeer,
+      $$SyncPeersTableFilterComposer,
+      $$SyncPeersTableOrderingComposer,
+      $$SyncPeersTableAnnotationComposer,
+      $$SyncPeersTableCreateCompanionBuilder,
+      $$SyncPeersTableUpdateCompanionBuilder,
+      (SyncPeer, $$SyncPeersTableReferences),
+      SyncPeer,
+      PrefetchHooks Function({bool peerDeviceId})
+    >;
+typedef $$SyncCursorsTableCreateCompanionBuilder =
+    SyncCursorsCompanion Function({
+      required String id,
+      required String peerDeviceId,
+      Value<String?> lastReceivedEventId,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$SyncCursorsTableUpdateCompanionBuilder =
+    SyncCursorsCompanion Function({
+      Value<String> id,
+      Value<String> peerDeviceId,
+      Value<String?> lastReceivedEventId,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$SyncCursorsTableReferences
+    extends BaseReferences<_$AppDatabase, $SyncCursorsTable, SyncCursor> {
+  $$SyncCursorsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $DevicesTable _peerDeviceIdTable(_$AppDatabase db) =>
+      db.devices.createAlias('sync_cursors__peer_device_id__devices__id');
+
+  $$DevicesTableProcessedTableManager get peerDeviceId {
+    final $_column = $_itemColumn<String>('peer_device_id')!;
+
+    final manager = $$DevicesTableTableManager(
+      $_db,
+      $_db.devices,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_peerDeviceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SyncCursorsTableFilterComposer
+    extends Composer<_$AppDatabase, $SyncCursorsTable> {
+  $$SyncCursorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastReceivedEventId => $composableBuilder(
+    column: $table.lastReceivedEventId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$DevicesTableFilterComposer get peerDeviceId {
+    final $$DevicesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.peerDeviceId,
+      referencedTable: $db.devices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DevicesTableFilterComposer(
+            $db: $db,
+            $table: $db.devices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SyncCursorsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SyncCursorsTable> {
+  $$SyncCursorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastReceivedEventId => $composableBuilder(
+    column: $table.lastReceivedEventId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$DevicesTableOrderingComposer get peerDeviceId {
+    final $$DevicesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.peerDeviceId,
+      referencedTable: $db.devices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DevicesTableOrderingComposer(
+            $db: $db,
+            $table: $db.devices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SyncCursorsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SyncCursorsTable> {
+  $$SyncCursorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get lastReceivedEventId => $composableBuilder(
+    column: $table.lastReceivedEventId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$DevicesTableAnnotationComposer get peerDeviceId {
+    final $$DevicesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.peerDeviceId,
+      referencedTable: $db.devices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DevicesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.devices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SyncCursorsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SyncCursorsTable,
+          SyncCursor,
+          $$SyncCursorsTableFilterComposer,
+          $$SyncCursorsTableOrderingComposer,
+          $$SyncCursorsTableAnnotationComposer,
+          $$SyncCursorsTableCreateCompanionBuilder,
+          $$SyncCursorsTableUpdateCompanionBuilder,
+          (SyncCursor, $$SyncCursorsTableReferences),
+          SyncCursor,
+          PrefetchHooks Function({bool peerDeviceId})
+        > {
+  $$SyncCursorsTableTableManager(_$AppDatabase db, $SyncCursorsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncCursorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncCursorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncCursorsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> peerDeviceId = const Value.absent(),
+                Value<String?> lastReceivedEventId = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncCursorsCompanion(
+                id: id,
+                peerDeviceId: peerDeviceId,
+                lastReceivedEventId: lastReceivedEventId,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String peerDeviceId,
+                Value<String?> lastReceivedEventId = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncCursorsCompanion.insert(
+                id: id,
+                peerDeviceId: peerDeviceId,
+                lastReceivedEventId: lastReceivedEventId,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncCursorsTable, SyncCursor>(table),
+                  $$SyncCursorsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({peerDeviceId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (peerDeviceId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.peerDeviceId,
+                        referencedTable: $$SyncCursorsTableReferences
+                            ._peerDeviceIdTable(db),
+                        referencedColumn: $$SyncCursorsTableReferences
+                            ._peerDeviceIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SyncCursorsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SyncCursorsTable,
+      SyncCursor,
+      $$SyncCursorsTableFilterComposer,
+      $$SyncCursorsTableOrderingComposer,
+      $$SyncCursorsTableAnnotationComposer,
+      $$SyncCursorsTableCreateCompanionBuilder,
+      $$SyncCursorsTableUpdateCompanionBuilder,
+      (SyncCursor, $$SyncCursorsTableReferences),
+      SyncCursor,
+      PrefetchHooks Function({bool peerDeviceId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -21758,4 +23795,10 @@ class $AppDatabaseManager {
       $$ConflictRecordsTableTableManager(_db, _db.conflictRecords);
   $$AuditLogsTableTableManager get auditLogs =>
       $$AuditLogsTableTableManager(_db, _db.auditLogs);
+  $$DevicesTableTableManager get devices =>
+      $$DevicesTableTableManager(_db, _db.devices);
+  $$SyncPeersTableTableManager get syncPeers =>
+      $$SyncPeersTableTableManager(_db, _db.syncPeers);
+  $$SyncCursorsTableTableManager get syncCursors =>
+      $$SyncCursorsTableTableManager(_db, _db.syncCursors);
 }

@@ -7,7 +7,10 @@ import 'package:path_provider/path_provider.dart';
 
 part 'app_database.g.dart';
 
-// (semua deklarasi tabel tetap sama, disingkat)
+// ==========================================
+// 1. IDENTITY & LEARNING CONTEXT
+// ==========================================
+
 class Students extends Table {
   TextColumn get id => text()();
   TextColumn get displayName => text().withLength(min: 1, max: 200)();
@@ -18,6 +21,7 @@ class Students extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -32,6 +36,7 @@ class Subjects extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -46,6 +51,7 @@ class Chapters extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -60,6 +66,7 @@ class Topics extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -74,9 +81,14 @@ class Competencies extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// ==========================================
+// 2. DOCUMENTS & KNOWLEDGE
+// ==========================================
 
 class SourceDocuments extends Table {
   TextColumn get id => text()();
@@ -90,6 +102,7 @@ class SourceDocuments extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -106,6 +119,7 @@ class DocumentVersions extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -123,6 +137,7 @@ class DocumentChunks extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -141,6 +156,7 @@ class KnowledgeItems extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -156,9 +172,14 @@ class KnowledgeSources extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// ==========================================
+// 3. QUESTIONS & ASSESSMENTS
+// ==========================================
 
 class Questions extends Table {
   TextColumn get id => text()();
@@ -174,6 +195,7 @@ class Questions extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -185,6 +207,7 @@ class QuestionSnapshots extends Table {
   TextColumn get answerJson => text()();
   TextColumn get provenanceJson => text()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -199,6 +222,7 @@ class Assessments extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -207,6 +231,7 @@ class AssessmentSnapshots extends Table {
   TextColumn get id => text()();
   TextColumn get assessmentId => text().references(Assessments, #id)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -220,9 +245,14 @@ class AssessmentItems extends Table {
   IntColumn get sequence => integer()();
   RealColumn get weight => real().withDefault(const Constant(1.0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// ==========================================
+// 4. STUDENT PROGRESS
+// ==========================================
 
 class StudentAttempts extends Table {
   TextColumn get id => text()();
@@ -239,6 +269,7 @@ class StudentAttempts extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -257,6 +288,7 @@ class StudentAnswers extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -274,9 +306,14 @@ class MasteryRecords extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// ==========================================
+// 5. SYNC & SECURITY
+// ==========================================
 
 class SyncEvents extends Table {
   TextColumn get id => text()();
@@ -289,6 +326,7 @@ class SyncEvents extends Table {
   TextColumn get deviceId => text()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   TextColumn get idempotencyKey => text().unique()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -306,6 +344,7 @@ class ConflictRecords extends Table {
       text().withDefault(const Constant('local'))();
   IntColumn get revision => integer().withDefault(const Constant(1))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -316,9 +355,49 @@ class AuditLogs extends Table {
   TextColumn get actor => text()();
   DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
   TextColumn get detailsJson => text()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// ==========================================
+// 6. DEVICES & SYNC (v6 — NEW)
+// ==========================================
+
+class Devices extends Table {
+  TextColumn get id => text()();
+  TextColumn get displayName => text()();
+  DateTimeColumn get lastSeenAt => dateTime().withDefault(currentDateAndTime)();
+  BoolColumn get isTrusted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get lastSyncAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class SyncPeers extends Table {
+  TextColumn get id => text()();
+  TextColumn get peerDeviceId => text().references(Devices, #id)();
+  DateTimeColumn get pairedAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get lastSyncAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class SyncCursors extends Table {
+  TextColumn get id => text()();
+  TextColumn get peerDeviceId => text().references(Devices, #id)();
+  TextColumn get lastReceivedEventId => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// ==========================================
+// DATABASE DEFINITION
+// ==========================================
 
 @DriftDatabase(
   tables: [
@@ -343,13 +422,16 @@ class AuditLogs extends Table {
     SyncEvents,
     ConflictRecords,
     AuditLogs,
+    Devices,
+    SyncPeers,
+    SyncCursors,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -384,6 +466,11 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(conflictRecords);
         await m.createTable(auditLogs);
       }
+      if (from < 6) {
+        await m.createTable(devices);
+        await m.createTable(syncPeers);
+        await m.createTable(syncCursors);
+      }
     },
   );
 }
@@ -399,7 +486,7 @@ Future<LazyDatabase> openAppDatabase() async {
   return openAppDatabaseAt(file);
 }
 
-// HELPER BARU: Mendapatkan File database untuk backup
+// HELPER: Mendapatkan File database untuk backup
 Future<File> getDatabaseFile() async {
   final dir = await getApplicationSupportDirectory();
   return File(p.join(dir.path, 'edumonitor.sqlite'));
