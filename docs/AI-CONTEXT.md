@@ -86,3 +86,9 @@ Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debu
 - Phase 1 s.d. Phase 10 SELESAI.
 - Aplikasi berjalan penuh di Windows dan Android (teruji).
 - Fondasi siap untuk Phase lanjutan (PDF Parser, Sinkronisasi LAN, atau Aplikasi Siswa).
+
+## ⚠️ Reminder — Belum Diuji (per 16 Nov 2026)
+Ketika user siap untuk uji, INGATKAN hal berikut:
+1. **CSV/PDF Export (Phase 12a)** — belum diuji di Windows. Verifikasi: file CSV terbuka di Excel dengan karakter Indonesia utuh, PDF rapor valid di viewer.
+2. **Sync End-to-End (Phase 11)** — belum diuji di 2 perangkat fisik (tablet + laptop Windows di Wi-Fi sama). Hanya lolos test otomatis.
+3. **PDF scan/OCR** — parser hanya mendukung PDF digital (bukan scan).

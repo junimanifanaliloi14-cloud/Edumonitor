@@ -21,6 +21,18 @@ class KnowledgeRepositoryImpl implements KnowledgeRepository {
   }
 
   @override
+  Future<List<KnowledgeItem>> getOtherKnowledgeInTopic(
+    String topicId,
+    String excludeId,
+  ) async {
+    return await (_db.select(_db.knowledgeItems)
+          ..where((t) => t.topicId.equals(topicId))
+          ..where((t) => t.deletedAt.isNull())
+          ..where((t) => t.id.equals(excludeId).not()))
+        .get();
+  }
+
+  @override
   Future<void> addKnowledgeFromChunk({
     required String topicId,
     required String chunkId,
@@ -28,21 +40,19 @@ class KnowledgeRepositoryImpl implements KnowledgeRepository {
   }) async {
     final knowledgeId = _uuid.v4();
 
-    // 1. Simpan Knowledge Item
     await _db
         .into(_db.knowledgeItems)
         .insert(
           KnowledgeItemsCompanion.insert(
             id: knowledgeId,
             topicId: topicId,
-            type: 'concept', // Default MVP
+            type: 'concept',
             content: content,
-            status: const Value('draft'), // PERBAIKAN: Gunakan Value()
+            status: const Value('draft'),
             sourceChunkId: Value(chunkId),
           ),
         );
 
-    // 2. Simpan relasi ke sumber (Knowledge Sources)
     await _db
         .into(_db.knowledgeSources)
         .insert(
@@ -50,7 +60,7 @@ class KnowledgeRepositoryImpl implements KnowledgeRepository {
             id: _uuid.v4(),
             knowledgeId: knowledgeId,
             chunkId: chunkId,
-            quote: content, // Simpan kutipan persisnya
+            quote: content,
           ),
         );
   }
