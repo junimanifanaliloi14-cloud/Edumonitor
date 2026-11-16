@@ -4,6 +4,9 @@ import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../domain/documents/document_repository.dart';
+import '../../documents/parsers/docx_parser.dart';
+import '../../documents/parsers/pdf_parser.dart';
+import '../../documents/parsers/txt_parser.dart';
 import '../app_database.dart';
 
 class DocumentRepositoryImpl implements DocumentRepository {
@@ -56,7 +59,6 @@ class DocumentRepositoryImpl implements DocumentRepository {
 
   @override
   Stream<List<DocumentChunk>> watchChunksByDocument(String documentId) {
-    // Kita melakukan JOIN antara DocumentChunks dan DocumentVersions
     final query =
         (_db.select(_db.documentChunks).join([
             innerJoin(
@@ -74,19 +76,35 @@ class DocumentRepositoryImpl implements DocumentRepository {
 
   @override
   Future<void> processDocument(SourceDocument doc) async {
-    if (doc.fileType != 'txt') {
-      throw Exception('Saat ini hanya mendukung ekstraksi file TXT.');
-    }
-
     final file = File(doc.filePath);
     if (!await file.exists()) {
       throw Exception('File tidak ditemukan di path: ${doc.filePath}');
     }
 
-    // 1. Baca konten file
-    final content = await file.readAsString();
+    List<String> paragraphs;
 
-    // 2. Buat DocumentVersion baru
+    // Routing Parser berdasarkan ekstensi file
+    switch (doc.fileType.toLowerCase()) {
+      case 'txt':
+        paragraphs = await TxtParser().extractParagraphs(doc.filePath);
+        break;
+      case 'pdf':
+        paragraphs = await PdfParser().extractParagraphs(doc.filePath);
+        break;
+      case 'docx':
+        paragraphs = await DocxParser().extractParagraphs(doc.filePath);
+        break;
+      default:
+        throw Exception('Format file .${doc.fileType} belum didukung.');
+    }
+
+    if (paragraphs.isEmpty) {
+      throw Exception(
+        'Tidak ada teks yang berhasil diekstrak dari dokumen ini.',
+      );
+    }
+
+    // Buat DocumentVersion baru
     final versionId = _uuid.v4();
     await _db
         .into(_db.documentVersions)
@@ -98,16 +116,8 @@ class DocumentRepositoryImpl implements DocumentRepository {
           ),
         );
 
-    // 3. Pecah teks menjadi paragraf (berdasarkan baris kosong)
-    // Regex ini memisahkan teks berdasarkan dua newline atau lebih
-    final paragraphs = content
-        .split(RegExp(r'\n\s*\n'))
-        .where((p) => p.trim().isNotEmpty)
-        .toList();
-
-    // 4. Simpan setiap paragraf sebagai DocumentChunk
+    // Simpan setiap paragraf
     for (int i = 0; i < paragraphs.length; i++) {
-      final text = paragraphs[i].trim();
       await _db
           .into(_db.documentChunks)
           .insert(
@@ -115,7 +125,7 @@ class DocumentRepositoryImpl implements DocumentRepository {
               id: _uuid.v4(),
               versionId: versionId,
               sequence: i,
-              textContent: text,
+              textContent: paragraphs[i],
               locator: 'paragraph:$i',
             ),
           );
