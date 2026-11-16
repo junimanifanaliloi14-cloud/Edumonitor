@@ -78,3 +78,8 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-16] [PHASE-13A] [DONE] Status badge (draft/verified/rejected) + tombol verifikasi
 - [2026-11-16] [PHASE-13A] [DONE] Edit knowledge (tipe + konten)
 - [2026-11-16] [PHASE-13A] [DONE] 26/26 test lulus, CI hijau
+
+## Phase 13b — Filter & Verified-Only Generator (v0.6.0)
+- [2026-11-16] [PHASE-13B] [DONE] Filter chip: Semua/Draft/Terverifikasi
+- [2026-11-16] [PHASE-13B] [DONE] Generator prioritaskan verified distraktor + warning draft
+- [2026-11-16] [PHASE-13B] [DONE] Riverpod 3 NotifierProvider, switch expression
