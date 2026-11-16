@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../sync/presentation/sync_screen.dart';
 import 'settings_providers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -43,7 +44,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (ctx) => AlertDialog(
         title: const Text('Restore Data?'),
         content: const Text(
-          'Semua data saat ini akan DIGANTI dengan isi backup. Aplikasi harus ditutup setelah restore.\n\nLanjutkan?',
+          'Semua data saat ini akan DIGANTI dengan isi backup. '
+          'Aplikasi harus ditutup setelah restore.\n\nLanjutkan?',
         ),
         actions: [
           TextButton(
@@ -133,8 +135,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Simpan salinan data Anda secara berkala ke lokasi aman (Flashdisk, Google Drive, dsb). '
-            'Gunakan Restore jika Anda ingin memulihkan data dari backup sebelumnya.',
+            'Simpan salinan data Anda secara berkala ke lokasi aman '
+            '(Flashdisk, Google Drive, dsb). Gunakan Restore jika Anda '
+            'ingin memulihkan data dari backup sebelumnya.',
           ),
           const SizedBox(height: 24),
           Card(
@@ -176,6 +179,33 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const Divider(),
           const SizedBox(height: 16),
           const Text(
+            'Sinkronisasi',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Sinkronkan data antara PC dan Tablet lewat jaringan Wi-Fi/LAN '
+            'lokal. Tidak memerlukan internet.',
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.sync, color: Colors.blue, size: 32),
+              title: const Text('Sinkronisasi Wi-Fi/LAN'),
+              subtitle: const Text('Pairing via QR Code antar perangkat'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SyncScreen()),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 32),
+          const Divider(),
+          const SizedBox(height: 16),
+          const Text(
             'Tentang Aplikasi',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
@@ -184,7 +214,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             leading: Icon(Icons.info_outline),
             title: Text('EduMonitor'),
             subtitle: Text(
-              'Versi 0.1.0 (MVP)\nOffline-first learning & student progress monitoring.',
+              'Versi 0.2.0 (MVP + Sync Foundation)\n'
+              'Offline-first learning & student progress monitoring.',
             ),
           ),
         ],

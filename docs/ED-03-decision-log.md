@@ -39,3 +39,5 @@ Setiap keputusan produk/arsitektur dicatat dengan ID, status, konteks, keputusan
 - OPEN-03: Kontrak engine Dart final (ED-13).
 - OPEN-04: Threat model share package (ED-06).
 - OPEN-05: Kebijakan retensi data siswa.
+## Catatan Teknis — Konvensi Penamaan
+- Drift otomatis membuat kelas baris dari nama tabel (jamak -> tunggal). Contoh: tabel `SyncPeers` menghasilkan kelas `SyncPeer`. Hindari memberi nama domain class yang sama dengan nama tabel Drift. Jika terpaksa, gunakan `hide` pada import atau prefix (`as`) untuk menghindari konflik.
