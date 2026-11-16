@@ -12082,12 +12082,25 @@ class $SyncPeersTable extends SyncPeers
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _lastSyncedEventIdMeta = const VerificationMeta(
+    'lastSyncedEventId',
+  );
+  @override
+  late final GeneratedColumn<String> lastSyncedEventId =
+      GeneratedColumn<String>(
+        'last_synced_event_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     peerDeviceId,
     pairedAt,
     lastSyncAt,
+    lastSyncedEventId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -12132,6 +12145,15 @@ class $SyncPeersTable extends SyncPeers
         ),
       );
     }
+    if (data.containsKey('last_synced_event_id')) {
+      context.handle(
+        _lastSyncedEventIdMeta,
+        lastSyncedEventId.isAcceptableOrUnknown(
+          data['last_synced_event_id']!,
+          _lastSyncedEventIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -12157,6 +12179,10 @@ class $SyncPeersTable extends SyncPeers
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_sync_at'],
       ),
+      lastSyncedEventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_synced_event_id'],
+      ),
     );
   }
 
@@ -12171,11 +12197,13 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
   final String peerDeviceId;
   final DateTime pairedAt;
   final DateTime? lastSyncAt;
+  final String? lastSyncedEventId;
   const SyncPeer({
     required this.id,
     required this.peerDeviceId,
     required this.pairedAt,
     this.lastSyncAt,
+    this.lastSyncedEventId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -12185,6 +12213,9 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
     map['paired_at'] = Variable<DateTime>(pairedAt);
     if (!nullToAbsent || lastSyncAt != null) {
       map['last_sync_at'] = Variable<DateTime>(lastSyncAt);
+    }
+    if (!nullToAbsent || lastSyncedEventId != null) {
+      map['last_synced_event_id'] = Variable<String>(lastSyncedEventId);
     }
     return map;
   }
@@ -12197,6 +12228,9 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       lastSyncAt: lastSyncAt == null && nullToAbsent
           ? const Value.absent()
           : Value(lastSyncAt),
+      lastSyncedEventId: lastSyncedEventId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncedEventId),
     );
   }
 
@@ -12210,6 +12244,9 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       peerDeviceId: serializer.fromJson<String>(json['peerDeviceId']),
       pairedAt: serializer.fromJson<DateTime>(json['pairedAt']),
       lastSyncAt: serializer.fromJson<DateTime?>(json['lastSyncAt']),
+      lastSyncedEventId: serializer.fromJson<String?>(
+        json['lastSyncedEventId'],
+      ),
     );
   }
   @override
@@ -12220,6 +12257,7 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       'peerDeviceId': serializer.toJson<String>(peerDeviceId),
       'pairedAt': serializer.toJson<DateTime>(pairedAt),
       'lastSyncAt': serializer.toJson<DateTime?>(lastSyncAt),
+      'lastSyncedEventId': serializer.toJson<String?>(lastSyncedEventId),
     };
   }
 
@@ -12228,11 +12266,15 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
     String? peerDeviceId,
     DateTime? pairedAt,
     Value<DateTime?> lastSyncAt = const Value.absent(),
+    Value<String?> lastSyncedEventId = const Value.absent(),
   }) => SyncPeer(
     id: id ?? this.id,
     peerDeviceId: peerDeviceId ?? this.peerDeviceId,
     pairedAt: pairedAt ?? this.pairedAt,
     lastSyncAt: lastSyncAt.present ? lastSyncAt.value : this.lastSyncAt,
+    lastSyncedEventId: lastSyncedEventId.present
+        ? lastSyncedEventId.value
+        : this.lastSyncedEventId,
   );
   SyncPeer copyWithCompanion(SyncPeersCompanion data) {
     return SyncPeer(
@@ -12244,6 +12286,9 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       lastSyncAt: data.lastSyncAt.present
           ? data.lastSyncAt.value
           : this.lastSyncAt,
+      lastSyncedEventId: data.lastSyncedEventId.present
+          ? data.lastSyncedEventId.value
+          : this.lastSyncedEventId,
     );
   }
 
@@ -12253,13 +12298,15 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
           ..write('id: $id, ')
           ..write('peerDeviceId: $peerDeviceId, ')
           ..write('pairedAt: $pairedAt, ')
-          ..write('lastSyncAt: $lastSyncAt')
+          ..write('lastSyncAt: $lastSyncAt, ')
+          ..write('lastSyncedEventId: $lastSyncedEventId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, peerDeviceId, pairedAt, lastSyncAt);
+  int get hashCode =>
+      Object.hash(id, peerDeviceId, pairedAt, lastSyncAt, lastSyncedEventId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -12267,7 +12314,8 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
           other.id == this.id &&
           other.peerDeviceId == this.peerDeviceId &&
           other.pairedAt == this.pairedAt &&
-          other.lastSyncAt == this.lastSyncAt);
+          other.lastSyncAt == this.lastSyncAt &&
+          other.lastSyncedEventId == this.lastSyncedEventId);
 }
 
 class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
@@ -12275,12 +12323,14 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
   final Value<String> peerDeviceId;
   final Value<DateTime> pairedAt;
   final Value<DateTime?> lastSyncAt;
+  final Value<String?> lastSyncedEventId;
   final Value<int> rowid;
   const SyncPeersCompanion({
     this.id = const Value.absent(),
     this.peerDeviceId = const Value.absent(),
     this.pairedAt = const Value.absent(),
     this.lastSyncAt = const Value.absent(),
+    this.lastSyncedEventId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SyncPeersCompanion.insert({
@@ -12288,6 +12338,7 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     required String peerDeviceId,
     this.pairedAt = const Value.absent(),
     this.lastSyncAt = const Value.absent(),
+    this.lastSyncedEventId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        peerDeviceId = Value(peerDeviceId);
@@ -12296,6 +12347,7 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     Expression<String>? peerDeviceId,
     Expression<DateTime>? pairedAt,
     Expression<DateTime>? lastSyncAt,
+    Expression<String>? lastSyncedEventId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -12303,6 +12355,7 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
       if (peerDeviceId != null) 'peer_device_id': peerDeviceId,
       if (pairedAt != null) 'paired_at': pairedAt,
       if (lastSyncAt != null) 'last_sync_at': lastSyncAt,
+      if (lastSyncedEventId != null) 'last_synced_event_id': lastSyncedEventId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -12312,6 +12365,7 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     Value<String>? peerDeviceId,
     Value<DateTime>? pairedAt,
     Value<DateTime?>? lastSyncAt,
+    Value<String?>? lastSyncedEventId,
     Value<int>? rowid,
   }) {
     return SyncPeersCompanion(
@@ -12319,6 +12373,7 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
       peerDeviceId: peerDeviceId ?? this.peerDeviceId,
       pairedAt: pairedAt ?? this.pairedAt,
       lastSyncAt: lastSyncAt ?? this.lastSyncAt,
+      lastSyncedEventId: lastSyncedEventId ?? this.lastSyncedEventId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -12338,6 +12393,9 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     if (lastSyncAt.present) {
       map['last_sync_at'] = Variable<DateTime>(lastSyncAt.value);
     }
+    if (lastSyncedEventId.present) {
+      map['last_synced_event_id'] = Variable<String>(lastSyncedEventId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -12351,6 +12409,7 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
           ..write('peerDeviceId: $peerDeviceId, ')
           ..write('pairedAt: $pairedAt, ')
           ..write('lastSyncAt: $lastSyncAt, ')
+          ..write('lastSyncedEventId: $lastSyncedEventId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -23160,6 +23219,7 @@ typedef $$SyncPeersTableCreateCompanionBuilder = SyncPeersCompanion Function({
   required String peerDeviceId,
   Value<DateTime> pairedAt,
   Value<DateTime?> lastSyncAt,
+  Value<String?> lastSyncedEventId,
   Value<int> rowid,
 });
 typedef $$SyncPeersTableUpdateCompanionBuilder = SyncPeersCompanion Function({
@@ -23167,6 +23227,7 @@ typedef $$SyncPeersTableUpdateCompanionBuilder = SyncPeersCompanion Function({
   Value<String> peerDeviceId,
   Value<DateTime> pairedAt,
   Value<DateTime?> lastSyncAt,
+  Value<String?> lastSyncedEventId,
   Value<int> rowid,
 });
 
@@ -23213,6 +23274,11 @@ class $$SyncPeersTableFilterComposer
 
   ColumnFilters<DateTime> get lastSyncAt => $composableBuilder(
     column: $table.lastSyncAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastSyncedEventId => $composableBuilder(
+    column: $table.lastSyncedEventId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -23264,6 +23330,11 @@ class $$SyncPeersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get lastSyncedEventId => $composableBuilder(
+    column: $table.lastSyncedEventId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$DevicesTableOrderingComposer get peerDeviceId {
     final $$DevicesTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -23305,6 +23376,11 @@ class $$SyncPeersTableAnnotationComposer
 
   GeneratedColumn<DateTime> get lastSyncAt => $composableBuilder(
     column: $table.lastSyncAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastSyncedEventId => $composableBuilder(
+    column: $table.lastSyncedEventId,
     builder: (column) => column,
   );
 
@@ -23364,12 +23440,14 @@ class $$SyncPeersTableTableManager
                 Value<String> peerDeviceId = const Value.absent(),
                 Value<DateTime> pairedAt = const Value.absent(),
                 Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<String?> lastSyncedEventId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SyncPeersCompanion(
                 id: id,
                 peerDeviceId: peerDeviceId,
                 pairedAt: pairedAt,
                 lastSyncAt: lastSyncAt,
+                lastSyncedEventId: lastSyncedEventId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -23378,12 +23456,14 @@ class $$SyncPeersTableTableManager
                 required String peerDeviceId,
                 Value<DateTime> pairedAt = const Value.absent(),
                 Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<String?> lastSyncedEventId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SyncPeersCompanion.insert(
                 id: id,
                 peerDeviceId: peerDeviceId,
                 pairedAt: pairedAt,
                 lastSyncAt: lastSyncAt,
+                lastSyncedEventId: lastSyncedEventId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

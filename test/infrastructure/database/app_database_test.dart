@@ -33,6 +33,7 @@ void main() {
     await db
         .into(db.students)
         .insert(StudentsCompanion.insert(id: 'stu-1', displayName: 'Aisyah'));
+
     final rows = await db.select(db.students).get();
     expect(rows.length, 1);
     expect(rows.first.id, 'stu-1');
@@ -41,31 +42,25 @@ void main() {
     expect(rows.first.deletedAt, isNull);
   });
 
-  test('schema version is 6', () {
-    expect(db.schemaVersion, 6);
+  test('schema version is 7', () {
+    expect(db.schemaVersion, 7);
   });
 
   test('insert and query curriculum hierarchy', () async {
     await db
         .into(db.subjects)
         .insert(SubjectsCompanion.insert(id: 's1', name: 'Matematika'));
-    await db
-        .into(db.chapters)
-        .insert(
+    await db.into(db.chapters).insert(
           ChaptersCompanion.insert(id: 'c1', subjectId: 's1', name: 'Aljabar'),
         );
-    await db
-        .into(db.topics)
-        .insert(
+    await db.into(db.topics).insert(
           TopicsCompanion.insert(
             id: 't1',
             chapterId: 'c1',
             name: 'Persamaan Linear',
           ),
         );
-    await db
-        .into(db.competencies)
-        .insert(
+    await db.into(db.competencies).insert(
           CompetenciesCompanion.insert(
             id: 'comp1',
             topicId: 't1',
@@ -79,9 +74,7 @@ void main() {
   });
 
   test('insert and query document and knowledge hierarchy', () async {
-    await db
-        .into(db.sourceDocuments)
-        .insert(
+    await db.into(db.sourceDocuments).insert(
           SourceDocumentsCompanion.insert(
             id: 'doc1',
             title: 'Buku Fisika',
@@ -90,18 +83,14 @@ void main() {
             fileType: 'pdf',
           ),
         );
-    await db
-        .into(db.documentVersions)
-        .insert(
+    await db.into(db.documentVersions).insert(
           DocumentVersionsCompanion.insert(
             id: 'ver1',
             documentId: 'doc1',
             versionNumber: 1,
           ),
         );
-    await db
-        .into(db.documentChunks)
-        .insert(
+    await db.into(db.documentChunks).insert(
           DocumentChunksCompanion.insert(
             id: 'chunk1',
             versionId: 'ver1',
@@ -114,24 +103,18 @@ void main() {
     await db
         .into(db.subjects)
         .insert(SubjectsCompanion.insert(id: 's-phy', name: 'Fisika'));
-    await db
-        .into(db.chapters)
-        .insert(
+    await db.into(db.chapters).insert(
           ChaptersCompanion.insert(
             id: 'c-phy',
             subjectId: 's-phy',
             name: 'Mekanika',
           ),
         );
-    await db
-        .into(db.topics)
-        .insert(
+    await db.into(db.topics).insert(
           TopicsCompanion.insert(id: 't-phy', chapterId: 'c-phy', name: 'Gaya'),
         );
 
-    await db
-        .into(db.knowledgeItems)
-        .insert(
+    await db.into(db.knowledgeItems).insert(
           KnowledgeItemsCompanion.insert(
             id: 'k1',
             topicId: 't-phy',
@@ -140,9 +123,7 @@ void main() {
             sourceChunkId: Value('chunk1'),
           ),
         );
-    await db
-        .into(db.knowledgeSources)
-        .insert(
+    await db.into(db.knowledgeSources).insert(
           KnowledgeSourcesCompanion.insert(
             id: 'ks1',
             knowledgeId: 'k1',
@@ -159,20 +140,14 @@ void main() {
     await db
         .into(db.subjects)
         .insert(SubjectsCompanion.insert(id: 's1', name: 'Math'));
-    await db
-        .into(db.chapters)
-        .insert(
+    await db.into(db.chapters).insert(
           ChaptersCompanion.insert(id: 'c1', subjectId: 's1', name: 'Aljabar'),
         );
-    await db
-        .into(db.topics)
-        .insert(
+    await db.into(db.topics).insert(
           TopicsCompanion.insert(id: 't1', chapterId: 'c1', name: 'Linear'),
         );
 
-    await db
-        .into(db.questions)
-        .insert(
+    await db.into(db.questions).insert(
           QuestionsCompanion.insert(
             id: 'q1',
             topicId: 't1',
@@ -181,9 +156,7 @@ void main() {
             answerJson: '{"ans":4}',
           ),
         );
-    await db
-        .into(db.questionSnapshots)
-        .insert(
+    await db.into(db.questionSnapshots).insert(
           QuestionSnapshotsCompanion.insert(
             id: 'qs1',
             questionId: 'q1',
@@ -195,14 +168,10 @@ void main() {
     await db
         .into(db.assessments)
         .insert(AssessmentsCompanion.insert(id: 'a1', title: 'Ulangan Harian'));
-    await db
-        .into(db.assessmentSnapshots)
-        .insert(
+    await db.into(db.assessmentSnapshots).insert(
           AssessmentSnapshotsCompanion.insert(id: 'as1', assessmentId: 'a1'),
         );
-    await db
-        .into(db.assessmentItems)
-        .insert(
+    await db.into(db.assessmentItems).insert(
           AssessmentItemsCompanion.insert(
             id: 'ai1',
             assessmentSnapshotId: 'as1',
@@ -224,19 +193,13 @@ void main() {
     await db
         .into(db.subjects)
         .insert(SubjectsCompanion.insert(id: 's1', name: 'Math'));
-    await db
-        .into(db.chapters)
-        .insert(
+    await db.into(db.chapters).insert(
           ChaptersCompanion.insert(id: 'c1', subjectId: 's1', name: 'Aljabar'),
         );
-    await db
-        .into(db.topics)
-        .insert(
+    await db.into(db.topics).insert(
           TopicsCompanion.insert(id: 't1', chapterId: 'c1', name: 'Linear'),
         );
-    await db
-        .into(db.competencies)
-        .insert(
+    await db.into(db.competencies).insert(
           CompetenciesCompanion.insert(
             id: 'comp1',
             topicId: 't1',
@@ -244,9 +207,7 @@ void main() {
           ),
         );
 
-    await db
-        .into(db.questions)
-        .insert(
+    await db.into(db.questions).insert(
           QuestionsCompanion.insert(
             id: 'q1',
             topicId: 't1',
@@ -255,9 +216,7 @@ void main() {
             answerJson: '{}',
           ),
         );
-    await db
-        .into(db.questionSnapshots)
-        .insert(
+    await db.into(db.questionSnapshots).insert(
           QuestionSnapshotsCompanion.insert(
             id: 'qs1',
             questionId: 'q1',
@@ -269,25 +228,19 @@ void main() {
     await db
         .into(db.assessments)
         .insert(AssessmentsCompanion.insert(id: 'a1', title: 'Test'));
-    await db
-        .into(db.assessmentSnapshots)
-        .insert(
+    await db.into(db.assessmentSnapshots).insert(
           AssessmentSnapshotsCompanion.insert(id: 'as1', assessmentId: 'a1'),
         );
 
     // 2. Insert Attempt & Answer
-    await db
-        .into(db.studentAttempts)
-        .insert(
+    await db.into(db.studentAttempts).insert(
           StudentAttemptsCompanion.insert(
             id: 'att1',
             studentId: 'stu-1',
             assessmentSnapshotId: 'as1',
           ),
         );
-    await db
-        .into(db.studentAnswers)
-        .insert(
+    await db.into(db.studentAnswers).insert(
           StudentAnswersCompanion.insert(
             id: 'ans1',
             attemptId: 'att1',
@@ -299,9 +252,7 @@ void main() {
         );
 
     // 3. Insert Mastery
-    await db
-        .into(db.masteryRecords)
-        .insert(
+    await db.into(db.masteryRecords).insert(
           MasteryRecordsCompanion.insert(
             id: 'm1',
             studentId: 'stu-1',
@@ -311,9 +262,7 @@ void main() {
         );
 
     // 4. Insert Sync Event
-    await db
-        .into(db.syncEvents)
-        .insert(
+    await db.into(db.syncEvents).insert(
           SyncEventsCompanion.insert(
             id: 'evt1',
             entityType: 'student_attempt',

@@ -361,7 +361,7 @@ class AuditLogs extends Table {
 }
 
 // ==========================================
-// 6. DEVICES & SYNC (v6 — NEW)
+// 6. DEVICES & SYNC
 // ==========================================
 
 class Devices extends Table {
@@ -380,6 +380,7 @@ class SyncPeers extends Table {
   TextColumn get peerDeviceId => text().references(Devices, #id)();
   DateTimeColumn get pairedAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get lastSyncAt => dateTime().nullable()();
+  TextColumn get lastSyncedEventId => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -431,48 +432,51 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (m) async {
-      await m.createAll();
-    },
-    onUpgrade: (m, from, to) async {
-      if (from < 2) {
-        await m.createTable(chapters);
-        await m.createTable(topics);
-        await m.createTable(competencies);
-      }
-      if (from < 3) {
-        await m.createTable(sourceDocuments);
-        await m.createTable(documentVersions);
-        await m.createTable(documentChunks);
-        await m.createTable(knowledgeItems);
-        await m.createTable(knowledgeSources);
-      }
-      if (from < 4) {
-        await m.createTable(questions);
-        await m.createTable(questionSnapshots);
-        await m.createTable(assessments);
-        await m.createTable(assessmentSnapshots);
-        await m.createTable(assessmentItems);
-      }
-      if (from < 5) {
-        await m.createTable(studentAttempts);
-        await m.createTable(studentAnswers);
-        await m.createTable(masteryRecords);
-        await m.createTable(syncEvents);
-        await m.createTable(conflictRecords);
-        await m.createTable(auditLogs);
-      }
-      if (from < 6) {
-        await m.createTable(devices);
-        await m.createTable(syncPeers);
-        await m.createTable(syncCursors);
-      }
-    },
-  );
+        onCreate: (m) async {
+          await m.createAll();
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(chapters);
+            await m.createTable(topics);
+            await m.createTable(competencies);
+          }
+          if (from < 3) {
+            await m.createTable(sourceDocuments);
+            await m.createTable(documentVersions);
+            await m.createTable(documentChunks);
+            await m.createTable(knowledgeItems);
+            await m.createTable(knowledgeSources);
+          }
+          if (from < 4) {
+            await m.createTable(questions);
+            await m.createTable(questionSnapshots);
+            await m.createTable(assessments);
+            await m.createTable(assessmentSnapshots);
+            await m.createTable(assessmentItems);
+          }
+          if (from < 5) {
+            await m.createTable(studentAttempts);
+            await m.createTable(studentAnswers);
+            await m.createTable(masteryRecords);
+            await m.createTable(syncEvents);
+            await m.createTable(conflictRecords);
+            await m.createTable(auditLogs);
+          }
+          if (from < 6) {
+            await m.createTable(devices);
+            await m.createTable(syncPeers);
+            await m.createTable(syncCursors);
+          }
+          if (from < 7) {
+            await m.addColumn(syncPeers, syncPeers.lastSyncedEventId);
+          }
+        },
+      );
 }
 
 LazyDatabase openAppDatabaseAt(File file) {
