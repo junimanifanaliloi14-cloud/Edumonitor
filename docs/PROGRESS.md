@@ -72,3 +72,9 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 ## Phase 12b — Enhanced Generator (v0.4.0)
 - [2026-11-16] [PHASE-12B] [DONE] EnhancedQuestionGenerator: dynamic distractors, True/False, stem variation
 - [2026-11-16] [PHASE-12B] [DONE] 22/22 test lulus, CI hijau
+
+## Phase 13a — Knowledge Type & Verification (v0.5.0)
+- [2026-11-16] [PHASE-13A] [DONE] Dialog type selection (concept/fact/relation/sequence/passage)
+- [2026-11-16] [PHASE-13A] [DONE] Status badge (draft/verified/rejected) + tombol verifikasi
+- [2026-11-16] [PHASE-13A] [DONE] Edit knowledge (tipe + konten)
+- [2026-11-16] [PHASE-13A] [DONE] 26/26 test lulus, CI hijau
