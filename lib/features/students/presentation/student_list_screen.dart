@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../infrastructure/database/app_database.dart';
+import '../../export/presentation/export_providers.dart';
 import '../../progress/presentation/progress_providers.dart';
 import 'student_providers.dart';
 
@@ -50,20 +51,32 @@ class StudentListScreen extends ConsumerWidget {
                   onSelected: (value) {
                     if (value == 'edit') {
                       _showEditDialog(context, ref, student);
+                    } else if (value == 'export_pdf') {
+                      _exportPdf(context, ref, student);
                     } else if (value == 'delete') {
                       _confirmDelete(context, ref, student);
                     }
                   },
                   itemBuilder: (BuildContext context) =>
-                      <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
+                      const <PopupMenuEntry<String>>[
+                        PopupMenuItem<String>(
                           value: 'edit',
                           child: ListTile(
                             leading: Icon(Icons.edit, color: Colors.blue),
                             title: Text('Edit Nama'),
                           ),
                         ),
-                        const PopupMenuItem<String>(
+                        PopupMenuItem<String>(
+                          value: 'export_pdf',
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.picture_as_pdf,
+                              color: Colors.teal,
+                            ),
+                            title: Text('Ekspor Rapor PDF'),
+                          ),
+                        ),
+                        PopupMenuItem<String>(
                           value: 'delete',
                           child: ListTile(
                             leading: Icon(Icons.delete, color: Colors.red),
@@ -85,6 +98,28 @@ class StudentListScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _exportPdf(
+    BuildContext context,
+    WidgetRef ref,
+    Student student,
+  ) async {
+    try {
+      final result = await ref
+          .read(exportServiceProvider)
+          .exportStudentReportToPdf(student.id);
+      if (result != null && context.mounted) {
+        AppSnackbar.success(
+          context,
+          'Rapor PDF tersimpan di: ${result.filePath}',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        AppSnackbar.error(context, 'Gagal ekspor PDF: $e');
+      }
+    }
   }
 
   void _showHistoryDialog(

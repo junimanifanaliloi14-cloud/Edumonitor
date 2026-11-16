@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/app_snackbar.dart';
+import '../../export/presentation/export_providers.dart';
 import '../../sync/presentation/sync_screen.dart';
 import 'settings_providers.dart';
 
@@ -24,15 +26,29 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     try {
       final path = await ref.read(backupServiceProvider).exportBackup();
       if (path != null && mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Backup tersimpan di: $path')));
+        AppSnackbar.success(context, 'Backup tersimpan di: $path');
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Gagal backup: $e')));
+      if (mounted) AppSnackbar.error(context, 'Gagal backup: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _handleExportCsv() async {
+    setState(() => _loading = true);
+    try {
+      final result = await ref
+          .read(exportServiceProvider)
+          .exportAllScoresToCsv();
+      if (result != null && mounted) {
+        AppSnackbar.success(
+          context,
+          'Nilai CSV tersimpan di: ${result.filePath}',
+        );
       }
+    } catch (e) {
+      if (mounted) AppSnackbar.error(context, 'Gagal ekspor CSV: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -109,10 +125,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         );
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Gagal restore: $e')));
-      }
+      if (mounted) AppSnackbar.error(context, 'Gagal restore: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -129,6 +142,39 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const Text(
+            'Laporan & Ekspor',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Ekspor nilai siswa untuk arsip sekolah. File CSV dapat dibuka di '
+            'Excel atau Google Sheets. Untuk rapor per siswa, gunakan menu '
+            'titik tiga di Daftar Siswa.',
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: ListTile(
+              leading: const Icon(
+                Icons.table_chart,
+                color: Colors.green,
+                size: 32,
+              ),
+              title: const Text('Ekspor Nilai CSV'),
+              subtitle: const Text('Semua nilai siswa dalam satu file'),
+              trailing: _loading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: _loading ? null : _handleExportCsv,
+            ),
+          ),
+          const SizedBox(height: 32),
+          const Divider(),
+          const SizedBox(height: 16),
           const Text(
             'Backup & Restore',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -214,7 +260,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             leading: Icon(Icons.info_outline),
             title: Text('EduMonitor'),
             subtitle: Text(
-              'Versi 0.2.0 (MVP + Sync Foundation)\n'
+              'Versi 0.3.0 (MVP + Sync + Laporan)\n'
               'Offline-first learning & student progress monitoring.',
             ),
           ),
