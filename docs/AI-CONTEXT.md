@@ -81,3 +81,8 @@ Bootstrap selesai. APK debug terbangun di build/app/outputs/flutter-apk/app-debu
 - DEC-019: content_json pakai schema terstruktur (sealed class).
 - DEC-020: Enkripsi DB ditunda (pakai OS encryption + PIN).
 - DEC-021: knowledge_items.content pakai JSON terstruktur.
+
+## Status MVP (v0.1.0)
+- Phase 1 s.d. Phase 10 SELESAI.
+- Aplikasi berjalan penuh di Windows dan Android (teruji).
+- Fondasi siap untuk Phase lanjutan (PDF Parser, Sinkronisasi LAN, atau Aplikasi Siswa).

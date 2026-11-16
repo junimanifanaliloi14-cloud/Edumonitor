@@ -58,3 +58,8 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-14] [PHASE-1B] [DONE] Android tablet terdeteksi via USB.
 - [2026-11-14] [PHASE-1B] [DONE] Android APK build sukses di GitHub Actions (CI Hijau).
 - [2026-11-14] [PHASE-1B] [DONE] AGP diupdate ke 8.11.1 & Gradle 9.3.1 untuk memenuhi syarat minimum Flutter.
+
+## Phase 10 — MVP Release (v0.1.0)
+- [2026-11-16] [PHASE-10] [DONE] Ikon Windows (.ico) dipasang.
+- [2026-11-16] [PHASE-10] [DONE] Audit MVP: 15/15 Test, Analyze bersih, CI Hijau.
+- [2026-11-16] [PHASE-10] [DONE] Rilis versi 0.1.0 (MVP).
