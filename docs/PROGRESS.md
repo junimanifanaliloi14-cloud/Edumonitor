@@ -63,3 +63,8 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-16] [PHASE-10] [DONE] Ikon Windows (.ico) dipasang.
 - [2026-11-16] [PHASE-10] [DONE] Audit MVP: 15/15 Test, Analyze bersih, CI Hijau.
 - [2026-11-16] [PHASE-10] [DONE] Rilis versi 0.1.0 (MVP).
+
+## Phase 11 — Sync Foundation (v0.2.0)
+- [2026-11-16] [PHASE-11] [DONE] Schema v6-v9, pairing QR, sync events (Students), Device ID persisten
+- [2026-11-16] [PHASE-11] [DONE] 15/15 test hijau, CI hijau
+- [2026-11-16] [PHASE-11] [DEBT] E2E belum diuji 2 device; sync hanya Students; konflik LWW
