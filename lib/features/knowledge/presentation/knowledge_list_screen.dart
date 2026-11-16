@@ -60,22 +60,119 @@ class _KnowledgeTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final knowledgeAsync = ref.watch(knowledgeListProvider(topic.id));
+    final filter = ref.watch(knowledgeFilterProvider);
 
     return knowledgeAsync.when(
-      data: (items) {
-        if (items.isEmpty) {
+      data: (allItems) {
+        if (allItems.isEmpty) {
           return const Center(child: Text('Belum ada pengetahuan.'));
         }
-        return ListView.builder(
-          padding: const EdgeInsets.all(12),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return _KnowledgeCard(topic: topic, item: items[index]);
-          },
+
+        final items = allItems.where((item) {
+          return switch (filter) {
+            KnowledgeFilter.all => true,
+            KnowledgeFilter.draft =>
+              item.status == 'draft' || item.status == 'extracted',
+            KnowledgeFilter.verified => item.status == 'verified',
+          };
+        }).toList();
+
+        return Column(
+          children: [
+            _buildFilterBar(ref, filter, allItems),
+            if (items.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Text(
+                    filter == KnowledgeFilter.verified
+                        ? 'Belum ada pengetahuan terverifikasi.'
+                        : 'Belum ada pengetahuan di filter ini.',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ),
+              )
+            else
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return _KnowledgeCard(topic: topic, item: items[index]);
+                  },
+                ),
+              ),
+          ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, stack) => Center(child: Text('Error: $err')),
+    );
+  }
+
+  Widget _buildFilterBar(
+    WidgetRef ref,
+    KnowledgeFilter current,
+    List<KnowledgeItem> allItems,
+  ) {
+    final draftCount = allItems
+        .where((i) => i.status == 'draft' || i.status == 'extracted')
+        .length;
+    final verifiedCount = allItems.where((i) => i.status == 'verified').length;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _FilterChip(
+              label: 'Semua (${allItems.length})',
+              selected: current == KnowledgeFilter.all,
+              onTap: () => ref
+                  .read(knowledgeFilterProvider.notifier)
+                  .setFilter(KnowledgeFilter.all),
+            ),
+            const SizedBox(width: 8),
+            _FilterChip(
+              label: 'Draft ($draftCount)',
+              selected: current == KnowledgeFilter.draft,
+              onTap: () => ref
+                  .read(knowledgeFilterProvider.notifier)
+                  .setFilter(KnowledgeFilter.draft),
+            ),
+            const SizedBox(width: 8),
+            _FilterChip(
+              label: 'Terverifikasi ($verifiedCount)',
+              selected: current == KnowledgeFilter.verified,
+              onTap: () => ref
+                  .read(knowledgeFilterProvider.notifier)
+                  .setFilter(KnowledgeFilter.verified),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: (_) => onTap(),
+      selectedColor: Colors.teal.shade100,
+      checkmarkColor: Colors.teal,
     );
   }
 }
@@ -186,6 +283,37 @@ class _KnowledgeCard extends ConsumerWidget {
     );
   }
 
+  /// Menampilkan warning jika knowledge item berstatus draft, lalu return true
+  /// jika user tetap ingin melanjutkan.
+  Future<bool> _confirmDraftGeneration(BuildContext context) async {
+    if (item.status == 'verified') return true;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Pengetahuan Belum Diverifikasi'),
+        content: Text(
+          'Pengetahuan ini berstatus "${item.status}".\n\n'
+          'Blueprint merekomendasikan hanya memakai pengetahuan yang sudah '
+          'diverifikasi untuk generator soal. Anda bisa verifikasi dulu untuk '
+          'kualitas soal yang lebih baik, atau tetap lanjutkan dengan draft.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Verifikasi Dulu'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Lanjutkan dengan Draft'),
+          ),
+        ],
+      ),
+    );
+
+    return confirmed == true;
+  }
+
   Future<void> _showEditDialog(BuildContext context, WidgetRef ref) async {
     final contentController = TextEditingController(text: item.content);
     String selectedType = item.type;
@@ -259,12 +387,24 @@ class _KnowledgeCard extends ConsumerWidget {
   }
 
   Future<void> _generateMC(BuildContext context, WidgetRef ref) async {
+    final proceed = await _confirmDraftGeneration(context);
+    if (!proceed) return;
+
     try {
-      final others = await ref
+      final allOthers = await ref
           .read(knowledgeRepositoryProvider)
           .getOtherKnowledgeInTopic(topic.id, item.id);
+
+      // Prioritaskan distraktor dari knowledge verified
+      final verifiedOthers = allOthers
+          .where((o) => o.status == 'verified')
+          .toList();
+      final distractors = verifiedOthers.length >= 3
+          ? verifiedOthers
+          : allOthers;
+
       final generator = EnhancedQuestionGenerator();
-      final result = generator.generateMultipleChoice(item, others);
+      final result = generator.generateMultipleChoice(item, distractors);
       await ref
           .read(questionRepositoryProvider)
           .saveQuestion(
@@ -287,13 +427,22 @@ class _KnowledgeCard extends ConsumerWidget {
   }
 
   Future<void> _generateTF(BuildContext context, WidgetRef ref) async {
+    final proceed = await _confirmDraftGeneration(context);
+    if (!proceed) return;
+
     try {
-      final others = await ref
+      final allOthers = await ref
           .read(knowledgeRepositoryProvider)
           .getOtherKnowledgeInTopic(topic.id, item.id);
-      final generator = EnhancedQuestionGenerator();
-      final result = generator.generateTrueFalse(item, others);
-      if (result == null) {
+
+      final verifiedOthers = allOthers
+          .where((o) => o.status == 'verified')
+          .toList();
+      final distractors = verifiedOthers.isNotEmpty
+          ? verifiedOthers
+          : allOthers;
+
+      if (distractors.isEmpty) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -303,6 +452,11 @@ class _KnowledgeCard extends ConsumerWidget {
         }
         return;
       }
+
+      final generator = EnhancedQuestionGenerator();
+      final result = generator.generateTrueFalse(item, distractors);
+      if (result == null) return;
+
       await ref
           .read(questionRepositoryProvider)
           .saveQuestion(
