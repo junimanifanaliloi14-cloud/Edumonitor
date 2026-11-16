@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/widgets/app_snackbar.dart';
 import '../../../domain/sync/pairing_payload.dart';
+import 'peer_list_screen.dart';
 import 'sync_providers.dart';
 
 class SyncScreen extends ConsumerWidget {
@@ -75,6 +76,22 @@ class SyncScreen extends ConsumerWidget {
             label: const Text('Pindai QR Perangkat Lain'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+          ),
+          const SizedBox(height: 12),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PeerListScreen()),
+              );
+            },
+            icon: const Icon(Icons.devices),
+            label: const Text('Lihat Peer Tersinkronisasi'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/providers/device_id_provider.dart';
 import '../../../domain/students/student_repository.dart';
 import '../../../infrastructure/database/app_database.dart';
 import '../../../infrastructure/database/repositories/student_repository_impl.dart';
@@ -10,7 +11,8 @@ final databaseProvider = Provider<AppDatabase>((ref) {
 
 final studentRepositoryProvider = Provider<StudentRepository>((ref) {
   final db = ref.watch(databaseProvider);
-  return StudentRepositoryImpl(db);
+  final deviceId = ref.watch(localDeviceIdProvider);
+  return StudentRepositoryImpl(db, localDeviceId: deviceId);
 });
 
 final studentListProvider = StreamProvider<List<Student>>((ref) {

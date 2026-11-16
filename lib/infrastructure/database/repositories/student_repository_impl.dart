@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
@@ -5,8 +7,9 @@ import '../../../domain/students/student_repository.dart';
 import '../app_database.dart';
 
 class StudentRepositoryImpl implements StudentRepository {
-  StudentRepositoryImpl(this._db);
+  StudentRepositoryImpl(this._db, {required this.localDeviceId});
   final AppDatabase _db;
+  final String localDeviceId;
   final _uuid = const Uuid();
 
   @override
@@ -19,32 +22,125 @@ class StudentRepositoryImpl implements StudentRepository {
 
   @override
   Future<void> addStudent(String name) async {
-    await _db
-        .into(_db.students)
-        .insert(StudentsCompanion.insert(id: _uuid.v4(), displayName: name));
+    final id = _uuid.v4();
+    final now = DateTime.now();
+
+    await _db.transaction(() async {
+      await _db
+          .into(_db.students)
+          .insert(
+            StudentsCompanion.insert(
+              id: id,
+              displayName: name,
+              createdByDeviceId: Value(localDeviceId),
+              createdAt: Value(now),
+              updatedAt: Value(now),
+            ),
+          );
+
+      await _db
+          .into(_db.syncEvents)
+          .insert(
+            SyncEventsCompanion.insert(
+              id: _uuid.v4(),
+              entityType: 'student',
+              entityId: id,
+              operation: 'create',
+              baseRevision: 0,
+              newRevision: 1,
+              payloadJson: jsonEncode({
+                'id': id,
+                'displayName': name,
+                'notes': null,
+                'createdByDeviceId': localDeviceId,
+                'updatedAt': now.toIso8601String(),
+              }),
+              deviceId: localDeviceId,
+              idempotencyKey: _uuid.v4(),
+            ),
+          );
+    });
   }
 
   @override
   Future<void> updateStudent(String id, String newName) async {
-    await (_db.update(_db.students)..where((t) => t.id.equals(id))).write(
-      StudentsCompanion(
-        displayName: Value(newName),
-        updatedAt: Value(DateTime.now()),
-        revision: Value(
-          2,
-        ), // Nanti di fase sinkronisasi ini akan bertambah otomatis
-      ),
-    );
+    final now = DateTime.now();
+
+    await _db.transaction(() async {
+      final current = await (_db.select(
+        _db.students,
+      )..where((t) => t.id.equals(id))).getSingle();
+      final newRevision = current.revision + 1;
+
+      await (_db.update(_db.students)..where((t) => t.id.equals(id))).write(
+        StudentsCompanion(
+          displayName: Value(newName),
+          updatedAt: Value(now),
+          revision: Value(newRevision),
+        ),
+      );
+
+      await _db
+          .into(_db.syncEvents)
+          .insert(
+            SyncEventsCompanion.insert(
+              id: _uuid.v4(),
+              entityType: 'student',
+              entityId: id,
+              operation: 'update',
+              baseRevision: current.revision,
+              newRevision: newRevision,
+              payloadJson: jsonEncode({
+                'id': id,
+                'displayName': newName,
+                'notes': current.notes,
+                'createdByDeviceId': current.createdByDeviceId,
+                'updatedAt': now.toIso8601String(),
+              }),
+              deviceId: localDeviceId,
+              idempotencyKey: _uuid.v4(),
+            ),
+          );
+    });
   }
 
   @override
   Future<void> deleteStudent(String id) async {
-    // Soft delete: set deletedAt dan tambah revision
-    await (_db.update(_db.students)..where((t) => t.id.equals(id))).write(
-      StudentsCompanion(
-        deletedAt: Value(DateTime.now()),
-        updatedAt: Value(DateTime.now()),
-      ),
-    );
+    final now = DateTime.now();
+
+    await _db.transaction(() async {
+      final current = await (_db.select(
+        _db.students,
+      )..where((t) => t.id.equals(id))).getSingle();
+      final newRevision = current.revision + 1;
+
+      await (_db.update(_db.students)..where((t) => t.id.equals(id))).write(
+        StudentsCompanion(
+          deletedAt: Value(now),
+          updatedAt: Value(now),
+          revision: Value(newRevision),
+        ),
+      );
+
+      await _db
+          .into(_db.syncEvents)
+          .insert(
+            SyncEventsCompanion.insert(
+              id: _uuid.v4(),
+              entityType: 'student',
+              entityId: id,
+              operation: 'delete',
+              baseRevision: current.revision,
+              newRevision: newRevision,
+              payloadJson: jsonEncode({
+                'id': id,
+                'deletedAt': now.toIso8601String(),
+                'updatedAt': now.toIso8601String(),
+              }),
+              deviceId: localDeviceId,
+              idempotencyKey: _uuid.v4(),
+            ),
+          );
+    });
   }
 }
