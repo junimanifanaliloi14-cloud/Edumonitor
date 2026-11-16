@@ -68,3 +68,7 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-16] [PHASE-11] [DONE] Schema v6-v9, pairing QR, sync events (Students), Device ID persisten
 - [2026-11-16] [PHASE-11] [DONE] 15/15 test hijau, CI hijau
 - [2026-11-16] [PHASE-11] [DEBT] E2E belum diuji 2 device; sync hanya Students; konflik LWW
+
+## Phase 12b — Enhanced Generator (v0.4.0)
+- [2026-11-16] [PHASE-12B] [DONE] EnhancedQuestionGenerator: dynamic distractors, True/False, stem variation
+- [2026-11-16] [PHASE-12B] [DONE] 22/22 test lulus, CI hijau
