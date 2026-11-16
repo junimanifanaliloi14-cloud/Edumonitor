@@ -21,6 +21,18 @@ class KnowledgeRepositoryImpl implements KnowledgeRepository {
   }
 
   @override
+  Stream<List<KnowledgeItem>> watchVerifiedKnowledgeByTopic(String topicId) {
+    return (_db.select(_db.knowledgeItems)
+          ..where((t) => t.topicId.equals(topicId) & t.deletedAt.isNull())
+          ..where((t) => t.status.equals('verified'))
+          ..orderBy([
+            (t) =>
+                OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+          ]))
+        .watch();
+  }
+
+  @override
   Future<List<KnowledgeItem>> getOtherKnowledgeInTopic(
     String topicId,
     String excludeId,
@@ -37,6 +49,7 @@ class KnowledgeRepositoryImpl implements KnowledgeRepository {
     required String topicId,
     required String chunkId,
     required String content,
+    required String type,
   }) async {
     final knowledgeId = _uuid.v4();
 
@@ -46,7 +59,7 @@ class KnowledgeRepositoryImpl implements KnowledgeRepository {
           KnowledgeItemsCompanion.insert(
             id: knowledgeId,
             topicId: topicId,
-            type: 'concept',
+            type: type,
             content: content,
             status: const Value('draft'),
             sourceChunkId: Value(chunkId),
@@ -63,6 +76,23 @@ class KnowledgeRepositoryImpl implements KnowledgeRepository {
             quote: content,
           ),
         );
+  }
+
+  @override
+  Future<void> updateKnowledge({
+    required String id,
+    String? type,
+    String? content,
+    String? status,
+  }) async {
+    await (_db.update(_db.knowledgeItems)..where((t) => t.id.equals(id))).write(
+      KnowledgeItemsCompanion(
+        type: type != null ? Value(type) : const Value.absent(),
+        content: content != null ? Value(content) : const Value.absent(),
+        status: status != null ? Value(status) : const Value.absent(),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   @override

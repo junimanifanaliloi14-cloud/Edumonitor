@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../infrastructure/database/app_database.dart';
-import '../../knowledge/presentation/knowledge_providers.dart';
 import '../../curriculum/presentation/topic_providers.dart';
+import '../../knowledge/presentation/knowledge_providers.dart';
 import 'document_providers.dart';
+
+const _knowledgeTypeLabels = <String, String>{
+  'concept': 'Konsep / Definisi',
+  'fact': 'Fakta / Entitas',
+  'relation': 'Hubungan',
+  'sequence': 'Urutan / Proses',
+  'passage': 'Kutipan Bacaan',
+};
 
 class DocumentDetailScreen extends ConsumerStatefulWidget {
   final SourceDocument document;
@@ -38,68 +46,38 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
     }
   }
 
-  void _markAsKnowledge(DocumentChunk chunk) async {
-    // Tampilkan dialog dan tunggu hasilnya (nama topik)
-    final String? topicName = await showDialog<String>(
+  Future<void> _markAsKnowledge(DocumentChunk chunk) async {
+    final result = await showDialog<Map<String, String>>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Jadikan Pengetahuan'),
-        content: Consumer(
-          builder: (context, ref, child) {
-            final topicsAsync = ref.watch(allTopicsProvider);
-            return topicsAsync.when(
-              data: (topics) {
-                if (topics.isEmpty) {
-                  return const Text(
-                    'Belum ada Topik. Buat Topik di menu Kurikulum terlebih dahulu.',
-                  );
-                }
-                return SizedBox(
-                  width: 300,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: topics.length,
-                    itemBuilder: (context, index) {
-                      final topic = topics[index];
-                      return ListTile(
-                        title: Text(topic.name),
-                        onTap: () async {
-                          await ref
-                              .read(knowledgeRepositoryProvider)
-                              .addKnowledgeFromChunk(
-                                topicId: topic.id,
-                                chunkId: chunk.id,
-                                content: chunk.textContent,
-                              );
-                          // Kembalikan nama topik ke pemanggil dialog
-                          if (context.mounted) {
-                            Navigator.pop(context, topic.name);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, s) => Text('Error: $e'),
-            );
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-        ],
-      ),
+      builder: (ctx) => _MarkKnowledgeDialog(chunk: chunk),
     );
 
-    // Jika dialog mengembalikan nama topik, tampilkan SnackBar di sini
-    if (topicName != null && mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Disimpan ke Topik: $topicName')));
+    if (result == null) return;
+
+    final topicId = result['topicId']!;
+    final type = result['type']!;
+
+    try {
+      await ref
+          .read(knowledgeRepositoryProvider)
+          .addKnowledgeFromChunk(
+            topicId: topicId,
+            chunkId: chunk.id,
+            content: chunk.textContent,
+            type: type,
+          );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Pengetahuan berhasil disimpan sebagai draft.'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Gagal menyimpan: $e')));
+      }
     }
   }
 
@@ -130,7 +108,7 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
                         ? const CircularProgressIndicator()
                         : const Icon(Icons.play_arrow),
                     label: Text(
-                      _isProcessing ? 'Memproses...' : 'Ekstrak Teks (TXT)',
+                      _isProcessing ? 'Memproses...' : 'Ekstrak Teks',
                     ),
                   ),
                 ],
@@ -182,6 +160,112 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
+    );
+  }
+}
+
+class _MarkKnowledgeDialog extends ConsumerStatefulWidget {
+  final DocumentChunk chunk;
+  const _MarkKnowledgeDialog({required this.chunk});
+
+  @override
+  ConsumerState<_MarkKnowledgeDialog> createState() =>
+      _MarkKnowledgeDialogState();
+}
+
+class _MarkKnowledgeDialogState extends ConsumerState<_MarkKnowledgeDialog> {
+  String? _selectedTopicId;
+  String _selectedType = 'concept';
+
+  @override
+  Widget build(BuildContext context) {
+    final topicsAsync = ref.watch(allTopicsProvider);
+
+    return AlertDialog(
+      title: const Text('Tandai sebagai Pengetahuan'),
+      content: SizedBox(
+        width: 400,
+        child: topicsAsync.when(
+          data: (topics) {
+            if (topics.isEmpty) {
+              return const Text(
+                'Belum ada Topik. Buat Topik di menu Kurikulum terlebih dahulu.',
+              );
+            }
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Pilih topik:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedTopicId,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Pilih topik...',
+                    ),
+                    items: topics
+                        .map(
+                          (t) => DropdownMenuItem(
+                            value: t.id,
+                            child: Text(t.name),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (v) => setState(() => _selectedTopicId = v),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Tipe pengetahuan:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedType,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    items: _knowledgeTypeLabels.entries
+                        .map(
+                          (e) => DropdownMenuItem(
+                            value: e.key,
+                            child: Text(e.value),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (v) {
+                      if (v != null) setState(() => _selectedType = v);
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Text('Error: $e'),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Batal'),
+        ),
+        ElevatedButton(
+          onPressed: _selectedTopicId == null
+              ? null
+              : () => Navigator.pop(context, {
+                  'topicId': _selectedTopicId!,
+                  'type': _selectedType,
+                }),
+          child: const Text('Simpan'),
+        ),
+      ],
     );
   }
 }

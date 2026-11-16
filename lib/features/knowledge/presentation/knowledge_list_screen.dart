@@ -9,6 +9,14 @@ import '../../questions/presentation/question_generator.dart';
 import '../../questions/presentation/question_providers.dart';
 import 'knowledge_providers.dart';
 
+const _typeLabels = <String, String>{
+  'concept': 'Konsep',
+  'fact': 'Fakta',
+  'relation': 'Hubungan',
+  'sequence': 'Urutan',
+  'passage': 'Bacaan',
+};
+
 class KnowledgeListScreen extends ConsumerWidget {
   final Topic topic;
   const KnowledgeListScreen({super.key, required this.topic});
@@ -62,7 +70,7 @@ class _KnowledgeTab extends ConsumerWidget {
           padding: const EdgeInsets.all(12),
           itemCount: items.length,
           itemBuilder: (context, index) {
-            return _buildCard(context, ref, items[index]);
+            return _KnowledgeCard(topic: topic, item: items[index]);
           },
         );
       },
@@ -70,8 +78,18 @@ class _KnowledgeTab extends ConsumerWidget {
       error: (err, stack) => Center(child: Text('Error: $err')),
     );
   }
+}
 
-  Widget _buildCard(BuildContext context, WidgetRef ref, KnowledgeItem item) {
+class _KnowledgeCard extends ConsumerWidget {
+  final Topic topic;
+  final KnowledgeItem item;
+  const _KnowledgeCard({required this.topic, required this.item});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isVerified = item.status == 'verified';
+    final isRejected = item.status == 'rejected';
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -80,15 +98,23 @@ class _KnowledgeTab extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
-                  label: Text(item.type.toUpperCase()),
+                  label: Text(_typeLabels[item.type] ?? item.type),
                   backgroundColor: Colors.teal.shade50,
                   labelStyle: const TextStyle(color: Colors.teal, fontSize: 12),
                 ),
+                const SizedBox(width: 6),
+                _StatusBadge(status: item.status),
+                const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                  tooltip: 'Edit',
+                  onPressed: () => _showEditDialog(context, ref),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                  tooltip: 'Hapus',
                   onPressed: () async {
                     await ref
                         .read(knowledgeRepositoryProvider)
@@ -103,19 +129,49 @@ class _KnowledgeTab extends ConsumerWidget {
               style: const TextStyle(fontSize: 16, height: 1.5),
             ),
             const SizedBox(height: 12),
+            if (!isVerified)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedButton.icon(
+                  onPressed: () => ref
+                      .read(knowledgeRepositoryProvider)
+                      .updateKnowledge(id: item.id, status: 'verified'),
+                  icon: const Icon(Icons.check_circle, size: 18),
+                  label: const Text('Verifikasi'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.green,
+                  ),
+                ),
+              ),
+            if (isVerified)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedButton.icon(
+                  onPressed: () => ref
+                      .read(knowledgeRepositoryProvider)
+                      .updateKnowledge(id: item.id, status: 'draft'),
+                  icon: const Icon(Icons.undo, size: 18),
+                  label: const Text('Batalkan Verifikasi'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.orange,
+                  ),
+                ),
+              ),
+            if (!isVerified && !isRejected) const SizedBox(height: 4),
+            const Divider(),
             Wrap(
               alignment: WrapAlignment.end,
               spacing: 8,
               runSpacing: 4,
               children: [
                 OutlinedButton.icon(
-                  onPressed: () => _generateMC(context, ref, item),
+                  onPressed: () => _generateMC(context, ref),
                   icon: const Icon(Icons.quiz, size: 16),
                   label: const Text('Pilihan Ganda'),
                   style: OutlinedButton.styleFrom(foregroundColor: Colors.teal),
                 ),
                 OutlinedButton.icon(
-                  onPressed: () => _generateTF(context, ref, item),
+                  onPressed: () => _generateTF(context, ref),
                   icon: const Icon(Icons.rule, size: 16),
                   label: const Text('Benar/Salah'),
                   style: OutlinedButton.styleFrom(
@@ -130,11 +186,79 @@ class _KnowledgeTab extends ConsumerWidget {
     );
   }
 
-  Future<void> _generateMC(
-    BuildContext context,
-    WidgetRef ref,
-    KnowledgeItem item,
-  ) async {
+  Future<void> _showEditDialog(BuildContext context, WidgetRef ref) async {
+    final contentController = TextEditingController(text: item.content);
+    String selectedType = item.type;
+
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Edit Pengetahuan'),
+          content: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButtonFormField<String>(
+                  initialValue: selectedType,
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Tipe',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _typeLabels.entries
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e.key,
+                          child: Text(e.value),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) {
+                    if (v != null) setState(() => selectedType = v);
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: contentController,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    labelText: 'Konten',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, {
+                'type': selectedType,
+                'content': contentController.text.trim(),
+              }),
+              child: const Text('Simpan'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result == null) return;
+    await ref
+        .read(knowledgeRepositoryProvider)
+        .updateKnowledge(
+          id: item.id,
+          type: result['type'],
+          content: result['content'],
+        );
+  }
+
+  Future<void> _generateMC(BuildContext context, WidgetRef ref) async {
     try {
       final others = await ref
           .read(knowledgeRepositoryProvider)
@@ -162,11 +286,7 @@ class _KnowledgeTab extends ConsumerWidget {
     }
   }
 
-  Future<void> _generateTF(
-    BuildContext context,
-    WidgetRef ref,
-    KnowledgeItem item,
-  ) async {
+  Future<void> _generateTF(BuildContext context, WidgetRef ref) async {
     try {
       final others = await ref
           .read(knowledgeRepositoryProvider)
@@ -177,10 +297,7 @@ class _KnowledgeTab extends ConsumerWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                'Butuh minimal 1 pengetahuan lain di topik ini untuk '
-                'membuat soal Benar/Salah.',
-              ),
+              content: Text('Butuh minimal 1 pengetahuan lain di topik ini.'),
             ),
           );
         }
@@ -208,8 +325,51 @@ class _KnowledgeTab extends ConsumerWidget {
   }
 }
 
+class _StatusBadge extends StatelessWidget {
+  final String status;
+  const _StatusBadge({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    Color bg;
+    Color fg;
+    String label;
+
+    switch (status) {
+      case 'verified':
+        bg = Colors.green.shade50;
+        fg = Colors.green.shade800;
+        label = 'Terverifikasi';
+        break;
+      case 'rejected':
+        bg = Colors.red.shade50;
+        fg = Colors.red.shade800;
+        label = 'Ditolak';
+        break;
+      case 'draft':
+      case 'extracted':
+      default:
+        bg = Colors.orange.shade50;
+        fg = Colors.orange.shade800;
+        label = 'Draft';
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(color: fg, fontSize: 11, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
 // ==========================================
-// QUESTION BANK TAB
+// QUESTION BANK TAB (unchanged)
 // ==========================================
 
 class _QuestionBankTab extends ConsumerWidget {
@@ -247,7 +407,10 @@ class _QuestionBankTab extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 itemCount: questions.length,
                 itemBuilder: (context, index) {
-                  return _buildQuestionCard(index, questions[index]);
+                  return _QuestionCard(
+                    index: index,
+                    question: questions[index],
+                  );
                 },
               ),
             ),
@@ -256,77 +419,6 @@ class _QuestionBankTab extends ConsumerWidget {
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, stack) => Center(child: Text('Error: $err')),
-    );
-  }
-
-  Widget _buildQuestionCard(int index, Question q) {
-    final contentMap = jsonDecode(q.contentJson) as Map<String, dynamic>;
-    final textBlock =
-        (contentMap['blocks'] as List).first as Map<String, dynamic>;
-    final options = (contentMap['options'] as List).cast<String>();
-    final questionType =
-        (contentMap['questionType'] as String?) ?? 'multipleChoice';
-    final answerMap = jsonDecode(q.answerJson) as Map<String, dynamic>;
-    final correctIndex = answerMap['correctIndex'] as int;
-
-    final typeLabel = questionType == 'trueFalse' ? 'B/S' : 'PG';
-    final typeColor = questionType == 'trueFalse'
-        ? Colors.purple.shade50
-        : Colors.blue.shade50;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Soal #${index + 1}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
-                ),
-                Chip(
-                  label: Text(typeLabel),
-                  backgroundColor: typeColor,
-                  labelStyle: const TextStyle(fontSize: 10),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              textBlock['text'] as String,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 12),
-            _buildOptionsList(options, correctIndex),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOptionsList(List<String> options, int correctIndex) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(options.length, (i) {
-        final isCorrect = i == correctIndex;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Text(
-            '${isCorrect ? "✓" : "○"} ${options[i]}',
-            style: TextStyle(
-              color: isCorrect ? Colors.green : Colors.black87,
-              fontWeight: isCorrect ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        );
-      }),
     );
   }
 
@@ -377,5 +469,81 @@ class _QuestionBankTab extends ConsumerWidget {
             .showSnackBar(SnackBar(content: Text('Gagal: $e')));
       }
     }
+  }
+}
+
+class _QuestionCard extends StatelessWidget {
+  final int index;
+  final Question question;
+  const _QuestionCard({required this.index, required this.question});
+
+  @override
+  Widget build(BuildContext context) {
+    final contentMap = jsonDecode(question.contentJson) as Map<String, dynamic>;
+    final textBlock =
+        (contentMap['blocks'] as List).first as Map<String, dynamic>;
+    final options = (contentMap['options'] as List).cast<String>();
+    final questionType =
+        (contentMap['questionType'] as String?) ?? 'multipleChoice';
+    final answerMap = jsonDecode(question.answerJson) as Map<String, dynamic>;
+    final correctIndex = answerMap['correctIndex'] as int;
+
+    final typeLabel = questionType == 'trueFalse' ? 'B/S' : 'PG';
+    final typeColor = questionType == 'trueFalse'
+        ? Colors.purple.shade50
+        : Colors.blue.shade50;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Soal #${index + 1}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                Chip(
+                  label: Text(typeLabel),
+                  backgroundColor: typeColor,
+                  labelStyle: const TextStyle(fontSize: 10),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              textBlock['text'] as String,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(options.length, (i) {
+                final isCorrect = i == correctIndex;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text(
+                    '${isCorrect ? "✓" : "○"} ${options[i]}',
+                    style: TextStyle(
+                      color: isCorrect ? Colors.green : Colors.black87,
+                      fontWeight: isCorrect
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
