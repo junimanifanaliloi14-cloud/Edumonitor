@@ -399,6 +399,18 @@ class SyncCursors extends Table {
 }
 
 // ==========================================
+// 7. APP SETTINGS
+// ==========================================
+
+class AppSettings extends Table {
+  TextColumn get key => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
+// ==========================================
 // DATABASE DEFINITION
 // ==========================================
 
@@ -428,13 +440,14 @@ class SyncCursors extends Table {
     Devices,
     SyncPeers,
     SyncCursors,
+    AppSettings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -480,6 +493,9 @@ class AppDatabase extends _$AppDatabase {
       if (from < 8) {
         await m.addColumn(syncPeers, syncPeers.ipAddress);
         await m.addColumn(syncPeers, syncPeers.port);
+      }
+      if (from < 9) {
+        await m.createTable(appSettings);
       }
     },
   );
