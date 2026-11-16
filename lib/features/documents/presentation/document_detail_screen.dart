@@ -11,7 +11,7 @@ const _knowledgeTypeLabels = <String, String>{
   'fact': 'Fakta / Entitas',
   'relation': 'Hubungan',
   'sequence': 'Urutan / Proses',
-  'passage': 'Kutipan Bacaan',
+  'passage': 'Bacaan',
 };
 
 class DocumentDetailScreen extends ConsumerStatefulWidget {

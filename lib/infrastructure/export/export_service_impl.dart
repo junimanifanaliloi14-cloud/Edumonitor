@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pdf/pdf.dart';
@@ -9,12 +8,36 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../domain/export/export_service.dart';
 import '../database/app_database.dart';
 
+/// Builder CSV yang kompatibel dengan Excel Indonesia.
+/// - Delimiter: `;` (bukan `,`)
+/// - File disertai UTF-8 BOM agar karakter Indonesia terbaca benar
+class CsvBuilder {
+  static String build(List<List<String>> rows, {String delimiter = ';'}) {
+    return rows
+        .map(
+          (row) =>
+              row.map((field) => _escape(field, delimiter)).join(delimiter),
+        )
+        .join('\r\n');
+  }
+
+  static String _escape(String value, String delimiter) {
+    if (value.contains(delimiter) ||
+        value.contains('"') ||
+        value.contains('\n') ||
+        value.contains('\r')) {
+      return '"${value.replaceAll('"', '""')}"';
+    }
+    return value;
+  }
+}
+
 class ExportServiceImpl implements ExportService {
   ExportServiceImpl(this._db);
   final AppDatabase _db;
 
   // ==========================================
-  // BUILD REPORT (query-only, mudah di-unit test)
+  // BUILD REPORT
   // ==========================================
 
   @override
@@ -106,7 +129,7 @@ class ExportServiceImpl implements ExportService {
                 ),
                 pw.SizedBox(height: 4),
                 pw.Text(
-                  'EduMonitor — Offline Learning Platform',
+                  'EduMonitor - Offline Learning Platform',
                   style: const pw.TextStyle(
                     fontSize: 10,
                     color: PdfColors.grey700,
@@ -129,7 +152,7 @@ class ExportServiceImpl implements ExportService {
                   ),
                   pw.Text(
                     report.studentName,
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                 ],
               ),
@@ -236,8 +259,8 @@ class ExportServiceImpl implements ExportService {
 
     final rows = await query.get();
 
-    final csvData = <List<dynamic>>[
-      <dynamic>['Nama Siswa', 'Asesmen', 'Nilai', 'Tanggal'],
+    final csvData = <List<String>>[
+      <String>['Nama Siswa', 'Asesmen', 'Nilai', 'Tanggal'],
     ];
 
     for (final row in rows) {
@@ -246,15 +269,15 @@ class ExportServiceImpl implements ExportService {
       final assessment = row.readTable(_db.assessments);
       final answer = row.readTableOrNull(_db.studentAnswers);
 
-      csvData.add([
+      csvData.add(<String>[
         student.displayName,
         assessment.title,
-        (answer?.score ?? 0.0).toStringAsFixed(1),
+        (answer?.score ?? 0.0).toStringAsFixed(1).replaceAll('.', ','),
         _formatDate(attempt.completedAt ?? attempt.startedAt),
       ]);
     }
 
-    final csvString = csv.encode(csvData);
+    final csvString = CsvBuilder.build(csvData);
     // UTF-8 BOM agar Excel Windows membaca karakter Indonesia dengan benar
     final bytes = Uint8List.fromList([
       0xEF,
