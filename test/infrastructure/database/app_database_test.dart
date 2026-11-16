@@ -42,8 +42,8 @@ void main() {
     expect(rows.first.deletedAt, isNull);
   });
 
-  test('schema version is 7', () {
-    expect(db.schemaVersion, 7);
+  test('schema version is 8', () {
+    expect(db.schemaVersion, 8);
   });
 
   test('insert and query curriculum hierarchy', () async {

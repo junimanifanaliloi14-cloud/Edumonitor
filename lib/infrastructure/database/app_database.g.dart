@@ -12094,6 +12094,26 @@ class $SyncPeersTable extends SyncPeers
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _ipAddressMeta = const VerificationMeta(
+    'ipAddress',
+  );
+  @override
+  late final GeneratedColumn<String> ipAddress = GeneratedColumn<String>(
+    'ip_address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _portMeta = const VerificationMeta('port');
+  @override
+  late final GeneratedColumn<int> port = GeneratedColumn<int>(
+    'port',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -12101,6 +12121,8 @@ class $SyncPeersTable extends SyncPeers
     pairedAt,
     lastSyncAt,
     lastSyncedEventId,
+    ipAddress,
+    port,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -12154,6 +12176,18 @@ class $SyncPeersTable extends SyncPeers
         ),
       );
     }
+    if (data.containsKey('ip_address')) {
+      context.handle(
+        _ipAddressMeta,
+        ipAddress.isAcceptableOrUnknown(data['ip_address']!, _ipAddressMeta),
+      );
+    }
+    if (data.containsKey('port')) {
+      context.handle(
+        _portMeta,
+        port.isAcceptableOrUnknown(data['port']!, _portMeta),
+      );
+    }
     return context;
   }
 
@@ -12183,6 +12217,14 @@ class $SyncPeersTable extends SyncPeers
         DriftSqlType.string,
         data['${effectivePrefix}last_synced_event_id'],
       ),
+      ipAddress: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ip_address'],
+      ),
+      port: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}port'],
+      ),
     );
   }
 
@@ -12198,12 +12240,16 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
   final DateTime pairedAt;
   final DateTime? lastSyncAt;
   final String? lastSyncedEventId;
+  final String? ipAddress;
+  final int? port;
   const SyncPeer({
     required this.id,
     required this.peerDeviceId,
     required this.pairedAt,
     this.lastSyncAt,
     this.lastSyncedEventId,
+    this.ipAddress,
+    this.port,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -12216,6 +12262,12 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
     }
     if (!nullToAbsent || lastSyncedEventId != null) {
       map['last_synced_event_id'] = Variable<String>(lastSyncedEventId);
+    }
+    if (!nullToAbsent || ipAddress != null) {
+      map['ip_address'] = Variable<String>(ipAddress);
+    }
+    if (!nullToAbsent || port != null) {
+      map['port'] = Variable<int>(port);
     }
     return map;
   }
@@ -12231,6 +12283,10 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       lastSyncedEventId: lastSyncedEventId == null && nullToAbsent
           ? const Value.absent()
           : Value(lastSyncedEventId),
+      ipAddress: ipAddress == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ipAddress),
+      port: port == null && nullToAbsent ? const Value.absent() : Value(port),
     );
   }
 
@@ -12247,6 +12303,8 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       lastSyncedEventId: serializer.fromJson<String?>(
         json['lastSyncedEventId'],
       ),
+      ipAddress: serializer.fromJson<String?>(json['ipAddress']),
+      port: serializer.fromJson<int?>(json['port']),
     );
   }
   @override
@@ -12258,6 +12316,8 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       'pairedAt': serializer.toJson<DateTime>(pairedAt),
       'lastSyncAt': serializer.toJson<DateTime?>(lastSyncAt),
       'lastSyncedEventId': serializer.toJson<String?>(lastSyncedEventId),
+      'ipAddress': serializer.toJson<String?>(ipAddress),
+      'port': serializer.toJson<int?>(port),
     };
   }
 
@@ -12267,6 +12327,8 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
     DateTime? pairedAt,
     Value<DateTime?> lastSyncAt = const Value.absent(),
     Value<String?> lastSyncedEventId = const Value.absent(),
+    Value<String?> ipAddress = const Value.absent(),
+    Value<int?> port = const Value.absent(),
   }) => SyncPeer(
     id: id ?? this.id,
     peerDeviceId: peerDeviceId ?? this.peerDeviceId,
@@ -12275,6 +12337,8 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
     lastSyncedEventId: lastSyncedEventId.present
         ? lastSyncedEventId.value
         : this.lastSyncedEventId,
+    ipAddress: ipAddress.present ? ipAddress.value : this.ipAddress,
+    port: port.present ? port.value : this.port,
   );
   SyncPeer copyWithCompanion(SyncPeersCompanion data) {
     return SyncPeer(
@@ -12289,6 +12353,8 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
       lastSyncedEventId: data.lastSyncedEventId.present
           ? data.lastSyncedEventId.value
           : this.lastSyncedEventId,
+      ipAddress: data.ipAddress.present ? data.ipAddress.value : this.ipAddress,
+      port: data.port.present ? data.port.value : this.port,
     );
   }
 
@@ -12299,14 +12365,23 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
           ..write('peerDeviceId: $peerDeviceId, ')
           ..write('pairedAt: $pairedAt, ')
           ..write('lastSyncAt: $lastSyncAt, ')
-          ..write('lastSyncedEventId: $lastSyncedEventId')
+          ..write('lastSyncedEventId: $lastSyncedEventId, ')
+          ..write('ipAddress: $ipAddress, ')
+          ..write('port: $port')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, peerDeviceId, pairedAt, lastSyncAt, lastSyncedEventId);
+  int get hashCode => Object.hash(
+    id,
+    peerDeviceId,
+    pairedAt,
+    lastSyncAt,
+    lastSyncedEventId,
+    ipAddress,
+    port,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -12315,7 +12390,9 @@ class SyncPeer extends DataClass implements Insertable<SyncPeer> {
           other.peerDeviceId == this.peerDeviceId &&
           other.pairedAt == this.pairedAt &&
           other.lastSyncAt == this.lastSyncAt &&
-          other.lastSyncedEventId == this.lastSyncedEventId);
+          other.lastSyncedEventId == this.lastSyncedEventId &&
+          other.ipAddress == this.ipAddress &&
+          other.port == this.port);
 }
 
 class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
@@ -12324,6 +12401,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
   final Value<DateTime> pairedAt;
   final Value<DateTime?> lastSyncAt;
   final Value<String?> lastSyncedEventId;
+  final Value<String?> ipAddress;
+  final Value<int?> port;
   final Value<int> rowid;
   const SyncPeersCompanion({
     this.id = const Value.absent(),
@@ -12331,6 +12410,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     this.pairedAt = const Value.absent(),
     this.lastSyncAt = const Value.absent(),
     this.lastSyncedEventId = const Value.absent(),
+    this.ipAddress = const Value.absent(),
+    this.port = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SyncPeersCompanion.insert({
@@ -12339,6 +12420,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     this.pairedAt = const Value.absent(),
     this.lastSyncAt = const Value.absent(),
     this.lastSyncedEventId = const Value.absent(),
+    this.ipAddress = const Value.absent(),
+    this.port = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        peerDeviceId = Value(peerDeviceId);
@@ -12348,6 +12431,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     Expression<DateTime>? pairedAt,
     Expression<DateTime>? lastSyncAt,
     Expression<String>? lastSyncedEventId,
+    Expression<String>? ipAddress,
+    Expression<int>? port,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -12356,6 +12441,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
       if (pairedAt != null) 'paired_at': pairedAt,
       if (lastSyncAt != null) 'last_sync_at': lastSyncAt,
       if (lastSyncedEventId != null) 'last_synced_event_id': lastSyncedEventId,
+      if (ipAddress != null) 'ip_address': ipAddress,
+      if (port != null) 'port': port,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -12366,6 +12453,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     Value<DateTime>? pairedAt,
     Value<DateTime?>? lastSyncAt,
     Value<String?>? lastSyncedEventId,
+    Value<String?>? ipAddress,
+    Value<int?>? port,
     Value<int>? rowid,
   }) {
     return SyncPeersCompanion(
@@ -12374,6 +12463,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
       pairedAt: pairedAt ?? this.pairedAt,
       lastSyncAt: lastSyncAt ?? this.lastSyncAt,
       lastSyncedEventId: lastSyncedEventId ?? this.lastSyncedEventId,
+      ipAddress: ipAddress ?? this.ipAddress,
+      port: port ?? this.port,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -12396,6 +12487,12 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
     if (lastSyncedEventId.present) {
       map['last_synced_event_id'] = Variable<String>(lastSyncedEventId.value);
     }
+    if (ipAddress.present) {
+      map['ip_address'] = Variable<String>(ipAddress.value);
+    }
+    if (port.present) {
+      map['port'] = Variable<int>(port.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -12410,6 +12507,8 @@ class SyncPeersCompanion extends UpdateCompanion<SyncPeer> {
           ..write('pairedAt: $pairedAt, ')
           ..write('lastSyncAt: $lastSyncAt, ')
           ..write('lastSyncedEventId: $lastSyncedEventId, ')
+          ..write('ipAddress: $ipAddress, ')
+          ..write('port: $port, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -23220,6 +23319,8 @@ typedef $$SyncPeersTableCreateCompanionBuilder = SyncPeersCompanion Function({
   Value<DateTime> pairedAt,
   Value<DateTime?> lastSyncAt,
   Value<String?> lastSyncedEventId,
+  Value<String?> ipAddress,
+  Value<int?> port,
   Value<int> rowid,
 });
 typedef $$SyncPeersTableUpdateCompanionBuilder = SyncPeersCompanion Function({
@@ -23228,6 +23329,8 @@ typedef $$SyncPeersTableUpdateCompanionBuilder = SyncPeersCompanion Function({
   Value<DateTime> pairedAt,
   Value<DateTime?> lastSyncAt,
   Value<String?> lastSyncedEventId,
+  Value<String?> ipAddress,
+  Value<int?> port,
   Value<int> rowid,
 });
 
@@ -23279,6 +23382,16 @@ class $$SyncPeersTableFilterComposer
 
   ColumnFilters<String> get lastSyncedEventId => $composableBuilder(
     column: $table.lastSyncedEventId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ipAddress => $composableBuilder(
+    column: $table.ipAddress,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get port => $composableBuilder(
+    column: $table.port,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -23335,6 +23448,16 @@ class $$SyncPeersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get ipAddress => $composableBuilder(
+    column: $table.ipAddress,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get port => $composableBuilder(
+    column: $table.port,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$DevicesTableOrderingComposer get peerDeviceId {
     final $$DevicesTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -23383,6 +23506,12 @@ class $$SyncPeersTableAnnotationComposer
     column: $table.lastSyncedEventId,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get ipAddress =>
+      $composableBuilder(column: $table.ipAddress, builder: (column) => column);
+
+  GeneratedColumn<int> get port =>
+      $composableBuilder(column: $table.port, builder: (column) => column);
 
   $$DevicesTableAnnotationComposer get peerDeviceId {
     final $$DevicesTableAnnotationComposer composer = $composerBuilder(
@@ -23441,6 +23570,8 @@ class $$SyncPeersTableTableManager
                 Value<DateTime> pairedAt = const Value.absent(),
                 Value<DateTime?> lastSyncAt = const Value.absent(),
                 Value<String?> lastSyncedEventId = const Value.absent(),
+                Value<String?> ipAddress = const Value.absent(),
+                Value<int?> port = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SyncPeersCompanion(
                 id: id,
@@ -23448,6 +23579,8 @@ class $$SyncPeersTableTableManager
                 pairedAt: pairedAt,
                 lastSyncAt: lastSyncAt,
                 lastSyncedEventId: lastSyncedEventId,
+                ipAddress: ipAddress,
+                port: port,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -23457,6 +23590,8 @@ class $$SyncPeersTableTableManager
                 Value<DateTime> pairedAt = const Value.absent(),
                 Value<DateTime?> lastSyncAt = const Value.absent(),
                 Value<String?> lastSyncedEventId = const Value.absent(),
+                Value<String?> ipAddress = const Value.absent(),
+                Value<int?> port = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SyncPeersCompanion.insert(
                 id: id,
@@ -23464,6 +23599,8 @@ class $$SyncPeersTableTableManager
                 pairedAt: pairedAt,
                 lastSyncAt: lastSyncAt,
                 lastSyncedEventId: lastSyncedEventId,
+                ipAddress: ipAddress,
+                port: port,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
