@@ -90,7 +90,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       );
 
       if (result == null || result.path == null) {
-        setState(() => _loading = false);
+        if (mounted) setState(() => _loading = false);
         return;
       }
 
@@ -103,7 +103,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           builder: (ctx) => AlertDialog(
             title: const Text('Restore Berhasil'),
             content: const Text(
-              'Aplikasi akan ditutup. Silakan buka kembali untuk melihat data yang dipulihkan.',
+              'Aplikasi akan ditutup. Silakan buka kembali untuk melihat '
+              'data yang dipulihkan.',
             ),
             actions: [
               ElevatedButton(
@@ -148,9 +149,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Ekspor nilai siswa untuk arsip sekolah. File CSV dapat dibuka di '
-            'Excel atau Google Sheets. Untuk rapor per siswa, gunakan menu '
-            'titik tiga di Daftar Siswa.',
+            'Ekspor nilai siswa untuk arsip sekolah. File CSV dapat dibuka '
+            'di Excel atau Google Sheets.\n\n'
+            'Tips: Jika tampilan kolom terpotong di Excel, dobel-klik header '
+            'kolom untuk auto-fit lebar.',
           ),
           const SizedBox(height: 16),
           Card(
@@ -260,7 +262,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             leading: Icon(Icons.info_outline),
             title: Text('EduMonitor'),
             subtitle: Text(
-              'Versi 0.3.0 (MVP + Sync + Laporan)\n'
+              'Versi 0.7.0 (MVP + Sync + Laporan + Installer)\n'
               'Offline-first learning & student progress monitoring.',
             ),
           ),

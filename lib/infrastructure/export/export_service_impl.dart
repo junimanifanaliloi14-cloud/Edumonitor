@@ -9,8 +9,6 @@ import '../../domain/export/export_service.dart';
 import '../database/app_database.dart';
 
 /// Builder CSV yang kompatibel dengan Excel Indonesia.
-/// - Delimiter: `;` (bukan `,`)
-/// - File disertai UTF-8 BOM agar karakter Indonesia terbaca benar
 class CsvBuilder {
   static String build(List<List<String>> rows, {String delimiter = ';'}) {
     return rows
@@ -223,7 +221,7 @@ class ExportServiceImpl implements ExportService {
   }
 
   // ==========================================
-  // CSV EXPORT
+  // CSV EXPORT — format tanggal compact
   // ==========================================
 
   @override
@@ -273,12 +271,11 @@ class ExportServiceImpl implements ExportService {
         student.displayName,
         assessment.title,
         (answer?.score ?? 0.0).toStringAsFixed(1).replaceAll('.', ','),
-        _formatDate(attempt.completedAt ?? attempt.startedAt),
+        _formatDateCompact(attempt.completedAt ?? attempt.startedAt),
       ]);
     }
 
     final csvString = CsvBuilder.build(csvData);
-    // UTF-8 BOM agar Excel Windows membaca karakter Indonesia dengan benar
     final bytes = Uint8List.fromList([
       0xEF,
       0xBB,
@@ -303,10 +300,17 @@ class ExportServiceImpl implements ExportService {
     return ExportResult(filePath: saveUri.path);
   }
 
+  /// Format panjang untuk PDF (17/11/2026)
   String _formatDate(DateTime dt) =>
       '${dt.day.toString().padLeft(2, '0')}/'
       '${dt.month.toString().padLeft(2, '0')}/'
       '${dt.year}';
+
+  /// Format pendek untuk CSV (17/11/26) — hemat lebar kolom di Excel
+  String _formatDateCompact(DateTime dt) =>
+      '${dt.day.toString().padLeft(2, '0')}/'
+      '${dt.month.toString().padLeft(2, '0')}/'
+      '${dt.year.toString().substring(2)}';
 
   String _timestamp() {
     final now = DateTime.now();

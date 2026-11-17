@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -12,6 +13,10 @@ class BackupServiceImpl implements BackupService {
   BackupServiceImpl(this._db);
   final AppDatabase _db;
 
+  // ==========================================
+  // EXPORT BACKUP (tidak berubah dari v0.6.1)
+  // ==========================================
+
   @override
   Future<String?> exportBackup() async {
     final dbFile = await getDatabaseFile();
@@ -19,27 +24,22 @@ class BackupServiceImpl implements BackupService {
       throw Exception('File database tidak ditemukan.');
     }
 
-    // 1. Buat manifest
     final manifest = {
-      'appVersion': '0.1.0',
+      'appVersion': '0.7.0',
       'schemaVersion': _db.schemaVersion,
       'timestamp': DateTime.now().toIso8601String(),
       'files': ['edumonitor.sqlite'],
     };
 
-    // 2. Baca file DB
     final dbBytes = await dbFile.readAsBytes();
     final manifestBytes = utf8.encode(jsonEncode(manifest));
 
-    // 3. Buat arsip ZIP
     final archive = Archive();
     archive.addFile(ArchiveFile.bytes('manifest.json', manifestBytes));
     archive.addFile(ArchiveFile.bytes('edumonitor.sqlite', dbBytes));
 
-    // Uint8List disediakan oleh flutter/foundation.dart, tidak perlu dart:typed_data
     final zipBytes = Uint8List.fromList(ZipEncoder().encode(archive));
 
-    // 4. Minta user memilih lokasi simpan
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final saveUri = await FilePicker.saveFile(
       dialogTitle: 'Simpan Backup EduMonitor',
@@ -47,13 +47,13 @@ class BackupServiceImpl implements BackupService {
       bytes: zipBytes,
     );
 
-    if (saveUri == null) {
-      return null; // User membatalkan dialog
-    }
-
-    // 5. Kembalikan path yang dipilih
+    if (saveUri == null) return null;
     return saveUri.path;
   }
+
+  // ==========================================
+  // IMPORT BACKUP — robust untuk Windows file locking
+  // ==========================================
 
   @override
   Future<void> importBackup(String zipPath) async {
@@ -61,10 +61,10 @@ class BackupServiceImpl implements BackupService {
       throw Exception('Restore hanya tersedia di Android/Windows.');
     }
 
+    // 1. Baca & validasi zip
     final zipBytes = await File(zipPath).readAsBytes();
     final archive = ZipDecoder().decodeBytes(zipBytes);
 
-    // 1. Validasi manifest
     final manifestEntry = archive.findFile('manifest.json');
     if (manifestEntry == null) {
       throw Exception(
@@ -79,21 +79,75 @@ class BackupServiceImpl implements BackupService {
 
     if (backupSchemaVersion != _db.schemaVersion) {
       throw Exception(
-        'Versi backup ($backupSchemaVersion) tidak cocok dengan aplikasi (${_db.schemaVersion}).',
+        'Versi backup ($backupSchemaVersion) tidak cocok dengan aplikasi '
+        '(${_db.schemaVersion}). Backup mungkin dari versi lama.',
       );
     }
 
-    // 2. Ambil file DB
     final dbEntry = archive.findFile('edumonitor.sqlite');
     if (dbEntry == null) {
       throw Exception('Database tidak ditemukan dalam backup.');
     }
 
     final dbContent = dbEntry.content as List<int>;
-
-    // 3. Tutup database, ganti file
     final dbFile = await getDatabaseFile();
-    await _db.close();
-    await dbFile.writeAsBytes(dbContent, flush: true);
+
+    // 2. Close database dengan timeout — jangan biarkan hang selamanya
+    try {
+      await _db.close().timeout(const Duration(seconds: 3));
+    } on TimeoutException {
+      // Timeout dianggap "close sudah dalam proses". Kita lanjut.
+    } catch (_) {
+      // Error apapun saat close, kita coba lanjut juga.
+    }
+
+    // 3. Beri waktu OS Windows release file handle
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // 4. Hapus file lama dengan retry
+    await _deleteWithRetry(dbFile);
+
+    // 5. Tulis file baru dengan retry
+    await _writeWithRetry(dbFile, dbContent);
+  }
+
+  Future<void> _deleteWithRetry(File file, {int attempts = 5}) async {
+    for (var i = 0; i < attempts; i++) {
+      try {
+        if (await file.exists()) {
+          await file.delete();
+        }
+        return;
+      } catch (e) {
+        if (i == attempts - 1) {
+          throw Exception(
+            'Gagal menghapus database lama setelah $attempts percobaan: $e',
+          );
+        }
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+    }
+  }
+
+  Future<void> _writeWithRetry(
+    File file,
+    List<int> bytes, {
+    int attempts = 5,
+  }) async {
+    for (var i = 0; i < attempts; i++) {
+      try {
+        await file
+            .writeAsBytes(bytes, flush: true)
+            .timeout(const Duration(seconds: 5));
+        return;
+      } catch (e) {
+        if (i == attempts - 1) {
+          throw Exception(
+            'Gagal menulis database baru setelah $attempts percobaan: $e',
+          );
+        }
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+    }
   }
 }
