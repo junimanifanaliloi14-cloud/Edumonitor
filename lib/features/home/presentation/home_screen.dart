@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../dashboard/presentation/dashboard_screen.dart';
-import '../../students/presentation/student_list_screen.dart';
-import '../../curriculum/presentation/subject_list_screen.dart';
-import '../../documents/presentation/document_list_screen.dart';
 import '../../assessments/presentation/assessment_list_screen.dart';
+import '../../curriculum/presentation/subject_list_screen.dart';
+import '../../dashboard/presentation/dashboard_screen.dart';
+import '../../documents/presentation/document_list_screen.dart';
+import '../../students/presentation/student_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,13 +16,20 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _screens = [
-    DashboardScreen(),
-    StudentListScreen(),
-    SubjectListScreen(),
-    DocumentListScreen(),
-    AssessmentListScreen(),
-  ];
+  void _navigateToTab(int index) {
+    if (index < 0 || index > 4) return;
+    setState(() => _selectedIndex = index);
+  }
+
+  List<Widget> _buildScreens() {
+    return [
+      DashboardScreen(onNavigateToTab: _navigateToTab),
+      const StudentListScreen(),
+      const SubjectListScreen(),
+      const DocumentListScreen(),
+      const AssessmentListScreen(),
+    ];
+  }
 
   static const List<NavigationDestination> _destinations = [
     NavigationDestination(
@@ -54,23 +61,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // LayoutBuilder mendeteksi lebar layar
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Jika lebar > 800 (PC/Desktop), gunakan NavigationRail (menu samping)
-        final isDesktop = constraints.maxWidth >= 800;
+        final isLandscape = constraints.maxWidth > constraints.maxHeight;
+        final isWide = constraints.maxWidth >= 900;
+        // Rail hanya untuk landscape yang lebar (tablet landscape, PC)
+        final useRail = isLandscape && isWide;
 
-        if (isDesktop) {
+        final screens = _buildScreens();
+
+        if (useRail) {
           return Scaffold(
             body: Row(
               children: [
                 NavigationRail(
                   selectedIndex: _selectedIndex,
-                  onDestinationSelected: (int index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
+                  onDestinationSelected: _navigateToTab,
                   labelType: NavigationRailLabelType.all,
                   backgroundColor: Colors.grey.shade100,
                   destinations: _destinations.map((dest) {
@@ -82,23 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   }).toList(),
                 ),
                 const VerticalDivider(thickness: 1, width: 1),
-                // Konten utama
-                Expanded(child: _screens[_selectedIndex]),
+                Expanded(child: screens[_selectedIndex]),
               ],
             ),
           );
         }
 
-        // Jika layar kecil (Tablet/HP), gunakan Bottom Navigation Bar
+        // Bottom nav: portrait semua device + landscape sempit
         return Scaffold(
-          body: _screens[_selectedIndex],
+          body: screens[_selectedIndex],
           bottomNavigationBar: NavigationBar(
             selectedIndex: _selectedIndex,
-            onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
+            onDestinationSelected: _navigateToTab,
             destinations: _destinations,
           ),
         );

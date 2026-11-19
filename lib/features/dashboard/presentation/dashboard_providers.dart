@@ -9,8 +9,8 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
   return DashboardRepositoryImpl(db);
 });
 
-// Menggunakan FutureProvider agar data bisa di-refresh (pull-to-refresh nanti)
-final dashboardStatsProvider = FutureProvider<Map<String, int>>((ref) async {
+/// StreamProvider: setiap kali DB berubah, dashboard auto-update.
+final dashboardStatsProvider = StreamProvider<Map<String, int>>((ref) {
   final repo = ref.watch(dashboardRepositoryProvider);
-  return repo.getDashboardStats();
+  return repo.watchDashboardStats();
 });

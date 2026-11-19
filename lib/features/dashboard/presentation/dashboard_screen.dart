@@ -5,7 +5,9 @@ import '../../settings/presentation/settings_screen.dart';
 import 'dashboard_providers.dart';
 
 class DashboardScreen extends ConsumerWidget {
-  const DashboardScreen({super.key});
+  final void Function(int tabIndex)? onNavigateToTab;
+
+  const DashboardScreen({super.key, this.onNavigateToTab});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,6 +21,7 @@ class DashboardScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
             onPressed: () => ref.invalidate(dashboardStatsProvider),
           ),
           IconButton(
@@ -46,6 +49,11 @@ class DashboardScreen extends ConsumerWidget {
                   'Ringkasan Data',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Ketuk kartu untuk membuka detail',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
                 const SizedBox(height: 16),
                 GridView.count(
                   crossAxisCount: 2,
@@ -60,30 +68,35 @@ class DashboardScreen extends ConsumerWidget {
                       value: stats['students'].toString(),
                       icon: Icons.people,
                       color: Colors.blue,
+                      onTap: () => onNavigateToTab?.call(1),
                     ),
                     _StatCard(
                       title: 'Mata Pelajaran',
                       value: stats['subjects'].toString(),
                       icon: Icons.menu_book,
                       color: Colors.orange,
+                      onTap: () => onNavigateToTab?.call(2),
                     ),
                     _StatCard(
                       title: 'Materi',
                       value: stats['documents'].toString(),
                       icon: Icons.folder,
                       color: Colors.purple,
+                      onTap: () => onNavigateToTab?.call(3),
                     ),
                     _StatCard(
                       title: 'Soal Dibuat',
                       value: stats['questions'].toString(),
                       icon: Icons.quiz,
                       color: Colors.green,
+                      onTap: () => onNavigateToTab?.call(2),
                     ),
                     _StatCard(
                       title: 'Asesmen',
                       value: stats['assessments'].toString(),
                       icon: Icons.assignment,
                       color: Colors.red,
+                      onTap: () => onNavigateToTab?.call(4),
                     ),
                   ],
                 ),
@@ -105,8 +118,9 @@ class DashboardScreen extends ConsumerWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'Mulai dengan menambahkan Siswa, membuat Mata Pelajaran, dan mengunggah Materi. '
-                          'Sistem akan membantu Anda membuat soal secara otomatis dari materi tersebut.',
+                          'Mulai dengan menambahkan Siswa, membuat Mata Pelajaran, '
+                          'dan mengunggah Materi. Sistem akan membantu Anda membuat '
+                          'soal secara otomatis dari materi tersebut.',
                           style: TextStyle(height: 1.5),
                         ),
                       ],
@@ -129,40 +143,46 @@ class _StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   const _StatCard({
     required this.title,
     required this.value,
     required this.icon,
     required this.color,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 36, color: color),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: color,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 36, color: color),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
         ),
       ),
     );
