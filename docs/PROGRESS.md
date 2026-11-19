@@ -83,3 +83,7 @@ Format: [YYYY-MM-DD HH:MM] [PHASE-X] [ACTION] hasil ringkas
 - [2026-11-16] [PHASE-13B] [DONE] Filter chip: Semua/Draft/Terverifikasi
 - [2026-11-16] [PHASE-13B] [DONE] Generator prioritaskan verified distraktor + warning draft
 - [2026-11-16] [PHASE-13B] [DONE] Riverpod 3 NotifierProvider, switch expression
+
+## Phase 16 Sesi 1 — Reporting Data Layer
+- [2026-11-19] [PHASE-16] [DONE] ReportingRepository: metrics + trend + attention list
+- [2026-11-19] [PHASE-16] [DONE] 5 test baru (empty db, average, attention, pending q, trend)
