@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../../export/presentation/export_providers.dart';
 import '../../sync/presentation/sync_screen.dart';
+import 'auto_backup_screen.dart';
 import 'settings_providers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -254,6 +255,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 32),
+          Card(
+            child: ListTile(
+              leading: const Icon(
+                Icons.autorenew,
+                color: Colors.purple,
+                size: 32,
+              ),
+              title: const Text('Backup Otomatis'),
+              subtitle: const Text('Harian, maksimal 5 backup tersimpan'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AutoBackupScreen()),
+                );
+              },
+            ),
+          ),
           const Divider(),
           const SizedBox(height: 16),
           const Text(

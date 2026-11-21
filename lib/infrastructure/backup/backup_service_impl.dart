@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 import '../../../domain/backup/backup_service.dart';
 import '../database/app_database.dart';
@@ -13,8 +15,13 @@ class BackupServiceImpl implements BackupService {
   BackupServiceImpl(this._db);
   final AppDatabase _db;
 
+  static const _autoBackupEnabledKey = 'auto_backup_enabled';
+  static const _autoBackupLastAtKey = 'auto_backup_last_at';
+  static const _autoBackupIntervalHours = 24;
+  static const _maxAutoBackups = 5;
+
   // ==========================================
-  // EXPORT BACKUP (tidak berubah dari v0.6.1)
+  // MANUAL EXPORT (tidak berubah dari v0.7.0)
   // ==========================================
 
   @override
@@ -25,7 +32,7 @@ class BackupServiceImpl implements BackupService {
     }
 
     final manifest = {
-      'appVersion': '0.7.0',
+      'appVersion': '1.1.0',
       'schemaVersion': _db.schemaVersion,
       'timestamp': DateTime.now().toIso8601String(),
       'files': ['edumonitor.sqlite'],
@@ -52,7 +59,7 @@ class BackupServiceImpl implements BackupService {
   }
 
   // ==========================================
-  // IMPORT BACKUP — robust untuk Windows file locking
+  // IMPORT (tidak berubah dari v0.7.0)
   // ==========================================
 
   @override
@@ -61,7 +68,6 @@ class BackupServiceImpl implements BackupService {
       throw Exception('Restore hanya tersedia di Android/Windows.');
     }
 
-    // 1. Baca & validasi zip
     final zipBytes = await File(zipPath).readAsBytes();
     final archive = ZipDecoder().decodeBytes(zipBytes);
 
@@ -92,22 +98,16 @@ class BackupServiceImpl implements BackupService {
     final dbContent = dbEntry.content as List<int>;
     final dbFile = await getDatabaseFile();
 
-    // 2. Close database dengan timeout — jangan biarkan hang selamanya
     try {
       await _db.close().timeout(const Duration(seconds: 3));
     } on TimeoutException {
-      // Timeout dianggap "close sudah dalam proses". Kita lanjut.
+      // Timeout dianggap close sudah dalam proses. Lanjut.
     } catch (_) {
-      // Error apapun saat close, kita coba lanjut juga.
+      // Error apapun saat close, coba lanjut.
     }
 
-    // 3. Beri waktu OS Windows release file handle
     await Future.delayed(const Duration(milliseconds: 500));
-
-    // 4. Hapus file lama dengan retry
     await _deleteWithRetry(dbFile);
-
-    // 5. Tulis file baru dengan retry
     await _writeWithRetry(dbFile, dbContent);
   }
 
@@ -150,4 +150,156 @@ class BackupServiceImpl implements BackupService {
       }
     }
   }
+
+  // ==========================================
+  // AUTO-BACKUP (Phase 17D — baru)
+  // ==========================================
+
+  @override
+  Future<bool> isAutoBackupEnabled() async {
+    final row = await (_db.select(
+      _db.appSettings,
+    )..where((t) => t.key.equals(_autoBackupEnabledKey))).getSingleOrNull();
+    if (row == null) return true; // Default: aktif
+    return row.value == 'true';
+  }
+
+  @override
+  Future<void> setAutoBackupEnabled(bool enabled) async {
+    await _upsertSetting(_autoBackupEnabledKey, enabled ? 'true' : 'false');
+  }
+
+  @override
+  Future<DateTime?> getLastAutoBackupAt() async {
+    final row = await (_db.select(
+      _db.appSettings,
+    )..where((t) => t.key.equals(_autoBackupLastAtKey))).getSingleOrNull();
+    if (row == null) return null;
+    return DateTime.tryParse(row.value);
+  }
+
+  Future<void> _upsertSetting(String key, String value) async {
+    await _db
+        .into(_db.appSettings)
+        .insertOnConflictUpdate(
+          AppSettingsCompanion.insert(key: key, value: value),
+        );
+  }
+
+  Future<Directory> _getBackupDir() async {
+    final support = await getApplicationSupportDirectory();
+    final dir = Directory(p.join(support.path, 'edumonitor_backups'));
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    return dir;
+  }
+
+  @override
+  Future<AutoBackupResult?> runAutoBackupIfDue() async {
+    if (!await isAutoBackupEnabled()) return null;
+
+    final lastAt = await getLastAutoBackupAt();
+    final now = DateTime.now();
+    if (lastAt != null) {
+      final since = now.difference(lastAt);
+      if (since.inHours < _autoBackupIntervalHours) return null;
+    }
+
+    final dbFile = await getDatabaseFile();
+    if (!await dbFile.exists()) return null;
+
+    final dir = await _getBackupDir();
+    final file = File(
+      p.join(dir.path, 'autobackup_${_fileTimestamp(now)}.zip'),
+    );
+
+    final manifest = {
+      'appVersion': '1.1.0',
+      'schemaVersion': _db.schemaVersion,
+      'timestamp': now.toIso8601String(),
+      'autoBackup': true,
+    };
+    final manifestBytes = utf8.encode(jsonEncode(manifest));
+    final dbBytes = await dbFile.readAsBytes();
+
+    final archive = Archive();
+    archive.addFile(ArchiveFile.bytes('manifest.json', manifestBytes));
+    archive.addFile(ArchiveFile.bytes('edumonitor.sqlite', dbBytes));
+    final zipBytes = Uint8List.fromList(ZipEncoder().encode(archive));
+
+    await file.writeAsBytes(zipBytes, flush: true);
+
+    final removed = await _rotateBackups(dir);
+    await _upsertSetting(_autoBackupLastAtKey, now.toIso8601String());
+
+    return AutoBackupResult(
+      filePath: file.path,
+      createdAt: now,
+      removedOldCount: removed,
+    );
+  }
+
+  Future<int> _rotateBackups(Directory dir) async {
+    final files = await dir
+        .list()
+        .where((e) => e is File && e.path.endsWith('.zip'))
+        .cast<File>()
+        .toList();
+    if (files.length <= _maxAutoBackups) return 0;
+
+    final stats = <_FileStat>[];
+    for (final f in files) {
+      stats.add(_FileStat(file: f, modified: (await f.stat()).modified));
+    }
+    stats.sort((a, b) => a.modified.compareTo(b.modified));
+
+    var removed = 0;
+    final toRemove = stats.length - _maxAutoBackups;
+    for (var i = 0; i < toRemove; i++) {
+      try {
+        await stats[i].file.delete();
+        removed++;
+      } catch (_) {}
+    }
+    return removed;
+  }
+
+  @override
+  Future<List<AutoBackupInfo>> listAutoBackups() async {
+    final dir = await _getBackupDir();
+    final files = await dir
+        .list()
+        .where((e) => e is File && e.path.endsWith('.zip'))
+        .cast<File>()
+        .toList();
+
+    final infos = <AutoBackupInfo>[];
+    for (final f in files) {
+      final stat = await f.stat();
+      infos.add(
+        AutoBackupInfo(
+          filePath: f.path,
+          createdAt: stat.modified,
+          sizeBytes: stat.size,
+        ),
+      );
+    }
+    infos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return infos;
+  }
+
+  String _fileTimestamp(DateTime dt) =>
+      '${dt.year}'
+      '${dt.month.toString().padLeft(2, '0')}'
+      '${dt.day.toString().padLeft(2, '0')}_'
+      '${dt.hour.toString().padLeft(2, '0')}'
+      '${dt.minute.toString().padLeft(2, '0')}'
+      '${dt.second.toString().padLeft(2, '0')}';
+}
+
+class _FileStat {
+  _FileStat({required this.file, required this.modified});
+  final File file;
+  final DateTime modified;
 }

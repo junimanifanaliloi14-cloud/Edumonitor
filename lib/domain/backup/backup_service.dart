@@ -1,7 +1,32 @@
-abstract interface class BackupService {
-  /// Menyimpan backup ke lokasi pilihan user. Return path atau null jika dibatalkan.
-  Future<String?> exportBackup();
+class AutoBackupInfo {
+  const AutoBackupInfo({
+    required this.filePath,
+    required this.createdAt,
+    required this.sizeBytes,
+  });
+  final String filePath;
+  final DateTime createdAt;
+  final int sizeBytes;
+}
 
-  /// Memulihkan database dari file backup. Wajib restart aplikasi setelahnya.
+class AutoBackupResult {
+  const AutoBackupResult({
+    required this.filePath,
+    required this.createdAt,
+    required this.removedOldCount,
+  });
+  final String filePath;
+  final DateTime createdAt;
+  final int removedOldCount;
+}
+
+abstract interface class BackupService {
+  Future<String?> exportBackup();
   Future<void> importBackup(String zipPath);
+
+  Future<bool> isAutoBackupEnabled();
+  Future<void> setAutoBackupEnabled(bool enabled);
+  Future<DateTime?> getLastAutoBackupAt();
+  Future<AutoBackupResult?> runAutoBackupIfDue();
+  Future<List<AutoBackupInfo>> listAutoBackups();
 }
