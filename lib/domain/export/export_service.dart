@@ -31,13 +31,58 @@ class StudentReport {
       : rows.map((r) => r.score).reduce((a, b) => a + b) / rows.length;
 }
 
+/// Model untuk laporan kelas (matriks nilai semua siswa × semua asesmen).
+class ClassReportData {
+  const ClassReportData({
+    required this.assessmentTitles,
+    required this.studentRows,
+  });
+
+  /// Judul asesmen (kolom), maks 8 agar PDF muat di A4 landscape.
+  final List<String> assessmentTitles;
+
+  /// Baris per siswa dengan nilai untuk masing-masing asesmen.
+  final List<ClassReportRow> studentRows;
+
+  double get classAverage {
+    final allScores = studentRows
+        .expand((r) => r.scores)
+        .whereType<double>()
+        .toList();
+    if (allScores.isEmpty) return 0.0;
+    return allScores.reduce((a, b) => a + b) / allScores.length;
+  }
+}
+
+class ClassReportRow {
+  const ClassReportRow({
+    required this.studentId,
+    required this.studentName,
+    required this.scores,
+  });
+
+  final String studentId;
+  final String studentName;
+
+  /// Selaras dengan ClassReportData.assessmentTitles. null = belum dikerjakan.
+  final List<double?> scores;
+
+  double? get average {
+    final filled = scores.whereType<double>().toList();
+    if (filled.isEmpty) return null;
+    return filled.reduce((a, b) => a + b) / filled.length;
+  }
+}
+
 abstract interface class ExportService {
-  /// Mengembalikan data untuk rapor satu siswa.
   Future<StudentReport> buildStudentReport(String studentId);
 
-  /// Ekspor semua nilai ke CSV. Return path atau null jika user batal.
+  /// Bangun data matriks kelas dari semua attempt.
+  Future<ClassReportData> buildClassReport({int maxColumns = 8});
+
   Future<ExportResult?> exportAllScoresToCsv();
 
-  /// Ekspor rapor satu siswa ke PDF. Return path atau null jika user batal.
   Future<ExportResult?> exportStudentReportToPdf(String studentId);
+
+  Future<ExportResult?> exportClassReportToPdf();
 }

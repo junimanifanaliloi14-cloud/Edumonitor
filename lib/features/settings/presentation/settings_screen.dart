@@ -54,6 +54,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _handleExportClassPdf() async {
+    setState(() => _loading = true);
+    try {
+      final result = await ref
+          .read(exportServiceProvider)
+          .exportClassReportToPdf();
+      if (result != null && mounted) {
+        AppSnackbar.success(
+          context,
+          'Laporan PDF tersimpan di: ${result.filePath}',
+        );
+      }
+    } catch (e) {
+      if (mounted) AppSnackbar.error(context, 'Gagal ekspor PDF: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   Future<void> _handleRestore() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -148,12 +167,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Ekspor nilai siswa untuk arsip sekolah. File CSV dapat dibuka '
-            'di Excel atau Google Sheets.\n\n'
-            'Tips: Jika tampilan kolom terpotong di Excel, dobel-klik header '
-            'kolom untuk auto-fit lebar.',
-          ),
+          const Text('Ekspor nilai siswa untuk arsip sekolah.'),
           const SizedBox(height: 16),
           Card(
             child: ListTile(
@@ -174,6 +188,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onTap: _loading ? null : _handleExportCsv,
             ),
           ),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: const Icon(
+                Icons.picture_as_pdf,
+                color: Colors.red,
+                size: 32,
+              ),
+              title: const Text('Ekspor Laporan Kelas PDF'),
+              subtitle: const Text('Matriks nilai semua siswa × semua asesmen'),
+              trailing: _loading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: _loading ? null : _handleExportClassPdf,
+            ),
+          ),
           const SizedBox(height: 32),
           const Divider(),
           const SizedBox(height: 16),
@@ -182,12 +216,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Simpan salinan data Anda secara berkala ke lokasi aman '
-            '(Flashdisk, Google Drive, dsb). Gunakan Restore jika Anda '
-            'ingin memulihkan data dari backup sebelumnya.',
-          ),
-          const SizedBox(height: 24),
+          const Text('Simpan salinan data secara berkala ke lokasi aman.'),
+          const SizedBox(height: 16),
           Card(
             child: ListTile(
               leading: const Icon(Icons.backup, color: Colors.teal, size: 32),
@@ -203,7 +233,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onTap: _loading ? null : _handleBackup,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Card(
             child: ListTile(
               leading: const Icon(
@@ -232,8 +262,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Sinkronkan data antara PC dan Tablet lewat jaringan Wi-Fi/LAN '
-            'lokal. Tidak memerlukan internet.',
+            'Sinkronkan data antara PC dan Tablet lewat Wi-Fi/LAN lokal.',
           ),
           const SizedBox(height: 16),
           Card(
@@ -251,18 +280,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 32),
-          const Divider(),
-          const SizedBox(height: 16),
-          const Text(
-            'Tentang Aplikasi',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
           const ListTile(
             leading: Icon(Icons.info_outline),
             title: Text('EduMonitor'),
             subtitle: Text(
-              'Versi 0.7.0 (MVP + Sync + Laporan + Installer)\n'
+              'Versi 1.1.0 (MVP + Reporting + Question Editing)\n'
               'Offline-first learning & student progress monitoring.',
             ),
           ),
