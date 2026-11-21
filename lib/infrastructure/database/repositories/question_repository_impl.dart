@@ -40,4 +40,35 @@ class QuestionRepositoryImpl implements QuestionRepository {
           ),
         );
   }
+
+  @override
+  Future<void> updateQuestion({
+    required String id,
+    String? contentJson,
+    String? answerJson,
+    String? status,
+  }) async {
+    await (_db.update(_db.questions)..where((t) => t.id.equals(id))).write(
+      QuestionsCompanion(
+        contentJson: contentJson != null
+            ? Value(contentJson)
+            : const Value.absent(),
+        answerJson: answerJson != null
+            ? Value(answerJson)
+            : const Value.absent(),
+        status: status != null ? Value(status) : const Value.absent(),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteQuestion(String id) async {
+    await (_db.update(_db.questions)..where((t) => t.id.equals(id))).write(
+      QuestionsCompanion(
+        deletedAt: Value(DateTime.now()),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
 }

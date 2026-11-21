@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../infrastructure/database/app_database.dart';
 import '../../assessments/presentation/assessment_providers.dart';
+import '../../questions/presentation/question_edit_screen.dart';
 import '../../questions/presentation/question_generator.dart';
 import '../../questions/presentation/question_providers.dart';
 import 'knowledge_providers.dart';
@@ -155,6 +156,10 @@ class _KnowledgeTab extends ConsumerWidget {
   }
 }
 
+// ==========================================
+// REUSABLE FILTER CHIP
+// ==========================================
+
 class _FilterChip extends StatelessWidget {
   final String label;
   final bool selected;
@@ -176,6 +181,10 @@ class _FilterChip extends StatelessWidget {
     );
   }
 }
+
+// ==========================================
+// KNOWLEDGE CARD
+// ==========================================
 
 class _KnowledgeCard extends ConsumerWidget {
   final Topic topic;
@@ -283,8 +292,6 @@ class _KnowledgeCard extends ConsumerWidget {
     );
   }
 
-  /// Menampilkan warning jika knowledge item berstatus draft, lalu return true
-  /// jika user tetap ingin melanjutkan.
   Future<bool> _confirmDraftGeneration(BuildContext context) async {
     if (item.status == 'verified') return true;
 
@@ -395,7 +402,6 @@ class _KnowledgeCard extends ConsumerWidget {
           .read(knowledgeRepositoryProvider)
           .getOtherKnowledgeInTopic(topic.id, item.id);
 
-      // Prioritaskan distraktor dari knowledge verified
       final verifiedOthers = allOthers
           .where((o) => o.status == 'verified')
           .toList();
@@ -523,7 +529,7 @@ class _StatusBadge extends StatelessWidget {
 }
 
 // ==========================================
-// QUESTION BANK TAB (unchanged)
+// QUESTION BANK TAB (Phase 17A — dengan filter + edit/delete)
 // ==========================================
 
 class _QuestionBankTab extends ConsumerWidget {
@@ -533,22 +539,43 @@ class _QuestionBankTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final questionsAsync = ref.watch(questionListProvider(topic.id));
+    final filter = ref.watch(questionFilterProvider);
 
     return questionsAsync.when(
-      data: (questions) {
-        if (questions.isEmpty) {
+      data: (allQuestions) {
+        if (allQuestions.isEmpty) {
           return const Center(
             child: Text('Belum ada soal. Generate dari tab Pengetahuan.'),
           );
         }
+
+        final questions = allQuestions.where((q) {
+          if (filter == QuestionFilter.all) return true;
+          final m = jsonDecode(q.contentJson) as Map<String, dynamic>;
+          final type = (m['questionType'] as String?) ?? 'multipleChoice';
+          if (filter == QuestionFilter.multipleChoice) {
+            return type == 'multipleChoice';
+          }
+          return type == 'trueFalse';
+        }).toList();
+
+        final pgCount = allQuestions.where((q) {
+          final m = jsonDecode(q.contentJson) as Map<String, dynamic>;
+          return ((m['questionType'] as String?) ?? 'multipleChoice') ==
+              'multipleChoice';
+        }).length;
+        final tfCount = allQuestions.length - pgCount;
+
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
               child: ElevatedButton.icon(
-                onPressed: () => _createAssessment(context, ref, questions),
+                onPressed: () => _createAssessment(context, ref, allQuestions),
                 icon: const Icon(Icons.playlist_add_check),
-                label: Text('Jadikan Paket Ujian (${questions.length} Soal)'),
+                label: Text(
+                  'Jadikan Paket Ujian (${allQuestions.length} Soal)',
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: Colors.white,
@@ -556,18 +583,61 @@ class _QuestionBankTab extends ConsumerWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                itemCount: questions.length,
-                itemBuilder: (context, index) {
-                  return _QuestionCard(
-                    index: index,
-                    question: questions[index],
-                  );
-                },
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _FilterChip(
+                      label: 'Semua (${allQuestions.length})',
+                      selected: filter == QuestionFilter.all,
+                      onTap: () => ref
+                          .read(questionFilterProvider.notifier)
+                          .setFilter(QuestionFilter.all),
+                    ),
+                    const SizedBox(width: 8),
+                    _FilterChip(
+                      label: 'PG ($pgCount)',
+                      selected: filter == QuestionFilter.multipleChoice,
+                      onTap: () => ref
+                          .read(questionFilterProvider.notifier)
+                          .setFilter(QuestionFilter.multipleChoice),
+                    ),
+                    const SizedBox(width: 8),
+                    _FilterChip(
+                      label: 'B/S ($tfCount)',
+                      selected: filter == QuestionFilter.trueFalse,
+                      onTap: () => ref
+                          .read(questionFilterProvider.notifier)
+                          .setFilter(QuestionFilter.trueFalse),
+                    ),
+                  ],
+                ),
               ),
             ),
+            if (questions.isEmpty)
+              const Expanded(
+                child: Center(
+                  child: Text(
+                    'Tidak ada soal di filter ini.',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              )
+            else
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: questions.length,
+                  itemBuilder: (context, index) {
+                    return _QuestionCard(
+                      index: index,
+                      question: questions[index],
+                    );
+                  },
+                ),
+              ),
           ],
         );
       },
@@ -626,13 +696,17 @@ class _QuestionBankTab extends ConsumerWidget {
   }
 }
 
-class _QuestionCard extends StatelessWidget {
+// ==========================================
+// QUESTION CARD (dengan edit + delete)
+// ==========================================
+
+class _QuestionCard extends ConsumerWidget {
   final int index;
   final Question question;
   const _QuestionCard({required this.index, required this.question});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final contentMap = jsonDecode(question.contentJson) as Map<String, dynamic>;
     final textBlock =
         (contentMap['blocks'] as List).first as Map<String, dynamic>;
@@ -655,7 +729,6 @@ class _QuestionCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Soal #${index + 1}',
@@ -664,10 +737,29 @@ class _QuestionCard extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
+                const SizedBox(width: 8),
                 Chip(
                   label: Text(typeLabel),
                   backgroundColor: typeColor,
                   labelStyle: const TextStyle(fontSize: 10),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                  tooltip: 'Edit soal',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => QuestionEditScreen(question: question),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                  tooltip: 'Hapus soal',
+                  onPressed: () => _confirmDelete(context, ref),
                 ),
               ],
             ),
@@ -677,26 +769,68 @@ class _QuestionCard extends StatelessWidget {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(options.length, (i) {
-                final isCorrect = i == correctIndex;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Text(
-                    '${isCorrect ? "✓" : "○"} ${options[i]}',
-                    style: TextStyle(
-                      color: isCorrect ? Colors.green : Colors.black87,
-                      fontWeight: isCorrect
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+            ...List.generate(options.length, (i) {
+              final isCorrect = i == correctIndex;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      isCorrect
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color: isCorrect ? Colors.green : Colors.grey,
+                      size: 20,
                     ),
-                  ),
-                );
-              }),
-            ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        options[i],
+                        style: TextStyle(
+                          color: isCorrect ? Colors.green : Colors.black87,
+                          fontWeight: isCorrect
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
           ],
         ),
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus Soal?'),
+        content: const Text(
+          'Soal ini akan dihapus dari bank soal. '
+          'Data asesmen historis yang sudah memakai soal ini TIDAK terpengaruh '
+          '(karena memakai snapshot immutable).',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () async {
+              await ref
+                  .read(questionRepositoryProvider)
+                  .deleteQuestion(question.id);
+              if (ctx.mounted) Navigator.pop(ctx);
+            },
+            child: const Text('Hapus', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
