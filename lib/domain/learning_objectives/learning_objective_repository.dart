@@ -2,6 +2,9 @@ import '../../infrastructure/database/app_database.dart';
 
 abstract interface class LearningObjectiveRepository {
   Stream<List<LearningObjective>> watchLearningObjectives(String classroomId);
+  Stream<List<LearningObjective>> watchLearningObjectivesByTopic(
+    String topicId,
+  );
 
   Future<void> createLearningObjective({
     required String classroomId,

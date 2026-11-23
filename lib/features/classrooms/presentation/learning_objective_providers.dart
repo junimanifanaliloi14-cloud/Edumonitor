@@ -17,3 +17,10 @@ final learningObjectiveListProvider =
           .watch(learningObjectiveRepositoryProvider)
           .watchLearningObjectives(classroomId);
     });
+
+final learningObjectivesByTopicProvider =
+    StreamProvider.family<List<LearningObjective>, String>((ref, topicId) {
+      return ref
+          .watch(learningObjectiveRepositoryProvider)
+          .watchLearningObjectivesByTopic(topicId);
+    });

@@ -24,6 +24,7 @@ class AssessmentRepositoryImpl implements AssessmentRepository {
   Future<void> createAssessmentFromQuestions({
     required String title,
     required List<Question> questions,
+    String? learningObjectiveId,
   }) async {
     if (questions.isEmpty) {
       throw Exception('Tidak ada soal untuk dijadikan ujian.');
@@ -35,7 +36,13 @@ class AssessmentRepositoryImpl implements AssessmentRepository {
     // 1. Buat Assessment
     await _db
         .into(_db.assessments)
-        .insert(AssessmentsCompanion.insert(id: assessmentId, title: title));
+        .insert(
+          AssessmentsCompanion.insert(
+            id: assessmentId,
+            title: title,
+            learningObjectiveId: Value(learningObjectiveId),
+          ),
+        );
 
     // 2. Buat AssessmentSnapshot (Immutable)
     await _db

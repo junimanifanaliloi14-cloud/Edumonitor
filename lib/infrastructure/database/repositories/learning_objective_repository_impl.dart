@@ -76,4 +76,14 @@ class LearningObjectiveRepositoryImpl implements LearningObjectiveRepository {
       ),
     );
   }
+
+  @override
+  Stream<List<LearningObjective>> watchLearningObjectivesByTopic(
+    String topicId,
+  ) {
+    return (_db.select(_db.learningObjectives)
+          ..where((t) => t.topicId.equals(topicId) & t.deletedAt.isNull())
+          ..orderBy([(t) => OrderingTerm(expression: t.sequence)]))
+        .watch();
+  }
 }

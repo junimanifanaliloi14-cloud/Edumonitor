@@ -9,6 +9,7 @@ import '../../questions/presentation/question_edit_screen.dart';
 import '../../questions/presentation/question_generator.dart';
 import '../../questions/presentation/question_providers.dart';
 import 'knowledge_providers.dart';
+import '../../classrooms/presentation/learning_objective_providers.dart';
 
 const _typeLabels = <String, String>{
   'concept': 'Konsep',
@@ -652,24 +653,92 @@ class _QuestionBankTab extends ConsumerWidget {
     List<Question> questions,
   ) async {
     final titleController = TextEditingController(text: 'Ujian ${topic.name}');
+    String? selectedLoId;
+
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Buat Paket Ujian'),
-        content: TextField(
-          controller: titleController,
-          decoration: const InputDecoration(labelText: 'Judul Ujian'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Simpan'),
-          ),
-        ],
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setState) {
+          final losAsync = ref.watch(
+            learningObjectivesByTopicProvider(topic.id),
+          );
+
+          return AlertDialog(
+            title: const Text('Buat Paket Ujian'),
+            content: SingleChildScrollView(
+              child: SizedBox(
+                width: 450,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Judul Ujian',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    losAsync.when(
+                      data: (los) {
+                        if (los.isEmpty) {
+                          return Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text(
+                              'Tidak ada Tujuan Pembelajaran untuk topik ini.\n'
+                              'Buat TP di menu Kelas → [kelas] → Tujuan Pembelajaran, '
+                              'dan pastikan TP terkait topik ini.',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          );
+                        }
+                        return DropdownButtonFormField<String>(
+                          initialValue: selectedLoId,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Tujuan Pembelajaran (Opsional)',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: los
+                              .map(
+                                (lo) => DropdownMenuItem(
+                                  value: lo.id,
+                                  child: Text(
+                                    '${lo.code} - ${lo.description}',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (v) => setState(() => selectedLoId = v),
+                        );
+                      },
+                      loading: () => const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                      error: (e, _) => Text('Error: $e'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Batal'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Simpan'),
+              ),
+            ],
+          );
+        },
       ),
     );
 
@@ -681,6 +750,7 @@ class _QuestionBankTab extends ConsumerWidget {
           .createAssessmentFromQuestions(
             title: titleController.text.trim(),
             questions: questions,
+            learningObjectiveId: selectedLoId,
           );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

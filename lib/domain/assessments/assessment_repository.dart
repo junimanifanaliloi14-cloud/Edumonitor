@@ -5,6 +5,7 @@ abstract interface class AssessmentRepository {
   Future<void> createAssessmentFromQuestions({
     required String title,
     required List<Question> questions,
+    String? learningObjectiveId,
   });
   Future<void> deleteAssessment(String id);
 }
