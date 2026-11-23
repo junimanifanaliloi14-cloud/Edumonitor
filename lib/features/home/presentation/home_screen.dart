@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../assessments/presentation/assessment_list_screen.dart';
+import '../../classrooms/presentation/classroom_list_screen.dart';
 import '../../curriculum/presentation/subject_list_screen.dart';
 import '../../dashboard/presentation/dashboard_screen.dart';
 import '../../documents/presentation/document_list_screen.dart';
@@ -17,13 +18,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   void _navigateToTab(int index) {
-    if (index < 0 || index > 4) return;
+    if (index < 0 || index > 5) return;
     setState(() => _selectedIndex = index);
   }
 
   List<Widget> _buildScreens() {
     return [
       DashboardScreen(onNavigateToTab: _navigateToTab),
+      const ClassroomListScreen(),
       const StudentListScreen(),
       const SubjectListScreen(),
       const DocumentListScreen(),
@@ -36,6 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: Icon(Icons.dashboard_outlined),
       selectedIcon: Icon(Icons.dashboard),
       label: 'Beranda',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.groups_outlined),
+      selectedIcon: Icon(Icons.groups),
+      label: 'Kelas',
     ),
     NavigationDestination(
       icon: Icon(Icons.people_outline),
@@ -65,7 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, constraints) {
         final isLandscape = constraints.maxWidth > constraints.maxHeight;
         final isWide = constraints.maxWidth >= 900;
-        // Rail hanya untuk landscape yang lebar (tablet landscape, PC)
         final useRail = isLandscape && isWide;
 
         final screens = _buildScreens();
@@ -94,7 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        // Bottom nav: portrait semua device + landscape sempit
         return Scaffold(
           body: screens[_selectedIndex],
           bottomNavigationBar: NavigationBar(
