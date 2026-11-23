@@ -411,6 +411,65 @@ class AppSettings extends Table {
 }
 
 // ==========================================
+// 8. CLASSROOM & LEARNING OBJECTIVES (v10)
+// ==========================================
+
+class Classrooms extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text().withLength(min: 1, max: 100)();
+  TextColumn get subjectId => text().references(Subjects, #id)();
+  TextColumn get academicYear => text().withLength(min: 4, max: 20)();
+  TextColumn get semester => text().withDefault(const Constant('Ganjil'))();
+  TextColumn get teacherNote => text().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class ClassroomStudents extends Table {
+  TextColumn get id => text()();
+  TextColumn get classroomId => text().references(Classrooms, #id)();
+  TextColumn get studentId => text().references(Students, #id)();
+  DateTimeColumn get enrolledAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {classroomId, studentId},
+  ];
+}
+
+class LearningObjectives extends Table {
+  TextColumn get id => text()();
+  TextColumn get classroomId => text().nullable().references(Classrooms, #id)();
+  TextColumn get topicId => text().nullable().references(Topics, #id)();
+  TextColumn get code => text().withLength(min: 1, max: 20)();
+  TextColumn get description => text()();
+  IntColumn get sequence => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// ==========================================
 // DATABASE DEFINITION
 // ==========================================
 
@@ -441,13 +500,16 @@ class AppSettings extends Table {
     SyncPeers,
     SyncCursors,
     AppSettings,
+    Classrooms,
+    ClassroomStudents,
+    LearningObjectives,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -496,6 +558,11 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 9) {
         await m.createTable(appSettings);
+      }
+      if (from < 10) {
+        await m.createTable(classrooms);
+        await m.createTable(classroomStudents);
+        await m.createTable(learningObjectives);
       }
     },
   );
