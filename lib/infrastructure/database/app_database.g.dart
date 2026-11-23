@@ -6810,6 +6810,1353 @@ class QuestionSnapshotsCompanion extends UpdateCompanion<QuestionSnapshot> {
   }
 }
 
+class $ClassroomsTable extends Classrooms
+    with TableInfo<$ClassroomsTable, Classroom> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ClassroomsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subjectIdMeta = const VerificationMeta(
+    'subjectId',
+  );
+  @override
+  late final GeneratedColumn<String> subjectId = GeneratedColumn<String>(
+    'subject_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES subjects (id)',
+    ),
+  );
+  static const VerificationMeta _academicYearMeta = const VerificationMeta(
+    'academicYear',
+  );
+  @override
+  late final GeneratedColumn<String> academicYear = GeneratedColumn<String>(
+    'academic_year',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 4,
+      maxTextLength: 20,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _semesterMeta = const VerificationMeta(
+    'semester',
+  );
+  @override
+  late final GeneratedColumn<String> semester = GeneratedColumn<String>(
+    'semester',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Ganjil'),
+  );
+  static const VerificationMeta _teacherNoteMeta = const VerificationMeta(
+    'teacherNote',
+  );
+  @override
+  late final GeneratedColumn<String> teacherNote = GeneratedColumn<String>(
+    'teacher_note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _createdByDeviceIdMeta = const VerificationMeta(
+    'createdByDeviceId',
+  );
+  @override
+  late final GeneratedColumn<String> createdByDeviceId =
+      GeneratedColumn<String>(
+        'created_by_device_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('local'),
+      );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    subjectId,
+    academicYear,
+    semester,
+    teacherNote,
+    createdAt,
+    updatedAt,
+    createdByDeviceId,
+    revision,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'classrooms';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Classroom> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('subject_id')) {
+      context.handle(
+        _subjectIdMeta,
+        subjectId.isAcceptableOrUnknown(data['subject_id']!, _subjectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subjectIdMeta);
+    }
+    if (data.containsKey('academic_year')) {
+      context.handle(
+        _academicYearMeta,
+        academicYear.isAcceptableOrUnknown(
+          data['academic_year']!,
+          _academicYearMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_academicYearMeta);
+    }
+    if (data.containsKey('semester')) {
+      context.handle(
+        _semesterMeta,
+        semester.isAcceptableOrUnknown(data['semester']!, _semesterMeta),
+      );
+    }
+    if (data.containsKey('teacher_note')) {
+      context.handle(
+        _teacherNoteMeta,
+        teacherNote.isAcceptableOrUnknown(
+          data['teacher_note']!,
+          _teacherNoteMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('created_by_device_id')) {
+      context.handle(
+        _createdByDeviceIdMeta,
+        createdByDeviceId.isAcceptableOrUnknown(
+          data['created_by_device_id']!,
+          _createdByDeviceIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Classroom map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Classroom(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      subjectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_id'],
+      )!,
+      academicYear: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}academic_year'],
+      )!,
+      semester: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}semester'],
+      )!,
+      teacherNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}teacher_note'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      createdByDeviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_device_id'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $ClassroomsTable createAlias(String alias) {
+    return $ClassroomsTable(attachedDatabase, alias);
+  }
+}
+
+class Classroom extends DataClass implements Insertable<Classroom> {
+  final String id;
+  final String name;
+  final String subjectId;
+  final String academicYear;
+  final String semester;
+  final String? teacherNote;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String createdByDeviceId;
+  final int revision;
+  final DateTime? deletedAt;
+  const Classroom({
+    required this.id,
+    required this.name,
+    required this.subjectId,
+    required this.academicYear,
+    required this.semester,
+    this.teacherNote,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.createdByDeviceId,
+    required this.revision,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['subject_id'] = Variable<String>(subjectId);
+    map['academic_year'] = Variable<String>(academicYear);
+    map['semester'] = Variable<String>(semester);
+    if (!nullToAbsent || teacherNote != null) {
+      map['teacher_note'] = Variable<String>(teacherNote);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['created_by_device_id'] = Variable<String>(createdByDeviceId);
+    map['revision'] = Variable<int>(revision);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  ClassroomsCompanion toCompanion(bool nullToAbsent) {
+    return ClassroomsCompanion(
+      id: Value(id),
+      name: Value(name),
+      subjectId: Value(subjectId),
+      academicYear: Value(academicYear),
+      semester: Value(semester),
+      teacherNote: teacherNote == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teacherNote),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      createdByDeviceId: Value(createdByDeviceId),
+      revision: Value(revision),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory Classroom.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Classroom(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      subjectId: serializer.fromJson<String>(json['subjectId']),
+      academicYear: serializer.fromJson<String>(json['academicYear']),
+      semester: serializer.fromJson<String>(json['semester']),
+      teacherNote: serializer.fromJson<String?>(json['teacherNote']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdByDeviceId: serializer.fromJson<String>(json['createdByDeviceId']),
+      revision: serializer.fromJson<int>(json['revision']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'subjectId': serializer.toJson<String>(subjectId),
+      'academicYear': serializer.toJson<String>(academicYear),
+      'semester': serializer.toJson<String>(semester),
+      'teacherNote': serializer.toJson<String?>(teacherNote),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdByDeviceId': serializer.toJson<String>(createdByDeviceId),
+      'revision': serializer.toJson<int>(revision),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  Classroom copyWith({
+    String? id,
+    String? name,
+    String? subjectId,
+    String? academicYear,
+    String? semester,
+    Value<String?> teacherNote = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? createdByDeviceId,
+    int? revision,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => Classroom(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    subjectId: subjectId ?? this.subjectId,
+    academicYear: academicYear ?? this.academicYear,
+    semester: semester ?? this.semester,
+    teacherNote: teacherNote.present ? teacherNote.value : this.teacherNote,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
+    revision: revision ?? this.revision,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  Classroom copyWithCompanion(ClassroomsCompanion data) {
+    return Classroom(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      subjectId: data.subjectId.present ? data.subjectId.value : this.subjectId,
+      academicYear: data.academicYear.present
+          ? data.academicYear.value
+          : this.academicYear,
+      semester: data.semester.present ? data.semester.value : this.semester,
+      teacherNote: data.teacherNote.present
+          ? data.teacherNote.value
+          : this.teacherNote,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdByDeviceId: data.createdByDeviceId.present
+          ? data.createdByDeviceId.value
+          : this.createdByDeviceId,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Classroom(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('academicYear: $academicYear, ')
+          ..write('semester: $semester, ')
+          ..write('teacherNote: $teacherNote, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdByDeviceId: $createdByDeviceId, ')
+          ..write('revision: $revision, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    subjectId,
+    academicYear,
+    semester,
+    teacherNote,
+    createdAt,
+    updatedAt,
+    createdByDeviceId,
+    revision,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Classroom &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.subjectId == this.subjectId &&
+          other.academicYear == this.academicYear &&
+          other.semester == this.semester &&
+          other.teacherNote == this.teacherNote &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.createdByDeviceId == this.createdByDeviceId &&
+          other.revision == this.revision &&
+          other.deletedAt == this.deletedAt);
+}
+
+class ClassroomsCompanion extends UpdateCompanion<Classroom> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> subjectId;
+  final Value<String> academicYear;
+  final Value<String> semester;
+  final Value<String?> teacherNote;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<String> createdByDeviceId;
+  final Value<int> revision;
+  final Value<DateTime?> deletedAt;
+  final Value<int> rowid;
+  const ClassroomsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.subjectId = const Value.absent(),
+    this.academicYear = const Value.absent(),
+    this.semester = const Value.absent(),
+    this.teacherNote = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdByDeviceId = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ClassroomsCompanion.insert({
+    required String id,
+    required String name,
+    required String subjectId,
+    required String academicYear,
+    this.semester = const Value.absent(),
+    this.teacherNote = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdByDeviceId = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       subjectId = Value(subjectId),
+       academicYear = Value(academicYear);
+  static Insertable<Classroom> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? subjectId,
+    Expression<String>? academicYear,
+    Expression<String>? semester,
+    Expression<String>? teacherNote,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<String>? createdByDeviceId,
+    Expression<int>? revision,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (subjectId != null) 'subject_id': subjectId,
+      if (academicYear != null) 'academic_year': academicYear,
+      if (semester != null) 'semester': semester,
+      if (teacherNote != null) 'teacher_note': teacherNote,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdByDeviceId != null) 'created_by_device_id': createdByDeviceId,
+      if (revision != null) 'revision': revision,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ClassroomsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? subjectId,
+    Value<String>? academicYear,
+    Value<String>? semester,
+    Value<String?>? teacherNote,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<String>? createdByDeviceId,
+    Value<int>? revision,
+    Value<DateTime?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return ClassroomsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      subjectId: subjectId ?? this.subjectId,
+      academicYear: academicYear ?? this.academicYear,
+      semester: semester ?? this.semester,
+      teacherNote: teacherNote ?? this.teacherNote,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
+      revision: revision ?? this.revision,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (subjectId.present) {
+      map['subject_id'] = Variable<String>(subjectId.value);
+    }
+    if (academicYear.present) {
+      map['academic_year'] = Variable<String>(academicYear.value);
+    }
+    if (semester.present) {
+      map['semester'] = Variable<String>(semester.value);
+    }
+    if (teacherNote.present) {
+      map['teacher_note'] = Variable<String>(teacherNote.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdByDeviceId.present) {
+      map['created_by_device_id'] = Variable<String>(createdByDeviceId.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClassroomsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('academicYear: $academicYear, ')
+          ..write('semester: $semester, ')
+          ..write('teacherNote: $teacherNote, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdByDeviceId: $createdByDeviceId, ')
+          ..write('revision: $revision, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LearningObjectivesTable extends LearningObjectives
+    with TableInfo<$LearningObjectivesTable, LearningObjective> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LearningObjectivesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _classroomIdMeta = const VerificationMeta(
+    'classroomId',
+  );
+  @override
+  late final GeneratedColumn<String> classroomId = GeneratedColumn<String>(
+    'classroom_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES classrooms (id)',
+    ),
+  );
+  static const VerificationMeta _topicIdMeta = const VerificationMeta(
+    'topicId',
+  );
+  @override
+  late final GeneratedColumn<String> topicId = GeneratedColumn<String>(
+    'topic_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES topics (id)',
+    ),
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 20,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sequenceMeta = const VerificationMeta(
+    'sequence',
+  );
+  @override
+  late final GeneratedColumn<int> sequence = GeneratedColumn<int>(
+    'sequence',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _createdByDeviceIdMeta = const VerificationMeta(
+    'createdByDeviceId',
+  );
+  @override
+  late final GeneratedColumn<String> createdByDeviceId =
+      GeneratedColumn<String>(
+        'created_by_device_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('local'),
+      );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    classroomId,
+    topicId,
+    code,
+    description,
+    sequence,
+    createdAt,
+    updatedAt,
+    createdByDeviceId,
+    revision,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'learning_objectives';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LearningObjective> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('classroom_id')) {
+      context.handle(
+        _classroomIdMeta,
+        classroomId.isAcceptableOrUnknown(
+          data['classroom_id']!,
+          _classroomIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('topic_id')) {
+      context.handle(
+        _topicIdMeta,
+        topicId.isAcceptableOrUnknown(data['topic_id']!, _topicIdMeta),
+      );
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('sequence')) {
+      context.handle(
+        _sequenceMeta,
+        sequence.isAcceptableOrUnknown(data['sequence']!, _sequenceMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('created_by_device_id')) {
+      context.handle(
+        _createdByDeviceIdMeta,
+        createdByDeviceId.isAcceptableOrUnknown(
+          data['created_by_device_id']!,
+          _createdByDeviceIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LearningObjective map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LearningObjective(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      classroomId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}classroom_id'],
+      ),
+      topicId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}topic_id'],
+      ),
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      sequence: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sequence'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      createdByDeviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_device_id'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $LearningObjectivesTable createAlias(String alias) {
+    return $LearningObjectivesTable(attachedDatabase, alias);
+  }
+}
+
+class LearningObjective extends DataClass
+    implements Insertable<LearningObjective> {
+  final String id;
+  final String? classroomId;
+  final String? topicId;
+  final String code;
+  final String description;
+  final int sequence;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String createdByDeviceId;
+  final int revision;
+  final DateTime? deletedAt;
+  const LearningObjective({
+    required this.id,
+    this.classroomId,
+    this.topicId,
+    required this.code,
+    required this.description,
+    required this.sequence,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.createdByDeviceId,
+    required this.revision,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || classroomId != null) {
+      map['classroom_id'] = Variable<String>(classroomId);
+    }
+    if (!nullToAbsent || topicId != null) {
+      map['topic_id'] = Variable<String>(topicId);
+    }
+    map['code'] = Variable<String>(code);
+    map['description'] = Variable<String>(description);
+    map['sequence'] = Variable<int>(sequence);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['created_by_device_id'] = Variable<String>(createdByDeviceId);
+    map['revision'] = Variable<int>(revision);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  LearningObjectivesCompanion toCompanion(bool nullToAbsent) {
+    return LearningObjectivesCompanion(
+      id: Value(id),
+      classroomId: classroomId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(classroomId),
+      topicId: topicId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(topicId),
+      code: Value(code),
+      description: Value(description),
+      sequence: Value(sequence),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      createdByDeviceId: Value(createdByDeviceId),
+      revision: Value(revision),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory LearningObjective.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LearningObjective(
+      id: serializer.fromJson<String>(json['id']),
+      classroomId: serializer.fromJson<String?>(json['classroomId']),
+      topicId: serializer.fromJson<String?>(json['topicId']),
+      code: serializer.fromJson<String>(json['code']),
+      description: serializer.fromJson<String>(json['description']),
+      sequence: serializer.fromJson<int>(json['sequence']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdByDeviceId: serializer.fromJson<String>(json['createdByDeviceId']),
+      revision: serializer.fromJson<int>(json['revision']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'classroomId': serializer.toJson<String?>(classroomId),
+      'topicId': serializer.toJson<String?>(topicId),
+      'code': serializer.toJson<String>(code),
+      'description': serializer.toJson<String>(description),
+      'sequence': serializer.toJson<int>(sequence),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdByDeviceId': serializer.toJson<String>(createdByDeviceId),
+      'revision': serializer.toJson<int>(revision),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  LearningObjective copyWith({
+    String? id,
+    Value<String?> classroomId = const Value.absent(),
+    Value<String?> topicId = const Value.absent(),
+    String? code,
+    String? description,
+    int? sequence,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? createdByDeviceId,
+    int? revision,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => LearningObjective(
+    id: id ?? this.id,
+    classroomId: classroomId.present ? classroomId.value : this.classroomId,
+    topicId: topicId.present ? topicId.value : this.topicId,
+    code: code ?? this.code,
+    description: description ?? this.description,
+    sequence: sequence ?? this.sequence,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
+    revision: revision ?? this.revision,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  LearningObjective copyWithCompanion(LearningObjectivesCompanion data) {
+    return LearningObjective(
+      id: data.id.present ? data.id.value : this.id,
+      classroomId: data.classroomId.present
+          ? data.classroomId.value
+          : this.classroomId,
+      topicId: data.topicId.present ? data.topicId.value : this.topicId,
+      code: data.code.present ? data.code.value : this.code,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      sequence: data.sequence.present ? data.sequence.value : this.sequence,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdByDeviceId: data.createdByDeviceId.present
+          ? data.createdByDeviceId.value
+          : this.createdByDeviceId,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearningObjective(')
+          ..write('id: $id, ')
+          ..write('classroomId: $classroomId, ')
+          ..write('topicId: $topicId, ')
+          ..write('code: $code, ')
+          ..write('description: $description, ')
+          ..write('sequence: $sequence, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdByDeviceId: $createdByDeviceId, ')
+          ..write('revision: $revision, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    classroomId,
+    topicId,
+    code,
+    description,
+    sequence,
+    createdAt,
+    updatedAt,
+    createdByDeviceId,
+    revision,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LearningObjective &&
+          other.id == this.id &&
+          other.classroomId == this.classroomId &&
+          other.topicId == this.topicId &&
+          other.code == this.code &&
+          other.description == this.description &&
+          other.sequence == this.sequence &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.createdByDeviceId == this.createdByDeviceId &&
+          other.revision == this.revision &&
+          other.deletedAt == this.deletedAt);
+}
+
+class LearningObjectivesCompanion extends UpdateCompanion<LearningObjective> {
+  final Value<String> id;
+  final Value<String?> classroomId;
+  final Value<String?> topicId;
+  final Value<String> code;
+  final Value<String> description;
+  final Value<int> sequence;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<String> createdByDeviceId;
+  final Value<int> revision;
+  final Value<DateTime?> deletedAt;
+  final Value<int> rowid;
+  const LearningObjectivesCompanion({
+    this.id = const Value.absent(),
+    this.classroomId = const Value.absent(),
+    this.topicId = const Value.absent(),
+    this.code = const Value.absent(),
+    this.description = const Value.absent(),
+    this.sequence = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdByDeviceId = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LearningObjectivesCompanion.insert({
+    required String id,
+    this.classroomId = const Value.absent(),
+    this.topicId = const Value.absent(),
+    required String code,
+    required String description,
+    this.sequence = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdByDeviceId = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       code = Value(code),
+       description = Value(description);
+  static Insertable<LearningObjective> custom({
+    Expression<String>? id,
+    Expression<String>? classroomId,
+    Expression<String>? topicId,
+    Expression<String>? code,
+    Expression<String>? description,
+    Expression<int>? sequence,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<String>? createdByDeviceId,
+    Expression<int>? revision,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (classroomId != null) 'classroom_id': classroomId,
+      if (topicId != null) 'topic_id': topicId,
+      if (code != null) 'code': code,
+      if (description != null) 'description': description,
+      if (sequence != null) 'sequence': sequence,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdByDeviceId != null) 'created_by_device_id': createdByDeviceId,
+      if (revision != null) 'revision': revision,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LearningObjectivesCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? classroomId,
+    Value<String?>? topicId,
+    Value<String>? code,
+    Value<String>? description,
+    Value<int>? sequence,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<String>? createdByDeviceId,
+    Value<int>? revision,
+    Value<DateTime?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return LearningObjectivesCompanion(
+      id: id ?? this.id,
+      classroomId: classroomId ?? this.classroomId,
+      topicId: topicId ?? this.topicId,
+      code: code ?? this.code,
+      description: description ?? this.description,
+      sequence: sequence ?? this.sequence,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
+      revision: revision ?? this.revision,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (classroomId.present) {
+      map['classroom_id'] = Variable<String>(classroomId.value);
+    }
+    if (topicId.present) {
+      map['topic_id'] = Variable<String>(topicId.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (sequence.present) {
+      map['sequence'] = Variable<int>(sequence.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdByDeviceId.present) {
+      map['created_by_device_id'] = Variable<String>(createdByDeviceId.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearningObjectivesCompanion(')
+          ..write('id: $id, ')
+          ..write('classroomId: $classroomId, ')
+          ..write('topicId: $topicId, ')
+          ..write('code: $code, ')
+          ..write('description: $description, ')
+          ..write('sequence: $sequence, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdByDeviceId: $createdByDeviceId, ')
+          ..write('revision: $revision, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AssessmentsTable extends Assessments
     with TableInfo<$AssessmentsTable, Assessment> {
   @override
@@ -6834,6 +8181,20 @@ class $AssessmentsTable extends Assessments
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _learningObjectiveIdMeta =
+      const VerificationMeta('learningObjectiveId');
+  @override
+  late final GeneratedColumn<String> learningObjectiveId =
+      GeneratedColumn<String>(
+        'learning_objective_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES learning_objectives (id)',
+        ),
+      );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
@@ -6908,6 +8269,7 @@ class $AssessmentsTable extends Assessments
   List<GeneratedColumn> get $columns => [
     id,
     title,
+    learningObjectiveId,
     status,
     createdAt,
     updatedAt,
@@ -6939,6 +8301,15 @@ class $AssessmentsTable extends Assessments
       );
     } else if (isInserting) {
       context.missing(_titleMeta);
+    }
+    if (data.containsKey('learning_objective_id')) {
+      context.handle(
+        _learningObjectiveIdMeta,
+        learningObjectiveId.isAcceptableOrUnknown(
+          data['learning_objective_id']!,
+          _learningObjectiveIdMeta,
+        ),
+      );
     }
     if (data.containsKey('status')) {
       context.handle(
@@ -6996,6 +8367,10 @@ class $AssessmentsTable extends Assessments
         DriftSqlType.string,
         data['${effectivePrefix}title'],
       )!,
+      learningObjectiveId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}learning_objective_id'],
+      ),
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
@@ -7032,6 +8407,7 @@ class $AssessmentsTable extends Assessments
 class Assessment extends DataClass implements Insertable<Assessment> {
   final String id;
   final String title;
+  final String? learningObjectiveId;
   final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -7041,6 +8417,7 @@ class Assessment extends DataClass implements Insertable<Assessment> {
   const Assessment({
     required this.id,
     required this.title,
+    this.learningObjectiveId,
     required this.status,
     required this.createdAt,
     required this.updatedAt,
@@ -7053,6 +8430,9 @@ class Assessment extends DataClass implements Insertable<Assessment> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['title'] = Variable<String>(title);
+    if (!nullToAbsent || learningObjectiveId != null) {
+      map['learning_objective_id'] = Variable<String>(learningObjectiveId);
+    }
     map['status'] = Variable<String>(status);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -7068,6 +8448,9 @@ class Assessment extends DataClass implements Insertable<Assessment> {
     return AssessmentsCompanion(
       id: Value(id),
       title: Value(title),
+      learningObjectiveId: learningObjectiveId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(learningObjectiveId),
       status: Value(status),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -7087,6 +8470,9 @@ class Assessment extends DataClass implements Insertable<Assessment> {
     return Assessment(
       id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
+      learningObjectiveId: serializer.fromJson<String?>(
+        json['learningObjectiveId'],
+      ),
       status: serializer.fromJson<String>(json['status']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -7101,6 +8487,7 @@ class Assessment extends DataClass implements Insertable<Assessment> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'title': serializer.toJson<String>(title),
+      'learningObjectiveId': serializer.toJson<String?>(learningObjectiveId),
       'status': serializer.toJson<String>(status),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -7113,6 +8500,7 @@ class Assessment extends DataClass implements Insertable<Assessment> {
   Assessment copyWith({
     String? id,
     String? title,
+    Value<String?> learningObjectiveId = const Value.absent(),
     String? status,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -7122,6 +8510,9 @@ class Assessment extends DataClass implements Insertable<Assessment> {
   }) => Assessment(
     id: id ?? this.id,
     title: title ?? this.title,
+    learningObjectiveId: learningObjectiveId.present
+        ? learningObjectiveId.value
+        : this.learningObjectiveId,
     status: status ?? this.status,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -7133,6 +8524,9 @@ class Assessment extends DataClass implements Insertable<Assessment> {
     return Assessment(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
+      learningObjectiveId: data.learningObjectiveId.present
+          ? data.learningObjectiveId.value
+          : this.learningObjectiveId,
       status: data.status.present ? data.status.value : this.status,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -7149,6 +8543,7 @@ class Assessment extends DataClass implements Insertable<Assessment> {
     return (StringBuffer('Assessment(')
           ..write('id: $id, ')
           ..write('title: $title, ')
+          ..write('learningObjectiveId: $learningObjectiveId, ')
           ..write('status: $status, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -7163,6 +8558,7 @@ class Assessment extends DataClass implements Insertable<Assessment> {
   int get hashCode => Object.hash(
     id,
     title,
+    learningObjectiveId,
     status,
     createdAt,
     updatedAt,
@@ -7176,6 +8572,7 @@ class Assessment extends DataClass implements Insertable<Assessment> {
       (other is Assessment &&
           other.id == this.id &&
           other.title == this.title &&
+          other.learningObjectiveId == this.learningObjectiveId &&
           other.status == this.status &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
@@ -7187,6 +8584,7 @@ class Assessment extends DataClass implements Insertable<Assessment> {
 class AssessmentsCompanion extends UpdateCompanion<Assessment> {
   final Value<String> id;
   final Value<String> title;
+  final Value<String?> learningObjectiveId;
   final Value<String> status;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -7197,6 +8595,7 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
   const AssessmentsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
+    this.learningObjectiveId = const Value.absent(),
     this.status = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -7208,6 +8607,7 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
   AssessmentsCompanion.insert({
     required String id,
     required String title,
+    this.learningObjectiveId = const Value.absent(),
     this.status = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -7220,6 +8620,7 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
   static Insertable<Assessment> custom({
     Expression<String>? id,
     Expression<String>? title,
+    Expression<String>? learningObjectiveId,
     Expression<String>? status,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -7231,6 +8632,8 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
+      if (learningObjectiveId != null)
+        'learning_objective_id': learningObjectiveId,
       if (status != null) 'status': status,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -7244,6 +8647,7 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
   AssessmentsCompanion copyWith({
     Value<String>? id,
     Value<String>? title,
+    Value<String?>? learningObjectiveId,
     Value<String>? status,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -7255,6 +8659,7 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
     return AssessmentsCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
+      learningObjectiveId: learningObjectiveId ?? this.learningObjectiveId,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -7273,6 +8678,11 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
+    }
+    if (learningObjectiveId.present) {
+      map['learning_objective_id'] = Variable<String>(
+        learningObjectiveId.value,
+      );
     }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
@@ -7303,6 +8713,7 @@ class AssessmentsCompanion extends UpdateCompanion<Assessment> {
     return (StringBuffer('AssessmentsCompanion(')
           ..write('id: $id, ')
           ..write('title: $title, ')
+          ..write('learningObjectiveId: $learningObjectiveId, ')
           ..write('status: $status, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -13058,679 +14469,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   }
 }
 
-class $ClassroomsTable extends Classrooms
-    with TableInfo<$ClassroomsTable, Classroom> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $ClassroomsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 100,
-    ),
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _subjectIdMeta = const VerificationMeta(
-    'subjectId',
-  );
-  @override
-  late final GeneratedColumn<String> subjectId = GeneratedColumn<String>(
-    'subject_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES subjects (id)',
-    ),
-  );
-  static const VerificationMeta _academicYearMeta = const VerificationMeta(
-    'academicYear',
-  );
-  @override
-  late final GeneratedColumn<String> academicYear = GeneratedColumn<String>(
-    'academic_year',
-    aliasedName,
-    false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 4,
-      maxTextLength: 20,
-    ),
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _semesterMeta = const VerificationMeta(
-    'semester',
-  );
-  @override
-  late final GeneratedColumn<String> semester = GeneratedColumn<String>(
-    'semester',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: const Constant('Ganjil'),
-  );
-  static const VerificationMeta _teacherNoteMeta = const VerificationMeta(
-    'teacherNote',
-  );
-  @override
-  late final GeneratedColumn<String> teacherNote = GeneratedColumn<String>(
-    'teacher_note',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _createdByDeviceIdMeta = const VerificationMeta(
-    'createdByDeviceId',
-  );
-  @override
-  late final GeneratedColumn<String> createdByDeviceId =
-      GeneratedColumn<String>(
-        'created_by_device_id',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant('local'),
-      );
-  static const VerificationMeta _revisionMeta = const VerificationMeta(
-    'revision',
-  );
-  @override
-  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
-    'revision',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(1),
-  );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
-    'deleted_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    subjectId,
-    academicYear,
-    semester,
-    teacherNote,
-    createdAt,
-    updatedAt,
-    createdByDeviceId,
-    revision,
-    deletedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'classrooms';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<Classroom> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('subject_id')) {
-      context.handle(
-        _subjectIdMeta,
-        subjectId.isAcceptableOrUnknown(data['subject_id']!, _subjectIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_subjectIdMeta);
-    }
-    if (data.containsKey('academic_year')) {
-      context.handle(
-        _academicYearMeta,
-        academicYear.isAcceptableOrUnknown(
-          data['academic_year']!,
-          _academicYearMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_academicYearMeta);
-    }
-    if (data.containsKey('semester')) {
-      context.handle(
-        _semesterMeta,
-        semester.isAcceptableOrUnknown(data['semester']!, _semesterMeta),
-      );
-    }
-    if (data.containsKey('teacher_note')) {
-      context.handle(
-        _teacherNoteMeta,
-        teacherNote.isAcceptableOrUnknown(
-          data['teacher_note']!,
-          _teacherNoteMeta,
-        ),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    if (data.containsKey('created_by_device_id')) {
-      context.handle(
-        _createdByDeviceIdMeta,
-        createdByDeviceId.isAcceptableOrUnknown(
-          data['created_by_device_id']!,
-          _createdByDeviceIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('revision')) {
-      context.handle(
-        _revisionMeta,
-        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
-      );
-    }
-    if (data.containsKey('deleted_at')) {
-      context.handle(
-        _deletedAtMeta,
-        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Classroom map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Classroom(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      subjectId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}subject_id'],
-      )!,
-      academicYear: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}academic_year'],
-      )!,
-      semester: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}semester'],
-      )!,
-      teacherNote: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}teacher_note'],
-      ),
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
-      createdByDeviceId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}created_by_device_id'],
-      )!,
-      revision: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}revision'],
-      )!,
-      deletedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}deleted_at'],
-      ),
-    );
-  }
-
-  @override
-  $ClassroomsTable createAlias(String alias) {
-    return $ClassroomsTable(attachedDatabase, alias);
-  }
-}
-
-class Classroom extends DataClass implements Insertable<Classroom> {
-  final String id;
-  final String name;
-  final String subjectId;
-  final String academicYear;
-  final String semester;
-  final String? teacherNote;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String createdByDeviceId;
-  final int revision;
-  final DateTime? deletedAt;
-  const Classroom({
-    required this.id,
-    required this.name,
-    required this.subjectId,
-    required this.academicYear,
-    required this.semester,
-    this.teacherNote,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.createdByDeviceId,
-    required this.revision,
-    this.deletedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['name'] = Variable<String>(name);
-    map['subject_id'] = Variable<String>(subjectId);
-    map['academic_year'] = Variable<String>(academicYear);
-    map['semester'] = Variable<String>(semester);
-    if (!nullToAbsent || teacherNote != null) {
-      map['teacher_note'] = Variable<String>(teacherNote);
-    }
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    map['created_by_device_id'] = Variable<String>(createdByDeviceId);
-    map['revision'] = Variable<int>(revision);
-    if (!nullToAbsent || deletedAt != null) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt);
-    }
-    return map;
-  }
-
-  ClassroomsCompanion toCompanion(bool nullToAbsent) {
-    return ClassroomsCompanion(
-      id: Value(id),
-      name: Value(name),
-      subjectId: Value(subjectId),
-      academicYear: Value(academicYear),
-      semester: Value(semester),
-      teacherNote: teacherNote == null && nullToAbsent
-          ? const Value.absent()
-          : Value(teacherNote),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-      createdByDeviceId: Value(createdByDeviceId),
-      revision: Value(revision),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
-    );
-  }
-
-  factory Classroom.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Classroom(
-      id: serializer.fromJson<String>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      subjectId: serializer.fromJson<String>(json['subjectId']),
-      academicYear: serializer.fromJson<String>(json['academicYear']),
-      semester: serializer.fromJson<String>(json['semester']),
-      teacherNote: serializer.fromJson<String?>(json['teacherNote']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-      createdByDeviceId: serializer.fromJson<String>(json['createdByDeviceId']),
-      revision: serializer.fromJson<int>(json['revision']),
-      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'name': serializer.toJson<String>(name),
-      'subjectId': serializer.toJson<String>(subjectId),
-      'academicYear': serializer.toJson<String>(academicYear),
-      'semester': serializer.toJson<String>(semester),
-      'teacherNote': serializer.toJson<String?>(teacherNote),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-      'createdByDeviceId': serializer.toJson<String>(createdByDeviceId),
-      'revision': serializer.toJson<int>(revision),
-      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
-    };
-  }
-
-  Classroom copyWith({
-    String? id,
-    String? name,
-    String? subjectId,
-    String? academicYear,
-    String? semester,
-    Value<String?> teacherNote = const Value.absent(),
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? createdByDeviceId,
-    int? revision,
-    Value<DateTime?> deletedAt = const Value.absent(),
-  }) => Classroom(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    subjectId: subjectId ?? this.subjectId,
-    academicYear: academicYear ?? this.academicYear,
-    semester: semester ?? this.semester,
-    teacherNote: teacherNote.present ? teacherNote.value : this.teacherNote,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-    createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
-    revision: revision ?? this.revision,
-    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-  );
-  Classroom copyWithCompanion(ClassroomsCompanion data) {
-    return Classroom(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      subjectId: data.subjectId.present ? data.subjectId.value : this.subjectId,
-      academicYear: data.academicYear.present
-          ? data.academicYear.value
-          : this.academicYear,
-      semester: data.semester.present ? data.semester.value : this.semester,
-      teacherNote: data.teacherNote.present
-          ? data.teacherNote.value
-          : this.teacherNote,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      createdByDeviceId: data.createdByDeviceId.present
-          ? data.createdByDeviceId.value
-          : this.createdByDeviceId,
-      revision: data.revision.present ? data.revision.value : this.revision,
-      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Classroom(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('subjectId: $subjectId, ')
-          ..write('academicYear: $academicYear, ')
-          ..write('semester: $semester, ')
-          ..write('teacherNote: $teacherNote, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('createdByDeviceId: $createdByDeviceId, ')
-          ..write('revision: $revision, ')
-          ..write('deletedAt: $deletedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    subjectId,
-    academicYear,
-    semester,
-    teacherNote,
-    createdAt,
-    updatedAt,
-    createdByDeviceId,
-    revision,
-    deletedAt,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Classroom &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.subjectId == this.subjectId &&
-          other.academicYear == this.academicYear &&
-          other.semester == this.semester &&
-          other.teacherNote == this.teacherNote &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt &&
-          other.createdByDeviceId == this.createdByDeviceId &&
-          other.revision == this.revision &&
-          other.deletedAt == this.deletedAt);
-}
-
-class ClassroomsCompanion extends UpdateCompanion<Classroom> {
-  final Value<String> id;
-  final Value<String> name;
-  final Value<String> subjectId;
-  final Value<String> academicYear;
-  final Value<String> semester;
-  final Value<String?> teacherNote;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  final Value<String> createdByDeviceId;
-  final Value<int> revision;
-  final Value<DateTime?> deletedAt;
-  final Value<int> rowid;
-  const ClassroomsCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.subjectId = const Value.absent(),
-    this.academicYear = const Value.absent(),
-    this.semester = const Value.absent(),
-    this.teacherNote = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.createdByDeviceId = const Value.absent(),
-    this.revision = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  ClassroomsCompanion.insert({
-    required String id,
-    required String name,
-    required String subjectId,
-    required String academicYear,
-    this.semester = const Value.absent(),
-    this.teacherNote = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.createdByDeviceId = const Value.absent(),
-    this.revision = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
-       subjectId = Value(subjectId),
-       academicYear = Value(academicYear);
-  static Insertable<Classroom> custom({
-    Expression<String>? id,
-    Expression<String>? name,
-    Expression<String>? subjectId,
-    Expression<String>? academicYear,
-    Expression<String>? semester,
-    Expression<String>? teacherNote,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-    Expression<String>? createdByDeviceId,
-    Expression<int>? revision,
-    Expression<DateTime>? deletedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (subjectId != null) 'subject_id': subjectId,
-      if (academicYear != null) 'academic_year': academicYear,
-      if (semester != null) 'semester': semester,
-      if (teacherNote != null) 'teacher_note': teacherNote,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (createdByDeviceId != null) 'created_by_device_id': createdByDeviceId,
-      if (revision != null) 'revision': revision,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  ClassroomsCompanion copyWith({
-    Value<String>? id,
-    Value<String>? name,
-    Value<String>? subjectId,
-    Value<String>? academicYear,
-    Value<String>? semester,
-    Value<String?>? teacherNote,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
-    Value<String>? createdByDeviceId,
-    Value<int>? revision,
-    Value<DateTime?>? deletedAt,
-    Value<int>? rowid,
-  }) {
-    return ClassroomsCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      subjectId: subjectId ?? this.subjectId,
-      academicYear: academicYear ?? this.academicYear,
-      semester: semester ?? this.semester,
-      teacherNote: teacherNote ?? this.teacherNote,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
-      revision: revision ?? this.revision,
-      deletedAt: deletedAt ?? this.deletedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (subjectId.present) {
-      map['subject_id'] = Variable<String>(subjectId.value);
-    }
-    if (academicYear.present) {
-      map['academic_year'] = Variable<String>(academicYear.value);
-    }
-    if (semester.present) {
-      map['semester'] = Variable<String>(semester.value);
-    }
-    if (teacherNote.present) {
-      map['teacher_note'] = Variable<String>(teacherNote.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    if (createdByDeviceId.present) {
-      map['created_by_device_id'] = Variable<String>(createdByDeviceId.value);
-    }
-    if (revision.present) {
-      map['revision'] = Variable<int>(revision.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ClassroomsCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('subjectId: $subjectId, ')
-          ..write('academicYear: $academicYear, ')
-          ..write('semester: $semester, ')
-          ..write('teacherNote: $teacherNote, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('createdByDeviceId: $createdByDeviceId, ')
-          ..write('revision: $revision, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $ClassroomStudentsTable extends ClassroomStudents
     with TableInfo<$ClassroomStudentsTable, ClassroomStudent> {
   @override
@@ -14214,680 +14952,6 @@ class ClassroomStudentsCompanion extends UpdateCompanion<ClassroomStudent> {
   }
 }
 
-class $LearningObjectivesTable extends LearningObjectives
-    with TableInfo<$LearningObjectivesTable, LearningObjective> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $LearningObjectivesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _classroomIdMeta = const VerificationMeta(
-    'classroomId',
-  );
-  @override
-  late final GeneratedColumn<String> classroomId = GeneratedColumn<String>(
-    'classroom_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES classrooms (id)',
-    ),
-  );
-  static const VerificationMeta _topicIdMeta = const VerificationMeta(
-    'topicId',
-  );
-  @override
-  late final GeneratedColumn<String> topicId = GeneratedColumn<String>(
-    'topic_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES topics (id)',
-    ),
-  );
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-    'code',
-    aliasedName,
-    false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 20,
-    ),
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _descriptionMeta = const VerificationMeta(
-    'description',
-  );
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-    'description',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _sequenceMeta = const VerificationMeta(
-    'sequence',
-  );
-  @override
-  late final GeneratedColumn<int> sequence = GeneratedColumn<int>(
-    'sequence',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _createdByDeviceIdMeta = const VerificationMeta(
-    'createdByDeviceId',
-  );
-  @override
-  late final GeneratedColumn<String> createdByDeviceId =
-      GeneratedColumn<String>(
-        'created_by_device_id',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant('local'),
-      );
-  static const VerificationMeta _revisionMeta = const VerificationMeta(
-    'revision',
-  );
-  @override
-  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
-    'revision',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(1),
-  );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
-    'deleted_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    classroomId,
-    topicId,
-    code,
-    description,
-    sequence,
-    createdAt,
-    updatedAt,
-    createdByDeviceId,
-    revision,
-    deletedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'learning_objectives';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<LearningObjective> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('classroom_id')) {
-      context.handle(
-        _classroomIdMeta,
-        classroomId.isAcceptableOrUnknown(
-          data['classroom_id']!,
-          _classroomIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('topic_id')) {
-      context.handle(
-        _topicIdMeta,
-        topicId.isAcceptableOrUnknown(data['topic_id']!, _topicIdMeta),
-      );
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-        _codeMeta,
-        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_codeMeta);
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-        _descriptionMeta,
-        description.isAcceptableOrUnknown(
-          data['description']!,
-          _descriptionMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
-    }
-    if (data.containsKey('sequence')) {
-      context.handle(
-        _sequenceMeta,
-        sequence.isAcceptableOrUnknown(data['sequence']!, _sequenceMeta),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    if (data.containsKey('created_by_device_id')) {
-      context.handle(
-        _createdByDeviceIdMeta,
-        createdByDeviceId.isAcceptableOrUnknown(
-          data['created_by_device_id']!,
-          _createdByDeviceIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('revision')) {
-      context.handle(
-        _revisionMeta,
-        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
-      );
-    }
-    if (data.containsKey('deleted_at')) {
-      context.handle(
-        _deletedAtMeta,
-        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  LearningObjective map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LearningObjective(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      classroomId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}classroom_id'],
-      ),
-      topicId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}topic_id'],
-      ),
-      code: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}code'],
-      )!,
-      description: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}description'],
-      )!,
-      sequence: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sequence'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
-      createdByDeviceId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}created_by_device_id'],
-      )!,
-      revision: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}revision'],
-      )!,
-      deletedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}deleted_at'],
-      ),
-    );
-  }
-
-  @override
-  $LearningObjectivesTable createAlias(String alias) {
-    return $LearningObjectivesTable(attachedDatabase, alias);
-  }
-}
-
-class LearningObjective extends DataClass
-    implements Insertable<LearningObjective> {
-  final String id;
-  final String? classroomId;
-  final String? topicId;
-  final String code;
-  final String description;
-  final int sequence;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String createdByDeviceId;
-  final int revision;
-  final DateTime? deletedAt;
-  const LearningObjective({
-    required this.id,
-    this.classroomId,
-    this.topicId,
-    required this.code,
-    required this.description,
-    required this.sequence,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.createdByDeviceId,
-    required this.revision,
-    this.deletedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    if (!nullToAbsent || classroomId != null) {
-      map['classroom_id'] = Variable<String>(classroomId);
-    }
-    if (!nullToAbsent || topicId != null) {
-      map['topic_id'] = Variable<String>(topicId);
-    }
-    map['code'] = Variable<String>(code);
-    map['description'] = Variable<String>(description);
-    map['sequence'] = Variable<int>(sequence);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    map['created_by_device_id'] = Variable<String>(createdByDeviceId);
-    map['revision'] = Variable<int>(revision);
-    if (!nullToAbsent || deletedAt != null) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt);
-    }
-    return map;
-  }
-
-  LearningObjectivesCompanion toCompanion(bool nullToAbsent) {
-    return LearningObjectivesCompanion(
-      id: Value(id),
-      classroomId: classroomId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(classroomId),
-      topicId: topicId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(topicId),
-      code: Value(code),
-      description: Value(description),
-      sequence: Value(sequence),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-      createdByDeviceId: Value(createdByDeviceId),
-      revision: Value(revision),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
-    );
-  }
-
-  factory LearningObjective.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return LearningObjective(
-      id: serializer.fromJson<String>(json['id']),
-      classroomId: serializer.fromJson<String?>(json['classroomId']),
-      topicId: serializer.fromJson<String?>(json['topicId']),
-      code: serializer.fromJson<String>(json['code']),
-      description: serializer.fromJson<String>(json['description']),
-      sequence: serializer.fromJson<int>(json['sequence']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-      createdByDeviceId: serializer.fromJson<String>(json['createdByDeviceId']),
-      revision: serializer.fromJson<int>(json['revision']),
-      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'classroomId': serializer.toJson<String?>(classroomId),
-      'topicId': serializer.toJson<String?>(topicId),
-      'code': serializer.toJson<String>(code),
-      'description': serializer.toJson<String>(description),
-      'sequence': serializer.toJson<int>(sequence),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-      'createdByDeviceId': serializer.toJson<String>(createdByDeviceId),
-      'revision': serializer.toJson<int>(revision),
-      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
-    };
-  }
-
-  LearningObjective copyWith({
-    String? id,
-    Value<String?> classroomId = const Value.absent(),
-    Value<String?> topicId = const Value.absent(),
-    String? code,
-    String? description,
-    int? sequence,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? createdByDeviceId,
-    int? revision,
-    Value<DateTime?> deletedAt = const Value.absent(),
-  }) => LearningObjective(
-    id: id ?? this.id,
-    classroomId: classroomId.present ? classroomId.value : this.classroomId,
-    topicId: topicId.present ? topicId.value : this.topicId,
-    code: code ?? this.code,
-    description: description ?? this.description,
-    sequence: sequence ?? this.sequence,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-    createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
-    revision: revision ?? this.revision,
-    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-  );
-  LearningObjective copyWithCompanion(LearningObjectivesCompanion data) {
-    return LearningObjective(
-      id: data.id.present ? data.id.value : this.id,
-      classroomId: data.classroomId.present
-          ? data.classroomId.value
-          : this.classroomId,
-      topicId: data.topicId.present ? data.topicId.value : this.topicId,
-      code: data.code.present ? data.code.value : this.code,
-      description: data.description.present
-          ? data.description.value
-          : this.description,
-      sequence: data.sequence.present ? data.sequence.value : this.sequence,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      createdByDeviceId: data.createdByDeviceId.present
-          ? data.createdByDeviceId.value
-          : this.createdByDeviceId,
-      revision: data.revision.present ? data.revision.value : this.revision,
-      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('LearningObjective(')
-          ..write('id: $id, ')
-          ..write('classroomId: $classroomId, ')
-          ..write('topicId: $topicId, ')
-          ..write('code: $code, ')
-          ..write('description: $description, ')
-          ..write('sequence: $sequence, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('createdByDeviceId: $createdByDeviceId, ')
-          ..write('revision: $revision, ')
-          ..write('deletedAt: $deletedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    classroomId,
-    topicId,
-    code,
-    description,
-    sequence,
-    createdAt,
-    updatedAt,
-    createdByDeviceId,
-    revision,
-    deletedAt,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is LearningObjective &&
-          other.id == this.id &&
-          other.classroomId == this.classroomId &&
-          other.topicId == this.topicId &&
-          other.code == this.code &&
-          other.description == this.description &&
-          other.sequence == this.sequence &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt &&
-          other.createdByDeviceId == this.createdByDeviceId &&
-          other.revision == this.revision &&
-          other.deletedAt == this.deletedAt);
-}
-
-class LearningObjectivesCompanion extends UpdateCompanion<LearningObjective> {
-  final Value<String> id;
-  final Value<String?> classroomId;
-  final Value<String?> topicId;
-  final Value<String> code;
-  final Value<String> description;
-  final Value<int> sequence;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  final Value<String> createdByDeviceId;
-  final Value<int> revision;
-  final Value<DateTime?> deletedAt;
-  final Value<int> rowid;
-  const LearningObjectivesCompanion({
-    this.id = const Value.absent(),
-    this.classroomId = const Value.absent(),
-    this.topicId = const Value.absent(),
-    this.code = const Value.absent(),
-    this.description = const Value.absent(),
-    this.sequence = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.createdByDeviceId = const Value.absent(),
-    this.revision = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  LearningObjectivesCompanion.insert({
-    required String id,
-    this.classroomId = const Value.absent(),
-    this.topicId = const Value.absent(),
-    required String code,
-    required String description,
-    this.sequence = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.createdByDeviceId = const Value.absent(),
-    this.revision = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       code = Value(code),
-       description = Value(description);
-  static Insertable<LearningObjective> custom({
-    Expression<String>? id,
-    Expression<String>? classroomId,
-    Expression<String>? topicId,
-    Expression<String>? code,
-    Expression<String>? description,
-    Expression<int>? sequence,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-    Expression<String>? createdByDeviceId,
-    Expression<int>? revision,
-    Expression<DateTime>? deletedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (classroomId != null) 'classroom_id': classroomId,
-      if (topicId != null) 'topic_id': topicId,
-      if (code != null) 'code': code,
-      if (description != null) 'description': description,
-      if (sequence != null) 'sequence': sequence,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (createdByDeviceId != null) 'created_by_device_id': createdByDeviceId,
-      if (revision != null) 'revision': revision,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  LearningObjectivesCompanion copyWith({
-    Value<String>? id,
-    Value<String?>? classroomId,
-    Value<String?>? topicId,
-    Value<String>? code,
-    Value<String>? description,
-    Value<int>? sequence,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
-    Value<String>? createdByDeviceId,
-    Value<int>? revision,
-    Value<DateTime?>? deletedAt,
-    Value<int>? rowid,
-  }) {
-    return LearningObjectivesCompanion(
-      id: id ?? this.id,
-      classroomId: classroomId ?? this.classroomId,
-      topicId: topicId ?? this.topicId,
-      code: code ?? this.code,
-      description: description ?? this.description,
-      sequence: sequence ?? this.sequence,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      createdByDeviceId: createdByDeviceId ?? this.createdByDeviceId,
-      revision: revision ?? this.revision,
-      deletedAt: deletedAt ?? this.deletedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (classroomId.present) {
-      map['classroom_id'] = Variable<String>(classroomId.value);
-    }
-    if (topicId.present) {
-      map['topic_id'] = Variable<String>(topicId.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
-    }
-    if (sequence.present) {
-      map['sequence'] = Variable<int>(sequence.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    if (createdByDeviceId.present) {
-      map['created_by_device_id'] = Variable<String>(createdByDeviceId.value);
-    }
-    if (revision.present) {
-      map['revision'] = Variable<int>(revision.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('LearningObjectivesCompanion(')
-          ..write('id: $id, ')
-          ..write('classroomId: $classroomId, ')
-          ..write('topicId: $topicId, ')
-          ..write('code: $code, ')
-          ..write('description: $description, ')
-          ..write('sequence: $sequence, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('createdByDeviceId: $createdByDeviceId, ')
-          ..write('revision: $revision, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -14910,6 +14974,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $QuestionsTable questions = $QuestionsTable(this);
   late final $QuestionSnapshotsTable questionSnapshots =
       $QuestionSnapshotsTable(this);
+  late final $ClassroomsTable classrooms = $ClassroomsTable(this);
+  late final $LearningObjectivesTable learningObjectives =
+      $LearningObjectivesTable(this);
   late final $AssessmentsTable assessments = $AssessmentsTable(this);
   late final $AssessmentSnapshotsTable assessmentSnapshots =
       $AssessmentSnapshotsTable(this);
@@ -14930,11 +14997,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SyncPeersTable syncPeers = $SyncPeersTable(this);
   late final $SyncCursorsTable syncCursors = $SyncCursorsTable(this);
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
-  late final $ClassroomsTable classrooms = $ClassroomsTable(this);
   late final $ClassroomStudentsTable classroomStudents =
       $ClassroomStudentsTable(this);
-  late final $LearningObjectivesTable learningObjectives =
-      $LearningObjectivesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -14952,6 +15016,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     knowledgeSources,
     questions,
     questionSnapshots,
+    classrooms,
+    learningObjectives,
     assessments,
     assessmentSnapshots,
     assessmentItems,
@@ -14965,9 +15031,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncPeers,
     syncCursors,
     appSettings,
-    classrooms,
     classroomStudents,
-    learningObjectives,
   ];
 }
 
@@ -21421,10 +21485,1285 @@ typedef $$QuestionSnapshotsTableProcessedTableManager =
         bool studentAnswersRefs,
       })
     >;
+typedef $$ClassroomsTableCreateCompanionBuilder = ClassroomsCompanion Function({
+  required String id,
+  required String name,
+  required String subjectId,
+  required String academicYear,
+  Value<String> semester,
+  Value<String?> teacherNote,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<String> createdByDeviceId,
+  Value<int> revision,
+  Value<DateTime?> deletedAt,
+  Value<int> rowid,
+});
+typedef $$ClassroomsTableUpdateCompanionBuilder = ClassroomsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> subjectId,
+  Value<String> academicYear,
+  Value<String> semester,
+  Value<String?> teacherNote,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<String> createdByDeviceId,
+  Value<int> revision,
+  Value<DateTime?> deletedAt,
+  Value<int> rowid,
+});
+
+final class $$ClassroomsTableReferences
+    extends BaseReferences<_$AppDatabase, $ClassroomsTable, Classroom> {
+  $$ClassroomsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $SubjectsTable _subjectIdTable(_$AppDatabase db) =>
+      db.subjects.createAlias('classrooms__subject_id__subjects__id');
+
+  $$SubjectsTableProcessedTableManager get subjectId {
+    final $_column = $_itemColumn<String>('subject_id')!;
+
+    final manager = $$SubjectsTableTableManager(
+      $_db,
+      $_db.subjects,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_subjectIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$LearningObjectivesTable, List<LearningObjective>>
+  _learningObjectivesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.learningObjectives,
+        aliasName: 'classrooms__id__learning_objectives__classroom_id',
+      );
+
+  $$LearningObjectivesTableProcessedTableManager get learningObjectivesRefs {
+    final manager = $$LearningObjectivesTableTableManager(
+      $_db,
+      $_db.learningObjectives,
+    ).filter((f) => f.classroomId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _learningObjectivesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ClassroomStudentsTable, List<ClassroomStudent>>
+  _classroomStudentsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.classroomStudents,
+        aliasName: 'classrooms__id__classroom_students__classroom_id',
+      );
+
+  $$ClassroomStudentsTableProcessedTableManager get classroomStudentsRefs {
+    final manager = $$ClassroomStudentsTableTableManager(
+      $_db,
+      $_db.classroomStudents,
+    ).filter((f) => f.classroomId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _classroomStudentsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ClassroomsTableFilterComposer
+    extends Composer<_$AppDatabase, $ClassroomsTable> {
+  $$ClassroomsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get academicYear => $composableBuilder(
+    column: $table.academicYear,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get semester => $composableBuilder(
+    column: $table.semester,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get teacherNote => $composableBuilder(
+    column: $table.teacherNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdByDeviceId => $composableBuilder(
+    column: $table.createdByDeviceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$SubjectsTableFilterComposer get subjectId {
+    final $$SubjectsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.subjectId,
+      referencedTable: $db.subjects,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SubjectsTableFilterComposer(
+            $db: $db,
+            $table: $db.subjects,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> learningObjectivesRefs(
+    Expression<bool> Function($$LearningObjectivesTableFilterComposer f) f,
+  ) {
+    final $$LearningObjectivesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.learningObjectives,
+      getReferencedColumn: (t) => t.classroomId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningObjectivesTableFilterComposer(
+            $db: $db,
+            $table: $db.learningObjectives,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> classroomStudentsRefs(
+    Expression<bool> Function($$ClassroomStudentsTableFilterComposer f) f,
+  ) {
+    final $$ClassroomStudentsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.classroomStudents,
+      getReferencedColumn: (t) => t.classroomId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassroomStudentsTableFilterComposer(
+            $db: $db,
+            $table: $db.classroomStudents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ClassroomsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ClassroomsTable> {
+  $$ClassroomsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get academicYear => $composableBuilder(
+    column: $table.academicYear,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get semester => $composableBuilder(
+    column: $table.semester,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get teacherNote => $composableBuilder(
+    column: $table.teacherNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdByDeviceId => $composableBuilder(
+    column: $table.createdByDeviceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$SubjectsTableOrderingComposer get subjectId {
+    final $$SubjectsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.subjectId,
+      referencedTable: $db.subjects,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SubjectsTableOrderingComposer(
+            $db: $db,
+            $table: $db.subjects,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ClassroomsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ClassroomsTable> {
+  $$ClassroomsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get academicYear => $composableBuilder(
+    column: $table.academicYear,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get semester =>
+      $composableBuilder(column: $table.semester, builder: (column) => column);
+
+  GeneratedColumn<String> get teacherNote => $composableBuilder(
+    column: $table.teacherNote,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdByDeviceId => $composableBuilder(
+    column: $table.createdByDeviceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$SubjectsTableAnnotationComposer get subjectId {
+    final $$SubjectsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.subjectId,
+      referencedTable: $db.subjects,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SubjectsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.subjects,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> learningObjectivesRefs<T extends Object>(
+    Expression<T> Function($$LearningObjectivesTableAnnotationComposer a) f,
+  ) {
+    final $$LearningObjectivesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.learningObjectives,
+          getReferencedColumn: (t) => t.classroomId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LearningObjectivesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.learningObjectives,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> classroomStudentsRefs<T extends Object>(
+    Expression<T> Function($$ClassroomStudentsTableAnnotationComposer a) f,
+  ) {
+    final $$ClassroomStudentsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.classroomStudents,
+          getReferencedColumn: (t) => t.classroomId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ClassroomStudentsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.classroomStudents,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$ClassroomsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ClassroomsTable,
+          Classroom,
+          $$ClassroomsTableFilterComposer,
+          $$ClassroomsTableOrderingComposer,
+          $$ClassroomsTableAnnotationComposer,
+          $$ClassroomsTableCreateCompanionBuilder,
+          $$ClassroomsTableUpdateCompanionBuilder,
+          (Classroom, $$ClassroomsTableReferences),
+          Classroom,
+          PrefetchHooks Function({
+            bool subjectId,
+            bool learningObjectivesRefs,
+            bool classroomStudentsRefs,
+          })
+        > {
+  $$ClassroomsTableTableManager(_$AppDatabase db, $ClassroomsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ClassroomsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ClassroomsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ClassroomsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> subjectId = const Value.absent(),
+                Value<String> academicYear = const Value.absent(),
+                Value<String> semester = const Value.absent(),
+                Value<String?> teacherNote = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String> createdByDeviceId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClassroomsCompanion(
+                id: id,
+                name: name,
+                subjectId: subjectId,
+                academicYear: academicYear,
+                semester: semester,
+                teacherNote: teacherNote,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                createdByDeviceId: createdByDeviceId,
+                revision: revision,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String subjectId,
+                required String academicYear,
+                Value<String> semester = const Value.absent(),
+                Value<String?> teacherNote = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String> createdByDeviceId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClassroomsCompanion.insert(
+                id: id,
+                name: name,
+                subjectId: subjectId,
+                academicYear: academicYear,
+                semester: semester,
+                teacherNote: teacherNote,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                createdByDeviceId: createdByDeviceId,
+                revision: revision,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ClassroomsTable, Classroom>(table),
+                  $$ClassroomsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                subjectId = false,
+                learningObjectivesRefs = false,
+                classroomStudentsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (learningObjectivesRefs) db.learningObjectives,
+                    if (classroomStudentsRefs) db.classroomStudents,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (subjectId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.subjectId,
+                            referencedTable: $$ClassroomsTableReferences
+                                ._subjectIdTable(db),
+                            referencedColumn: $$ClassroomsTableReferences
+                                ._subjectIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (learningObjectivesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Classroom,
+                          $ClassroomsTable,
+                          LearningObjective,
+                          $LearningObjectivesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ClassroomsTableReferences
+                              ._learningObjectivesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ClassroomsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).learningObjectivesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'classroom_id',
+                          typedResults: items,
+                        ),
+                      if (classroomStudentsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Classroom,
+                          $ClassroomsTable,
+                          ClassroomStudent,
+                          $ClassroomStudentsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ClassroomsTableReferences
+                              ._classroomStudentsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ClassroomsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).classroomStudentsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'classroom_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ClassroomsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ClassroomsTable,
+      Classroom,
+      $$ClassroomsTableFilterComposer,
+      $$ClassroomsTableOrderingComposer,
+      $$ClassroomsTableAnnotationComposer,
+      $$ClassroomsTableCreateCompanionBuilder,
+      $$ClassroomsTableUpdateCompanionBuilder,
+      (Classroom, $$ClassroomsTableReferences),
+      Classroom,
+      PrefetchHooks Function({
+        bool subjectId,
+        bool learningObjectivesRefs,
+        bool classroomStudentsRefs,
+      })
+    >;
+typedef $$LearningObjectivesTableCreateCompanionBuilder =
+    LearningObjectivesCompanion Function({
+      required String id,
+      Value<String?> classroomId,
+      Value<String?> topicId,
+      required String code,
+      required String description,
+      Value<int> sequence,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<String> createdByDeviceId,
+      Value<int> revision,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+typedef $$LearningObjectivesTableUpdateCompanionBuilder =
+    LearningObjectivesCompanion Function({
+      Value<String> id,
+      Value<String?> classroomId,
+      Value<String?> topicId,
+      Value<String> code,
+      Value<String> description,
+      Value<int> sequence,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<String> createdByDeviceId,
+      Value<int> revision,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+
+final class $$LearningObjectivesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $LearningObjectivesTable,
+          LearningObjective
+        > {
+  $$LearningObjectivesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ClassroomsTable _classroomIdTable(_$AppDatabase db) => db.classrooms
+      .createAlias('learning_objectives__classroom_id__classrooms__id');
+
+  $$ClassroomsTableProcessedTableManager? get classroomId {
+    final $_column = $_itemColumn<String>('classroom_id');
+    if ($_column == null) return null;
+    final manager = $$ClassroomsTableTableManager(
+      $_db,
+      $_db.classrooms,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_classroomIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $TopicsTable _topicIdTable(_$AppDatabase db) =>
+      db.topics.createAlias('learning_objectives__topic_id__topics__id');
+
+  $$TopicsTableProcessedTableManager? get topicId {
+    final $_column = $_itemColumn<String>('topic_id');
+    if ($_column == null) return null;
+    final manager = $$TopicsTableTableManager(
+      $_db,
+      $_db.topics,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_topicIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$AssessmentsTable, List<Assessment>>
+  _assessmentsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.assessments,
+    aliasName: 'learning_objectives__id__assessments__learning_objective_id',
+  );
+
+  $$AssessmentsTableProcessedTableManager get assessmentsRefs {
+    final manager = $$AssessmentsTableTableManager($_db, $_db.assessments)
+        .filter(
+          (f) =>
+              f.learningObjectiveId.id.sqlEquals($_itemColumn<String>('id')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(_assessmentsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$LearningObjectivesTableFilterComposer
+    extends Composer<_$AppDatabase, $LearningObjectivesTable> {
+  $$LearningObjectivesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdByDeviceId => $composableBuilder(
+    column: $table.createdByDeviceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ClassroomsTableFilterComposer get classroomId {
+    final $$ClassroomsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.classroomId,
+      referencedTable: $db.classrooms,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassroomsTableFilterComposer(
+            $db: $db,
+            $table: $db.classrooms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TopicsTableFilterComposer get topicId {
+    final $$TopicsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.topicId,
+      referencedTable: $db.topics,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TopicsTableFilterComposer(
+            $db: $db,
+            $table: $db.topics,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> assessmentsRefs(
+    Expression<bool> Function($$AssessmentsTableFilterComposer f) f,
+  ) {
+    final $$AssessmentsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.assessments,
+      getReferencedColumn: (t) => t.learningObjectiveId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AssessmentsTableFilterComposer(
+            $db: $db,
+            $table: $db.assessments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$LearningObjectivesTableOrderingComposer
+    extends Composer<_$AppDatabase, $LearningObjectivesTable> {
+  $$LearningObjectivesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdByDeviceId => $composableBuilder(
+    column: $table.createdByDeviceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ClassroomsTableOrderingComposer get classroomId {
+    final $$ClassroomsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.classroomId,
+      referencedTable: $db.classrooms,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassroomsTableOrderingComposer(
+            $db: $db,
+            $table: $db.classrooms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TopicsTableOrderingComposer get topicId {
+    final $$TopicsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.topicId,
+      referencedTable: $db.topics,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TopicsTableOrderingComposer(
+            $db: $db,
+            $table: $db.topics,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LearningObjectivesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LearningObjectivesTable> {
+  $$LearningObjectivesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sequence =>
+      $composableBuilder(column: $table.sequence, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdByDeviceId => $composableBuilder(
+    column: $table.createdByDeviceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$ClassroomsTableAnnotationComposer get classroomId {
+    final $$ClassroomsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.classroomId,
+      referencedTable: $db.classrooms,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ClassroomsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.classrooms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TopicsTableAnnotationComposer get topicId {
+    final $$TopicsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.topicId,
+      referencedTable: $db.topics,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TopicsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.topics,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> assessmentsRefs<T extends Object>(
+    Expression<T> Function($$AssessmentsTableAnnotationComposer a) f,
+  ) {
+    final $$AssessmentsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.assessments,
+      getReferencedColumn: (t) => t.learningObjectiveId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AssessmentsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.assessments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$LearningObjectivesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LearningObjectivesTable,
+          LearningObjective,
+          $$LearningObjectivesTableFilterComposer,
+          $$LearningObjectivesTableOrderingComposer,
+          $$LearningObjectivesTableAnnotationComposer,
+          $$LearningObjectivesTableCreateCompanionBuilder,
+          $$LearningObjectivesTableUpdateCompanionBuilder,
+          (LearningObjective, $$LearningObjectivesTableReferences),
+          LearningObjective,
+          PrefetchHooks Function({
+            bool classroomId,
+            bool topicId,
+            bool assessmentsRefs,
+          })
+        > {
+  $$LearningObjectivesTableTableManager(
+    _$AppDatabase db,
+    $LearningObjectivesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LearningObjectivesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LearningObjectivesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LearningObjectivesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> classroomId = const Value.absent(),
+                Value<String?> topicId = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> sequence = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String> createdByDeviceId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LearningObjectivesCompanion(
+                id: id,
+                classroomId: classroomId,
+                topicId: topicId,
+                code: code,
+                description: description,
+                sequence: sequence,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                createdByDeviceId: createdByDeviceId,
+                revision: revision,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> classroomId = const Value.absent(),
+                Value<String?> topicId = const Value.absent(),
+                required String code,
+                required String description,
+                Value<int> sequence = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String> createdByDeviceId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LearningObjectivesCompanion.insert(
+                id: id,
+                classroomId: classroomId,
+                topicId: topicId,
+                code: code,
+                description: description,
+                sequence: sequence,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                createdByDeviceId: createdByDeviceId,
+                revision: revision,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LearningObjectivesTable, LearningObjective>(
+                    table,
+                  ),
+                  $$LearningObjectivesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                classroomId = false,
+                topicId = false,
+                assessmentsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (assessmentsRefs) db.assessments,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (classroomId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.classroomId,
+                            referencedTable: $$LearningObjectivesTableReferences
+                                ._classroomIdTable(db),
+                            referencedColumn:
+                                $$LearningObjectivesTableReferences
+                                    ._classroomIdTable(db)
+                                    .id,
+                          ) as T;
+                        }
+                        if (topicId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.topicId,
+                            referencedTable: $$LearningObjectivesTableReferences
+                                ._topicIdTable(db),
+                            referencedColumn:
+                                $$LearningObjectivesTableReferences
+                                    ._topicIdTable(db)
+                                    .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (assessmentsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          LearningObjective,
+                          $LearningObjectivesTable,
+                          Assessment,
+                          $AssessmentsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LearningObjectivesTableReferences
+                              ._assessmentsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LearningObjectivesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).assessmentsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'learning_objective_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$LearningObjectivesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LearningObjectivesTable,
+      LearningObjective,
+      $$LearningObjectivesTableFilterComposer,
+      $$LearningObjectivesTableOrderingComposer,
+      $$LearningObjectivesTableAnnotationComposer,
+      $$LearningObjectivesTableCreateCompanionBuilder,
+      $$LearningObjectivesTableUpdateCompanionBuilder,
+      (LearningObjective, $$LearningObjectivesTableReferences),
+      LearningObjective,
+      PrefetchHooks Function({
+        bool classroomId,
+        bool topicId,
+        bool assessmentsRefs,
+      })
+    >;
 typedef $$AssessmentsTableCreateCompanionBuilder =
     AssessmentsCompanion Function({
       required String id,
       required String title,
+      Value<String?> learningObjectiveId,
       Value<String> status,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -21437,6 +22776,7 @@ typedef $$AssessmentsTableUpdateCompanionBuilder =
     AssessmentsCompanion Function({
       Value<String> id,
       Value<String> title,
+      Value<String?> learningObjectiveId,
       Value<String> status,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -21449,6 +22789,25 @@ typedef $$AssessmentsTableUpdateCompanionBuilder =
 final class $$AssessmentsTableReferences
     extends BaseReferences<_$AppDatabase, $AssessmentsTable, Assessment> {
   $$AssessmentsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $LearningObjectivesTable _learningObjectiveIdTable(_$AppDatabase db) =>
+      db.learningObjectives.createAlias(
+        'assessments__learning_objective_id__learning_objectives__id',
+      );
+
+  $$LearningObjectivesTableProcessedTableManager? get learningObjectiveId {
+    final $_column = $_itemColumn<String>('learning_objective_id');
+    if ($_column == null) return null;
+    final manager = $$LearningObjectivesTableTableManager(
+      $_db,
+      $_db.learningObjectives,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_learningObjectiveIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 
   static MultiTypedResultKey<
     $AssessmentSnapshotsTable,
@@ -21524,6 +22883,29 @@ class $$AssessmentsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  $$LearningObjectivesTableFilterComposer get learningObjectiveId {
+    final $$LearningObjectivesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.learningObjectiveId,
+      referencedTable: $db.learningObjectives,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningObjectivesTableFilterComposer(
+            $db: $db,
+            $table: $db.learningObjectives,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   Expression<bool> assessmentSnapshotsRefs(
     Expression<bool> Function($$AssessmentSnapshotsTableFilterComposer f) f,
   ) {
@@ -21598,6 +22980,29 @@ class $$AssessmentsTableOrderingComposer
     column: $table.deletedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$LearningObjectivesTableOrderingComposer get learningObjectiveId {
+    final $$LearningObjectivesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.learningObjectiveId,
+      referencedTable: $db.learningObjectives,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningObjectivesTableOrderingComposer(
+            $db: $db,
+            $table: $db.learningObjectives,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$AssessmentsTableAnnotationComposer
@@ -21634,6 +23039,30 @@ class $$AssessmentsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get deletedAt =>
       $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$LearningObjectivesTableAnnotationComposer get learningObjectiveId {
+    final $$LearningObjectivesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.learningObjectiveId,
+          referencedTable: $db.learningObjectives,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LearningObjectivesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.learningObjectives,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
 
   Expression<T> assessmentSnapshotsRefs<T extends Object>(
     Expression<T> Function($$AssessmentSnapshotsTableAnnotationComposer a) f,
@@ -21675,7 +23104,10 @@ class $$AssessmentsTableTableManager
           $$AssessmentsTableUpdateCompanionBuilder,
           (Assessment, $$AssessmentsTableReferences),
           Assessment,
-          PrefetchHooks Function({bool assessmentSnapshotsRefs})
+          PrefetchHooks Function({
+            bool learningObjectiveId,
+            bool assessmentSnapshotsRefs,
+          })
         > {
   $$AssessmentsTableTableManager(_$AppDatabase db, $AssessmentsTable table)
     : super(
@@ -21692,6 +23124,7 @@ class $$AssessmentsTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
+                Value<String?> learningObjectiveId = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -21702,6 +23135,7 @@ class $$AssessmentsTableTableManager
               }) => AssessmentsCompanion(
                 id: id,
                 title: title,
+                learningObjectiveId: learningObjectiveId,
                 status: status,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -21714,6 +23148,7 @@ class $$AssessmentsTableTableManager
               ({
                 required String id,
                 required String title,
+                Value<String?> learningObjectiveId = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -21724,6 +23159,7 @@ class $$AssessmentsTableTableManager
               }) => AssessmentsCompanion.insert(
                 id: id,
                 title: title,
+                learningObjectiveId: learningObjectiveId,
                 status: status,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -21740,39 +23176,69 @@ class $$AssessmentsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({assessmentSnapshotsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (assessmentSnapshotsRefs) db.assessmentSnapshots,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (assessmentSnapshotsRefs)
-                    await $_getPrefetchedDataByColumns<
-                      Assessment,
-                      $AssessmentsTable,
-                      AssessmentSnapshot,
-                      $AssessmentSnapshotsTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$AssessmentsTableReferences
-                          ._assessmentSnapshotsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$AssessmentsTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).assessmentSnapshotsRefs,
-                      currentColumn: 'id',
-                      referencedColumn: 'assessment_id',
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({learningObjectiveId = false, assessmentSnapshotsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (assessmentSnapshotsRefs) db.assessmentSnapshots,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (learningObjectiveId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.learningObjectiveId,
+                            referencedTable: $$AssessmentsTableReferences
+                                ._learningObjectiveIdTable(db),
+                            referencedColumn: $$AssessmentsTableReferences
+                                ._learningObjectiveIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (assessmentSnapshotsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Assessment,
+                          $AssessmentsTable,
+                          AssessmentSnapshot,
+                          $AssessmentSnapshotsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AssessmentsTableReferences
+                              ._assessmentSnapshotsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AssessmentsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).assessmentSnapshotsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'assessment_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -21789,7 +23255,10 @@ typedef $$AssessmentsTableProcessedTableManager =
       $$AssessmentsTableUpdateCompanionBuilder,
       (Assessment, $$AssessmentsTableReferences),
       Assessment,
-      PrefetchHooks Function({bool assessmentSnapshotsRefs})
+      PrefetchHooks Function({
+        bool learningObjectiveId,
+        bool assessmentSnapshotsRefs,
+      })
     >;
 typedef $$AssessmentSnapshotsTableCreateCompanionBuilder =
     AssessmentSnapshotsCompanion Function({
@@ -26452,640 +27921,6 @@ typedef $$AppSettingsTableProcessedTableManager =
       AppSetting,
       PrefetchHooks Function()
     >;
-typedef $$ClassroomsTableCreateCompanionBuilder = ClassroomsCompanion Function({
-  required String id,
-  required String name,
-  required String subjectId,
-  required String academicYear,
-  Value<String> semester,
-  Value<String?> teacherNote,
-  Value<DateTime> createdAt,
-  Value<DateTime> updatedAt,
-  Value<String> createdByDeviceId,
-  Value<int> revision,
-  Value<DateTime?> deletedAt,
-  Value<int> rowid,
-});
-typedef $$ClassroomsTableUpdateCompanionBuilder = ClassroomsCompanion Function({
-  Value<String> id,
-  Value<String> name,
-  Value<String> subjectId,
-  Value<String> academicYear,
-  Value<String> semester,
-  Value<String?> teacherNote,
-  Value<DateTime> createdAt,
-  Value<DateTime> updatedAt,
-  Value<String> createdByDeviceId,
-  Value<int> revision,
-  Value<DateTime?> deletedAt,
-  Value<int> rowid,
-});
-
-final class $$ClassroomsTableReferences
-    extends BaseReferences<_$AppDatabase, $ClassroomsTable, Classroom> {
-  $$ClassroomsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $SubjectsTable _subjectIdTable(_$AppDatabase db) =>
-      db.subjects.createAlias('classrooms__subject_id__subjects__id');
-
-  $$SubjectsTableProcessedTableManager get subjectId {
-    final $_column = $_itemColumn<String>('subject_id')!;
-
-    final manager = $$SubjectsTableTableManager(
-      $_db,
-      $_db.subjects,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_subjectIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static MultiTypedResultKey<$ClassroomStudentsTable, List<ClassroomStudent>>
-  _classroomStudentsRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.classroomStudents,
-        aliasName: 'classrooms__id__classroom_students__classroom_id',
-      );
-
-  $$ClassroomStudentsTableProcessedTableManager get classroomStudentsRefs {
-    final manager = $$ClassroomStudentsTableTableManager(
-      $_db,
-      $_db.classroomStudents,
-    ).filter((f) => f.classroomId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _classroomStudentsRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$LearningObjectivesTable, List<LearningObjective>>
-  _learningObjectivesRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.learningObjectives,
-        aliasName: 'classrooms__id__learning_objectives__classroom_id',
-      );
-
-  $$LearningObjectivesTableProcessedTableManager get learningObjectivesRefs {
-    final manager = $$LearningObjectivesTableTableManager(
-      $_db,
-      $_db.learningObjectives,
-    ).filter((f) => f.classroomId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _learningObjectivesRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$ClassroomsTableFilterComposer
-    extends Composer<_$AppDatabase, $ClassroomsTable> {
-  $$ClassroomsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get academicYear => $composableBuilder(
-    column: $table.academicYear,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get semester => $composableBuilder(
-    column: $table.semester,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get teacherNote => $composableBuilder(
-    column: $table.teacherNote,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get createdByDeviceId => $composableBuilder(
-    column: $table.createdByDeviceId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get revision => $composableBuilder(
-    column: $table.revision,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$SubjectsTableFilterComposer get subjectId {
-    final $$SubjectsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.subjectId,
-      referencedTable: $db.subjects,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$SubjectsTableFilterComposer(
-            $db: $db,
-            $table: $db.subjects,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<bool> classroomStudentsRefs(
-    Expression<bool> Function($$ClassroomStudentsTableFilterComposer f) f,
-  ) {
-    final $$ClassroomStudentsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.classroomStudents,
-      getReferencedColumn: (t) => t.classroomId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ClassroomStudentsTableFilterComposer(
-            $db: $db,
-            $table: $db.classroomStudents,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> learningObjectivesRefs(
-    Expression<bool> Function($$LearningObjectivesTableFilterComposer f) f,
-  ) {
-    final $$LearningObjectivesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.learningObjectives,
-      getReferencedColumn: (t) => t.classroomId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$LearningObjectivesTableFilterComposer(
-            $db: $db,
-            $table: $db.learningObjectives,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$ClassroomsTableOrderingComposer
-    extends Composer<_$AppDatabase, $ClassroomsTable> {
-  $$ClassroomsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get academicYear => $composableBuilder(
-    column: $table.academicYear,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get semester => $composableBuilder(
-    column: $table.semester,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get teacherNote => $composableBuilder(
-    column: $table.teacherNote,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get createdByDeviceId => $composableBuilder(
-    column: $table.createdByDeviceId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get revision => $composableBuilder(
-    column: $table.revision,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$SubjectsTableOrderingComposer get subjectId {
-    final $$SubjectsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.subjectId,
-      referencedTable: $db.subjects,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$SubjectsTableOrderingComposer(
-            $db: $db,
-            $table: $db.subjects,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$ClassroomsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $ClassroomsTable> {
-  $$ClassroomsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get academicYear => $composableBuilder(
-    column: $table.academicYear,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get semester =>
-      $composableBuilder(column: $table.semester, builder: (column) => column);
-
-  GeneratedColumn<String> get teacherNote => $composableBuilder(
-    column: $table.teacherNote,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  GeneratedColumn<String> get createdByDeviceId => $composableBuilder(
-    column: $table.createdByDeviceId,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get revision =>
-      $composableBuilder(column: $table.revision, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedAt =>
-      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
-
-  $$SubjectsTableAnnotationComposer get subjectId {
-    final $$SubjectsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.subjectId,
-      referencedTable: $db.subjects,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$SubjectsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.subjects,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<T> classroomStudentsRefs<T extends Object>(
-    Expression<T> Function($$ClassroomStudentsTableAnnotationComposer a) f,
-  ) {
-    final $$ClassroomStudentsTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.id,
-          referencedTable: $db.classroomStudents,
-          getReferencedColumn: (t) => t.classroomId,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$ClassroomStudentsTableAnnotationComposer(
-                $db: $db,
-                $table: $db.classroomStudents,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-
-  Expression<T> learningObjectivesRefs<T extends Object>(
-    Expression<T> Function($$LearningObjectivesTableAnnotationComposer a) f,
-  ) {
-    final $$LearningObjectivesTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.id,
-          referencedTable: $db.learningObjectives,
-          getReferencedColumn: (t) => t.classroomId,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$LearningObjectivesTableAnnotationComposer(
-                $db: $db,
-                $table: $db.learningObjectives,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-}
-
-class $$ClassroomsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $ClassroomsTable,
-          Classroom,
-          $$ClassroomsTableFilterComposer,
-          $$ClassroomsTableOrderingComposer,
-          $$ClassroomsTableAnnotationComposer,
-          $$ClassroomsTableCreateCompanionBuilder,
-          $$ClassroomsTableUpdateCompanionBuilder,
-          (Classroom, $$ClassroomsTableReferences),
-          Classroom,
-          PrefetchHooks Function({
-            bool subjectId,
-            bool classroomStudentsRefs,
-            bool learningObjectivesRefs,
-          })
-        > {
-  $$ClassroomsTableTableManager(_$AppDatabase db, $ClassroomsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$ClassroomsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ClassroomsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$ClassroomsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<String> subjectId = const Value.absent(),
-                Value<String> academicYear = const Value.absent(),
-                Value<String> semester = const Value.absent(),
-                Value<String?> teacherNote = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-                Value<String> createdByDeviceId = const Value.absent(),
-                Value<int> revision = const Value.absent(),
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => ClassroomsCompanion(
-                id: id,
-                name: name,
-                subjectId: subjectId,
-                academicYear: academicYear,
-                semester: semester,
-                teacherNote: teacherNote,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                createdByDeviceId: createdByDeviceId,
-                revision: revision,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required String name,
-                required String subjectId,
-                required String academicYear,
-                Value<String> semester = const Value.absent(),
-                Value<String?> teacherNote = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-                Value<String> createdByDeviceId = const Value.absent(),
-                Value<int> revision = const Value.absent(),
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => ClassroomsCompanion.insert(
-                id: id,
-                name: name,
-                subjectId: subjectId,
-                academicYear: academicYear,
-                semester: semester,
-                teacherNote: teacherNote,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                createdByDeviceId: createdByDeviceId,
-                revision: revision,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable<$ClassroomsTable, Classroom>(table),
-                  $$ClassroomsTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({
-                subjectId = false,
-                classroomStudentsRefs = false,
-                learningObjectivesRefs = false,
-              }) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (classroomStudentsRefs) db.classroomStudents,
-                    if (learningObjectivesRefs) db.learningObjectives,
-                  ],
-                  addJoins:
-                      <
-                        T extends TableManagerState<
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic
-                        >
-                      >(state) {
-                        if (subjectId) {
-                          state = state.withJoin(
-                            currentTable: table,
-                            currentColumn: table.subjectId,
-                            referencedTable: $$ClassroomsTableReferences
-                                ._subjectIdTable(db),
-                            referencedColumn: $$ClassroomsTableReferences
-                                ._subjectIdTable(db)
-                                .id,
-                          ) as T;
-                        }
-
-                        return state;
-                      },
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (classroomStudentsRefs)
-                        await $_getPrefetchedDataByColumns<
-                          Classroom,
-                          $ClassroomsTable,
-                          ClassroomStudent,
-                          $ClassroomStudentsTable
-                        >(
-                          currentTable: table,
-                          referencedTable: $$ClassroomsTableReferences
-                              ._classroomStudentsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$ClassroomsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).classroomStudentsRefs,
-                          currentColumn: 'id',
-                          referencedColumn: 'classroom_id',
-                          typedResults: items,
-                        ),
-                      if (learningObjectivesRefs)
-                        await $_getPrefetchedDataByColumns<
-                          Classroom,
-                          $ClassroomsTable,
-                          LearningObjective,
-                          $LearningObjectivesTable
-                        >(
-                          currentTable: table,
-                          referencedTable: $$ClassroomsTableReferences
-                              ._learningObjectivesRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$ClassroomsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).learningObjectivesRefs,
-                          currentColumn: 'id',
-                          referencedColumn: 'classroom_id',
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$ClassroomsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $ClassroomsTable,
-      Classroom,
-      $$ClassroomsTableFilterComposer,
-      $$ClassroomsTableOrderingComposer,
-      $$ClassroomsTableAnnotationComposer,
-      $$ClassroomsTableCreateCompanionBuilder,
-      $$ClassroomsTableUpdateCompanionBuilder,
-      (Classroom, $$ClassroomsTableReferences),
-      Classroom,
-      PrefetchHooks Function({
-        bool subjectId,
-        bool classroomStudentsRefs,
-        bool learningObjectivesRefs,
-      })
-    >;
 typedef $$ClassroomStudentsTableCreateCompanionBuilder =
     ClassroomStudentsCompanion Function({
       required String id,
@@ -27541,539 +28376,6 @@ typedef $$ClassroomStudentsTableProcessedTableManager =
       ClassroomStudent,
       PrefetchHooks Function({bool classroomId, bool studentId})
     >;
-typedef $$LearningObjectivesTableCreateCompanionBuilder =
-    LearningObjectivesCompanion Function({
-      required String id,
-      Value<String?> classroomId,
-      Value<String?> topicId,
-      required String code,
-      required String description,
-      Value<int> sequence,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-      Value<String> createdByDeviceId,
-      Value<int> revision,
-      Value<DateTime?> deletedAt,
-      Value<int> rowid,
-    });
-typedef $$LearningObjectivesTableUpdateCompanionBuilder =
-    LearningObjectivesCompanion Function({
-      Value<String> id,
-      Value<String?> classroomId,
-      Value<String?> topicId,
-      Value<String> code,
-      Value<String> description,
-      Value<int> sequence,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-      Value<String> createdByDeviceId,
-      Value<int> revision,
-      Value<DateTime?> deletedAt,
-      Value<int> rowid,
-    });
-
-final class $$LearningObjectivesTableReferences
-    extends
-        BaseReferences<
-          _$AppDatabase,
-          $LearningObjectivesTable,
-          LearningObjective
-        > {
-  $$LearningObjectivesTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static $ClassroomsTable _classroomIdTable(_$AppDatabase db) => db.classrooms
-      .createAlias('learning_objectives__classroom_id__classrooms__id');
-
-  $$ClassroomsTableProcessedTableManager? get classroomId {
-    final $_column = $_itemColumn<String>('classroom_id');
-    if ($_column == null) return null;
-    final manager = $$ClassroomsTableTableManager(
-      $_db,
-      $_db.classrooms,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_classroomIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $TopicsTable _topicIdTable(_$AppDatabase db) =>
-      db.topics.createAlias('learning_objectives__topic_id__topics__id');
-
-  $$TopicsTableProcessedTableManager? get topicId {
-    final $_column = $_itemColumn<String>('topic_id');
-    if ($_column == null) return null;
-    final manager = $$TopicsTableTableManager(
-      $_db,
-      $_db.topics,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_topicIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
-
-class $$LearningObjectivesTableFilterComposer
-    extends Composer<_$AppDatabase, $LearningObjectivesTable> {
-  $$LearningObjectivesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get code => $composableBuilder(
-    column: $table.code,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get description => $composableBuilder(
-    column: $table.description,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get sequence => $composableBuilder(
-    column: $table.sequence,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get createdByDeviceId => $composableBuilder(
-    column: $table.createdByDeviceId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get revision => $composableBuilder(
-    column: $table.revision,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$ClassroomsTableFilterComposer get classroomId {
-    final $$ClassroomsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.classroomId,
-      referencedTable: $db.classrooms,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ClassroomsTableFilterComposer(
-            $db: $db,
-            $table: $db.classrooms,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TopicsTableFilterComposer get topicId {
-    final $$TopicsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.topicId,
-      referencedTable: $db.topics,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TopicsTableFilterComposer(
-            $db: $db,
-            $table: $db.topics,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$LearningObjectivesTableOrderingComposer
-    extends Composer<_$AppDatabase, $LearningObjectivesTable> {
-  $$LearningObjectivesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get code => $composableBuilder(
-    column: $table.code,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get description => $composableBuilder(
-    column: $table.description,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get sequence => $composableBuilder(
-    column: $table.sequence,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get createdByDeviceId => $composableBuilder(
-    column: $table.createdByDeviceId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get revision => $composableBuilder(
-    column: $table.revision,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$ClassroomsTableOrderingComposer get classroomId {
-    final $$ClassroomsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.classroomId,
-      referencedTable: $db.classrooms,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ClassroomsTableOrderingComposer(
-            $db: $db,
-            $table: $db.classrooms,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TopicsTableOrderingComposer get topicId {
-    final $$TopicsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.topicId,
-      referencedTable: $db.topics,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TopicsTableOrderingComposer(
-            $db: $db,
-            $table: $db.topics,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$LearningObjectivesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $LearningObjectivesTable> {
-  $$LearningObjectivesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
-
-  GeneratedColumn<String> get description => $composableBuilder(
-    column: $table.description,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get sequence =>
-      $composableBuilder(column: $table.sequence, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  GeneratedColumn<String> get createdByDeviceId => $composableBuilder(
-    column: $table.createdByDeviceId,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get revision =>
-      $composableBuilder(column: $table.revision, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedAt =>
-      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
-
-  $$ClassroomsTableAnnotationComposer get classroomId {
-    final $$ClassroomsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.classroomId,
-      referencedTable: $db.classrooms,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ClassroomsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.classrooms,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TopicsTableAnnotationComposer get topicId {
-    final $$TopicsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.topicId,
-      referencedTable: $db.topics,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TopicsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.topics,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$LearningObjectivesTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $LearningObjectivesTable,
-          LearningObjective,
-          $$LearningObjectivesTableFilterComposer,
-          $$LearningObjectivesTableOrderingComposer,
-          $$LearningObjectivesTableAnnotationComposer,
-          $$LearningObjectivesTableCreateCompanionBuilder,
-          $$LearningObjectivesTableUpdateCompanionBuilder,
-          (LearningObjective, $$LearningObjectivesTableReferences),
-          LearningObjective,
-          PrefetchHooks Function({bool classroomId, bool topicId})
-        > {
-  $$LearningObjectivesTableTableManager(
-    _$AppDatabase db,
-    $LearningObjectivesTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$LearningObjectivesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$LearningObjectivesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$LearningObjectivesTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String?> classroomId = const Value.absent(),
-                Value<String?> topicId = const Value.absent(),
-                Value<String> code = const Value.absent(),
-                Value<String> description = const Value.absent(),
-                Value<int> sequence = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-                Value<String> createdByDeviceId = const Value.absent(),
-                Value<int> revision = const Value.absent(),
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => LearningObjectivesCompanion(
-                id: id,
-                classroomId: classroomId,
-                topicId: topicId,
-                code: code,
-                description: description,
-                sequence: sequence,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                createdByDeviceId: createdByDeviceId,
-                revision: revision,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                Value<String?> classroomId = const Value.absent(),
-                Value<String?> topicId = const Value.absent(),
-                required String code,
-                required String description,
-                Value<int> sequence = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-                Value<String> createdByDeviceId = const Value.absent(),
-                Value<int> revision = const Value.absent(),
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => LearningObjectivesCompanion.insert(
-                id: id,
-                classroomId: classroomId,
-                topicId: topicId,
-                code: code,
-                description: description,
-                sequence: sequence,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                createdByDeviceId: createdByDeviceId,
-                revision: revision,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable<$LearningObjectivesTable, LearningObjective>(
-                    table,
-                  ),
-                  $$LearningObjectivesTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: ({classroomId = false, topicId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (classroomId) {
-                      state = state.withJoin(
-                        currentTable: table,
-                        currentColumn: table.classroomId,
-                        referencedTable: $$LearningObjectivesTableReferences
-                            ._classroomIdTable(db),
-                        referencedColumn: $$LearningObjectivesTableReferences
-                            ._classroomIdTable(db)
-                            .id,
-                      ) as T;
-                    }
-                    if (topicId) {
-                      state = state.withJoin(
-                        currentTable: table,
-                        currentColumn: table.topicId,
-                        referencedTable: $$LearningObjectivesTableReferences
-                            ._topicIdTable(db),
-                        referencedColumn: $$LearningObjectivesTableReferences
-                            ._topicIdTable(db)
-                            .id,
-                      ) as T;
-                    }
-
-                    return state;
-                  },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$LearningObjectivesTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $LearningObjectivesTable,
-      LearningObjective,
-      $$LearningObjectivesTableFilterComposer,
-      $$LearningObjectivesTableOrderingComposer,
-      $$LearningObjectivesTableAnnotationComposer,
-      $$LearningObjectivesTableCreateCompanionBuilder,
-      $$LearningObjectivesTableUpdateCompanionBuilder,
-      (LearningObjective, $$LearningObjectivesTableReferences),
-      LearningObjective,
-      PrefetchHooks Function({bool classroomId, bool topicId})
-    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -28102,6 +28404,10 @@ class $AppDatabaseManager {
       $$QuestionsTableTableManager(_db, _db.questions);
   $$QuestionSnapshotsTableTableManager get questionSnapshots =>
       $$QuestionSnapshotsTableTableManager(_db, _db.questionSnapshots);
+  $$ClassroomsTableTableManager get classrooms =>
+      $$ClassroomsTableTableManager(_db, _db.classrooms);
+  $$LearningObjectivesTableTableManager get learningObjectives =>
+      $$LearningObjectivesTableTableManager(_db, _db.learningObjectives);
   $$AssessmentsTableTableManager get assessments =>
       $$AssessmentsTableTableManager(_db, _db.assessments);
   $$AssessmentSnapshotsTableTableManager get assessmentSnapshots =>
@@ -28128,10 +28434,6 @@ class $AppDatabaseManager {
       $$SyncCursorsTableTableManager(_db, _db.syncCursors);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db, _db.appSettings);
-  $$ClassroomsTableTableManager get classrooms =>
-      $$ClassroomsTableTableManager(_db, _db.classrooms);
   $$ClassroomStudentsTableTableManager get classroomStudents =>
       $$ClassroomStudentsTableTableManager(_db, _db.classroomStudents);
-  $$LearningObjectivesTableTableManager get learningObjectives =>
-      $$LearningObjectivesTableTableManager(_db, _db.learningObjectives);
 }

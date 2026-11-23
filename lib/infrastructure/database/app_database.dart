@@ -215,6 +215,8 @@ class QuestionSnapshots extends Table {
 class Assessments extends Table {
   TextColumn get id => text()();
   TextColumn get title => text()();
+  TextColumn get learningObjectiveId =>
+      text().nullable().references(LearningObjectives, #id)();
   TextColumn get status => text().withDefault(const Constant('draft'))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
@@ -411,7 +413,7 @@ class AppSettings extends Table {
 }
 
 // ==========================================
-// 8. CLASSROOM & LEARNING OBJECTIVES (v10)
+// 8. CLASSROOM & LEARNING OBJECTIVES
 // ==========================================
 
 class Classrooms extends Table {
@@ -509,7 +511,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -563,6 +565,9 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(classrooms);
         await m.createTable(classroomStudents);
         await m.createTable(learningObjectives);
+      }
+      if (from < 11) {
+        await m.addColumn(assessments, assessments.learningObjectiveId);
       }
     },
   );
