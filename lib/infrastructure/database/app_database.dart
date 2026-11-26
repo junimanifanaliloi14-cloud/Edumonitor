@@ -472,6 +472,52 @@ class LearningObjectives extends Table {
 }
 
 // ==========================================
+// 9. JOURNAL & ATTENDANCE (v12)
+// ==========================================
+
+class JournalEntries extends Table {
+  TextColumn get id => text()();
+  TextColumn get classroomId => text().references(Classrooms, #id)();
+  TextColumn get learningObjectiveId =>
+      text().nullable().references(LearningObjectives, #id)();
+  DateTimeColumn get date => dateTime()();
+  TextColumn get title => text().nullable()();
+  TextColumn get activity => text()();
+  TextColumn get notes => text().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class Attendances extends Table {
+  TextColumn get id => text()();
+  TextColumn get journalEntryId => text().references(JournalEntries, #id)();
+  TextColumn get studentId => text().references(Students, #id)();
+  TextColumn get status => text()();
+  TextColumn get note => text().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdByDeviceId =>
+      text().withDefault(const Constant('local'))();
+  IntColumn get revision => integer().withDefault(const Constant(1))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {journalEntryId, studentId},
+  ];
+}
+
+// ==========================================
 // DATABASE DEFINITION
 // ==========================================
 
@@ -505,13 +551,15 @@ class LearningObjectives extends Table {
     Classrooms,
     ClassroomStudents,
     LearningObjectives,
+    JournalEntries,
+    Attendances,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -568,6 +616,10 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 11) {
         await m.addColumn(assessments, assessments.learningObjectiveId);
+      }
+      if (from < 12) {
+        await m.createTable(journalEntries);
+        await m.createTable(attendances);
       }
     },
   );
