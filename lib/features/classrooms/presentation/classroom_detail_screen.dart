@@ -5,6 +5,7 @@ import '../../../infrastructure/database/app_database.dart';
 import '../../curriculum/presentation/subject_providers.dart';
 import 'classroom_providers.dart';
 import 'learning_objective_providers.dart';
+import '../../journal/presentation/journal_list_tab.dart';
 
 class ClassroomDetailScreen extends ConsumerWidget {
   final Classroom classroom;
@@ -25,7 +26,7 @@ class ClassroomDetailScreen extends ConsumerWidget {
     );
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(classroom.name),
@@ -35,7 +36,8 @@ class ClassroomDetailScreen extends ConsumerWidget {
             indicatorColor: Colors.white,
             tabs: [
               Tab(text: 'Siswa', icon: Icon(Icons.people)),
-              Tab(text: 'Tujuan Pembelajaran', icon: Icon(Icons.flag)),
+              Tab(text: 'TP', icon: Icon(Icons.flag)),
+              Tab(text: 'Jurnal', icon: Icon(Icons.book)),
             ],
           ),
         ),
@@ -48,6 +50,7 @@ class ClassroomDetailScreen extends ConsumerWidget {
                 children: [
                   _StudentsTab(classroom: classroom),
                   _LearningObjectivesTab(classroom: classroom),
+                  JournalListTab(classroom: classroom),
                 ],
               ),
             ),
