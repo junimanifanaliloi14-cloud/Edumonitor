@@ -26,12 +26,31 @@ class ReportingRepositoryImpl implements ReportingRepository {
             .map((row) => row.read(_db.questions.id.count()) ?? 0)
             .getSingle();
 
-    // 2. Kumpulkan skor per attempt
+    // 2. Ambil semua siswa aktif (belum dihapus)
+    final studentsList = await (_db.select(
+      _db.students,
+    )..where((t) => t.deletedAt.isNull())).get();
+    final activeStudentIds = studentsList.map((s) => s.id).toSet();
+
+    // 3. Kumpulkan semua attempt dan score dari siswa aktif
+    final attempts = await (_db.select(
+      _db.studentAttempts,
+    )..where((t) => t.deletedAt.isNull())).get();
+    final activeAttempts = attempts
+        .where((a) => activeStudentIds.contains(a.studentId))
+        .toList();
+    final activeAttemptIds = activeAttempts.map((a) => a.id).toSet();
+
     final answers = await (_db.select(
       _db.studentAnswers,
     )..where((t) => t.deletedAt.isNull())).get();
+    final activeAnswers = answers
+        .where((ans) => activeAttemptIds.contains(ans.attemptId))
+        .toList();
+
+    // 4. Kalkulasi KPI berdasarkan data yang sudah terfilter
     final scoresByAttempt = <String, double>{};
-    for (final a in answers) {
+    for (final a in activeAnswers) {
       if (a.score != null) scoresByAttempt[a.attemptId] = a.score!;
     }
 
@@ -46,9 +65,13 @@ class ReportingRepositoryImpl implements ReportingRepository {
         ? 0.0
         : allScores.reduce((a, b) => a < b ? a : b);
 
-    // 3. Score trend: group by assessment snapshot
-    final trendQuery =
+    // 5. Score trend: group by assessment snapshot (active students only)
+    final trendQueryWithStudent =
         _db.select(_db.studentAttempts).join([
+            innerJoin(
+              _db.students,
+              _db.students.id.equalsExp(_db.studentAttempts.studentId),
+            ),
             innerJoin(
               _db.assessmentSnapshots,
               _db.assessmentSnapshots.id.equalsExp(
@@ -64,10 +87,11 @@ class ReportingRepositoryImpl implements ReportingRepository {
           ])
           ..where(_db.studentAttempts.deletedAt.isNull())
           ..where(_db.studentAttempts.completedAt.isNotNull())
+          ..where(_db.students.deletedAt.isNull())
           ..orderBy([OrderingTerm.desc(_db.studentAttempts.completedAt)])
           ..limit(100);
 
-    final trendRows = await trendQuery.get();
+    final trendRows = await trendQueryWithStudent.get();
     final grouped = <String, List<_TrendItem>>{};
     for (final row in trendRows) {
       final attempt = row.readTable(_db.studentAttempts);
@@ -103,23 +127,17 @@ class ReportingRepositoryImpl implements ReportingRepository {
         ? scoreTrend.sublist(scoreTrend.length - 10)
         : scoreTrend;
 
-    // 4. Siswa perlu perhatian
-    final studentsList = await (_db.select(
-      _db.students,
-    )..where((t) => t.deletedAt.isNull())).get();
-
+    // 6. Siswa perlu perhatian (hanya siswa aktif yang punya attempt aktif)
     final attentionList = <StudentAttentionItem>[];
     for (final student in studentsList) {
-      final attempts =
-          await (_db.select(_db.studentAttempts)..where(
-                (t) => t.studentId.equals(student.id) & t.deletedAt.isNull(),
-              ))
-              .get();
-      if (attempts.isEmpty) continue;
+      final studentAttempts = activeAttempts
+          .where((a) => a.studentId == student.id)
+          .toList();
+      if (studentAttempts.isEmpty) continue;
 
-      final attemptIds = attempts.map((a) => a.id).toSet();
+      final attemptIds = studentAttempts.map((a) => a.id).toSet();
       final studentScores = <double>[];
-      for (final a in answers) {
+      for (final a in activeAnswers) {
         if (attemptIds.contains(a.attemptId) && a.score != null) {
           studentScores.add(a.score!);
         }
