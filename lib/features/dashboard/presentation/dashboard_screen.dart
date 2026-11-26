@@ -12,6 +12,13 @@ class DashboardScreen extends ConsumerWidget {
 
   const DashboardScreen({super.key, this.onNavigateToTab});
 
+  /// Mapping tab index (6 tab total):
+  /// 0=Beranda, 1=Kelas, 2=Siswa, 3=Kurikulum, 4=Materi, 5=Asesmen
+  static const int _tabSiswa = 2;
+  static const int _tabKurikulum = 3;
+  static const int _tabMateri = 4;
+  static const int _tabAsesmen = 5;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final statsAsync = ref.watch(dashboardStatsProvider);
@@ -53,21 +60,23 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             const Text(
               'Ringkasan Data',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             const Text(
               'Ketuk kartu untuk membuka detail',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(fontSize: 11, color: Colors.grey),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             statsAsync.when(
-              data: (stats) =>
-                  _StatGrid(stats: stats, onNavigateToTab: onNavigateToTab),
+              data: (stats) => _CompactStatsGrid(
+                stats: stats,
+                onNavigateToTab: onNavigateToTab,
+              ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Text('Error: $e'),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             metricsAsync.when(
               data: (metrics) => _ReportingSection(metrics: metrics),
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -81,78 +90,90 @@ class DashboardScreen extends ConsumerWidget {
 }
 
 // ==========================================
-// SECTION 1: STAT GRID (Counter card — existing)
+// COMPACT STATS GRID — 5 kartu kecil dalam 1 baris horizontal
+// (dapat di-scroll horizontal jika layar sempit)
 // ==========================================
 
-class _StatGrid extends StatelessWidget {
+class _CompactStatsGrid extends StatelessWidget {
   final Map<String, int> stats;
   final void Function(int)? onNavigateToTab;
-  const _StatGrid({required this.stats, this.onNavigateToTab});
+  const _CompactStatsGrid({required this.stats, this.onNavigateToTab});
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.3,
-      children: [
-        _StatCard(
-          title: 'Siswa',
-          value: stats['students'].toString(),
-          icon: Icons.people,
-          color: Colors.blue,
-          onTap: () => onNavigateToTab?.call(1),
-        ),
-        _StatCard(
-          title: 'Mata Pelajaran',
-          value: stats['subjects'].toString(),
-          icon: Icons.menu_book,
-          color: Colors.orange,
-          onTap: () => onNavigateToTab?.call(2),
-        ),
-        _StatCard(
-          title: 'Materi',
-          value: stats['documents'].toString(),
-          icon: Icons.folder,
-          color: Colors.purple,
-          onTap: () => onNavigateToTab?.call(3),
-        ),
-        _StatCard(
-          title: 'Soal Dibuat',
-          value: stats['questions'].toString(),
-          icon: Icons.quiz,
-          color: Colors.green,
-          onTap: () => onNavigateToTab?.call(2),
-        ),
-        _StatCard(
-          title: 'Asesmen',
-          value: stats['assessments'].toString(),
-          icon: Icons.assignment,
-          color: Colors.red,
-          onTap: () => onNavigateToTab?.call(4),
-        ),
-      ],
+    final items = [
+      _CompactStatItem(
+        title: 'Siswa',
+        value: stats['students'] ?? 0,
+        icon: Icons.people,
+        color: Colors.blue,
+        onTap: () => onNavigateToTab?.call(DashboardScreen._tabSiswa),
+      ),
+      _CompactStatItem(
+        title: 'Mapel',
+        value: stats['subjects'] ?? 0,
+        icon: Icons.menu_book,
+        color: Colors.orange,
+        onTap: () => onNavigateToTab?.call(DashboardScreen._tabKurikulum),
+      ),
+      _CompactStatItem(
+        title: 'Materi',
+        value: stats['documents'] ?? 0,
+        icon: Icons.folder,
+        color: Colors.purple,
+        onTap: () => onNavigateToTab?.call(DashboardScreen._tabMateri),
+      ),
+      _CompactStatItem(
+        title: 'Soal',
+        value: stats['questions'] ?? 0,
+        icon: Icons.quiz,
+        color: Colors.green,
+        onTap: () => onNavigateToTab?.call(DashboardScreen._tabKurikulum),
+      ),
+      _CompactStatItem(
+        title: 'Asesmen',
+        value: stats['assessments'] ?? 0,
+        icon: Icons.assignment,
+        color: Colors.red,
+        onTap: () => onNavigateToTab?.call(DashboardScreen._tabAsesmen),
+      ),
+    ];
+
+    return SizedBox(
+      height: 95,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          return SizedBox(
+            width: 110,
+            child: _CompactStatCard(item: items[index]),
+          );
+        },
+      ),
     );
   }
 }
 
-class _StatCard extends StatelessWidget {
+class _CompactStatItem {
   final String title;
-  final String value;
+  final int value;
   final IconData icon;
   final Color color;
   final VoidCallback? onTap;
-
-  const _StatCard({
+  const _CompactStatItem({
     required this.title,
     required this.value,
     required this.icon,
     required this.color,
     this.onTap,
   });
+}
+
+class _CompactStatCard extends StatelessWidget {
+  final _CompactStatItem item;
+  const _CompactStatCard({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -160,27 +181,28 @@ class _StatCard extends StatelessWidget {
       elevation: 2,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: onTap,
+        onTap: item.onTap,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 28, color: color),
-              const SizedBox(height: 6),
+              Icon(item.icon, size: 22, color: item.color),
+              const SizedBox(height: 4),
               Text(
-                value,
+                '${item.value}',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: color,
+                  color: item.color,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
-                title,
+                item.title,
+                style: const TextStyle(fontSize: 10, color: Colors.grey),
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -191,7 +213,7 @@ class _StatCard extends StatelessWidget {
 }
 
 // ==========================================
-// SECTION 2: REPORTING METRICS (Phase 16 baru)
+// REPORTING SECTION (KPI + Chart + Attention)
 // ==========================================
 
 class _ReportingSection extends StatelessWidget {
@@ -217,13 +239,13 @@ class _ReportingSection extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
         ],
         const Text(
           'Performa Kelas',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -254,20 +276,20 @@ class _ReportingSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         if (metrics.scoreTrend.isNotEmpty) ...[
           const Text(
             'Tren Nilai',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           const Text(
             'Rata-rata per asesmen (10 terakhir)',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+            style: TextStyle(fontSize: 11, color: Colors.grey),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           _TrendChart(points: metrics.scoreTrend),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
         ],
         if (metrics.studentsNeedingAttention.isNotEmpty) ...[
           Row(
@@ -278,22 +300,22 @@ class _ReportingSection extends StatelessWidget {
                 child: Text(
                   'Siswa Perlu Perhatian (${metrics.studentsNeedingAttention.length})',
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           const Text(
             'Rata-rata di bawah 70 — pertimbangkan remedial',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+            style: TextStyle(fontSize: 11, color: Colors.grey),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           ...metrics.studentsNeedingAttention.map(
             (s) => Card(
-              margin: const EdgeInsets.only(bottom: 8),
+              margin: const EdgeInsets.only(bottom: 6),
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.red.shade50,
@@ -366,15 +388,15 @@ class _KpiCard extends StatelessWidget {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
         child: Column(
           children: [
-            Icon(icon, color: color, size: 26),
+            Icon(icon, color: color, size: 24),
             const SizedBox(height: 6),
             Text(
               value,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),

@@ -21,22 +21,68 @@ class DocxParser implements DocumentParser {
     final xmlString = utf8.decode(content);
     final document = XmlDocument.parse(xmlString);
 
-    // Ekstrak teks dari tag <w:t> (teks di dalam Word)
-    final textBuffer = StringBuffer();
-    for (final node in document.findAllElements('w:t')) {
-      // Perbaikan: gunakan .innerText sebagai ganti .text yang deprecated
-      textBuffer.write(node.innerText);
-      textBuffer.write(' '); // spasi antar baris
+    final paragraphs = <String>[];
+
+    // Iterasi per <w:p> (paragraph Word)
+    for (final para in document.findAllElements('w:p')) {
+      final buf = StringBuffer();
+      _extractNode(para, buf);
+
+      // Normalisasi spasi berlebih dalam satu baris
+      final text = buf
+          .toString()
+          .split('\n')
+          .map((line) => line.replaceAll(RegExp(r'[ \t]+'), ' ').trim())
+          .where((line) => line.isNotEmpty)
+          .join('\n')
+          .trim();
+
+      if (text.isNotEmpty) {
+        paragraphs.add(text);
+      }
     }
 
-    return _chunkText(textBuffer.toString());
+    // Fallback: jika tidak ada paragraph yang terekstrak, kembalikan 1 chunk
+    if (paragraphs.isEmpty) {
+      final fallbackBuf = StringBuffer();
+      for (final t in document.findAllElements('w:t')) {
+        fallbackBuf.write(t.innerText);
+        fallbackBuf.write(' ');
+      }
+      final text = fallbackBuf.toString().trim();
+      if (text.isNotEmpty) paragraphs.add(text);
+    }
+
+    return paragraphs;
   }
 
-  List<String> _chunkText(String text) {
-    return text
-        .split(RegExp(r'\n\s*\n'))
-        .map((p) => p.trim().replaceAll(RegExp(r'\s+'), ' '))
-        .where((p) => p.isNotEmpty)
-        .toList();
+  /// Ekstrak teks dari node XML secara rekursif, mempertahankan urutan.
+  /// - `<w:t>` → teks
+  /// - `<w:br>` → newline
+  /// - `<w:tab>` → tab
+  /// - `<w:drawing>`, `<w:pict>` → skip (gambar, bukan teks)
+  void _extractNode(XmlNode node, StringBuffer buf) {
+    if (node is XmlElement) {
+      final localName = node.name.local;
+
+      switch (localName) {
+        case 'drawing':
+        case 'pict':
+          return; // Skip gambar
+        case 't':
+          buf.write(node.innerText);
+          return;
+        case 'br':
+          buf.write('\n');
+          return;
+        case 'tab':
+          buf.write('\t');
+          return;
+      }
+    }
+
+    for (final child in node.children) {
+      _extractNode(child, buf);
+    }
   }
 }
